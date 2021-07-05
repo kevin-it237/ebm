@@ -1,0 +1,169 @@
+@import '../../../../assets/styles/base/variables';
+@import '../../../../assets/styles/base/mixins';
+
+@mixin outline ($color){
+    &.btn-outline{
+        background-color: transparent;
+        border-color: $color;
+        color: $color;
+        @include svgColor($color)
+    }
+}
+
+.btn{
+    @include getFontSize(btn);
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 30px !important;
+    border-radius: 5px;
+    gap: 5px;
+    border: 1px solid transparent;
+    box-shadow: 0px 5px 8px rgba($primary, .2);
+    cursor: pointer;
+    outline: none !important;
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    width: 100%;
+    margin: 5px auto;
+    background-color: $primary;
+    color: $white;
+    font-family: "Poppins Medium", sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    svg{
+        display: flex;
+        align-self: center;
+        justify-self: center;
+    }
+
+    *{
+        margin: 0;
+        padding: 0;
+    }
+
+    &.btn-default{
+        opacity: 0.9;
+        @include svgColor($grey-400);
+        @include outline($secondary);
+    }
+
+    &:hover,
+    &.actived{
+        opacity: 1;
+    }
+    &:disabled{
+        opacity: 0.5;
+    }
+
+    &.btn-arrows{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    } 
+
+    &.btn-rounded{
+        border-radius: 50%;
+    } 
+
+    &.btn-disabled {
+        background-color: $secondary;
+    } 
+
+    &.btn-white {
+        background-color: $white;
+        color: $secondary;
+        box-shadow: 0px 0px 8px rgba($secondary, .2);
+    } 
+
+    &.btn-xxl{
+        padding: 5px 2rem;
+        svg{
+            width: 30px;
+            height: 30px;
+        }
+    }
+
+    &.btn-xl{
+        padding: 5px 2rem;
+
+        svg{
+            width: 28px;
+            height: 28px;
+        }
+    }
+    
+    &.btn-lg{
+        padding: 5px 2rem;
+
+        svg{
+            width: 22px;
+            height: 22px;
+        }
+    }
+
+    &.btn-md{
+        padding: 5px 1.5rem;
+
+        svg{
+            width: 16px;
+            height: 16px;
+        }
+    }
+    
+    &.btn-sm{
+        padding: 5px 1rem;
+        svg{
+            width: 12px;
+            height: 12px;
+        }
+    }
+
+    &.btn-xsm{
+        padding: 5px 1rem;
+        svg{
+            width: 10px;
+            height: 10px;
+        }
+    }
+
+    &.btn-no-border{
+        border: none !important;
+    }
+
+    &.btn-loading{
+        cursor: progress !important;
+        place-content: center;
+        animation: 0.5s willLoad ease forwards;
+        transform-origin: center;
+        > svg > circle{
+            stroke-dasharray: 35px;
+            transform-origin: center;
+            animation: 1.5s loading cubic-bezier(.17,.67,.79,.29) infinite;
+        }
+    }
+}
+
+@keyframes loading{
+    0%{
+        transform: rotate(0);
+        stroke-dasharray: 20%;
+    }
+    100%{
+        transform: rotate(360deg);
+        stroke-dasharray: 100%;
+    }
+}
+
+@keyframes willLoad{
+    0%{
+        padding: 10px 46px;
+    }
+    100%{
+        padding: 10px;
+    }
+}

@@ -1,0 +1,12 @@
+@import '../base/variables';
+
+$button-padding: 8px 45px;
+
+
+
+.btn{
+    -webkit-app-region: no-drag;
+    &:focus, &:active{
+        outline: none;
+    }
+}

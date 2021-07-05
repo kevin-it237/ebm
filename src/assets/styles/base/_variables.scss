@@ -1,0 +1,37 @@
+// Primary colors
+$primary:           #6B0C72;
+$font:              #707070;
+
+$white:             #fff;
+
+$success:           #5DD150;
+$danger:            #FF5A5A;
+$warning:           #FFDA34;
+$info:               $primary;
+
+//background colors 
+$bg-light:        #FDFDFD;
+
+$secondary:       #707070;
+
+// Greys
+$grey-100:          #FAFAFA;
+$grey-200:          #DDDDDD;
+$grey-300:          #BEBEBE;
+$grey-400:          #777777;
+$grey-500:          #555555;
+
+// Stroke Colors
+$stroke-color:      $grey-200;
+
+$bg-body: #EEEEF3;
+
+
+$bg-colors: (
+  blue: $primary,
+  red: $danger,
+  yellow:$warning,
+  green:$success,
+  white: $white,
+  grey: $grey-400
+);

@@ -1,0 +1,72 @@
+@import '../../../../assets/styles/global.scss';
+
+#search {
+    height: 100%;
+    .search {
+        padding: 20px;
+        height: 110px;
+        display: flex;
+        flex-direction: column;
+        background-image: url("../../../../assets//images//search-bg.svg");
+        background-position: center;
+        justify-content: center;
+        >h2 {
+            color: $white;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+        }
+        input {
+            border-radius: 8px !important;
+        }
+    }
+
+    .section-title {
+        margin: 10px 0;
+        padding: 20px;
+        >h2 {
+            font-size: 1.7rem;
+            font-weight: bold;
+            color: $primary;
+        }
+        >span {
+            display: block;
+            height: 4px;
+            margin-top: 5px;
+            width: 55px;
+            background-color: $primary;
+        }
+    }
+
+    >.search-results {
+        display: grid;
+        grid-template-columns: 1fr;
+        >.result {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 12px;
+            align-items: center;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: solid 1px $stroke-color;
+            &:first-child {
+                border-top: solid 1px $stroke-color;
+            }
+            >img {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+            }
+            .name {
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: $primary;
+            }
+            .address {
+                font-size: 1.3rem;
+                font-weight: 600;
+                color: $secondary;
+                margin-top: 6px;
+            }
+        }
+    }
+}

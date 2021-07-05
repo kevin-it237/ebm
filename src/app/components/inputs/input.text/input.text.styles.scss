@@ -1,0 +1,32 @@
+@import '../.././../../assets/styles/base/variables';
+@import '../.././../../assets/styles/base/mixins';
+.input-text{
+    @include borderedBox;
+    @include getFontSize(input-text);
+    // @include getMainTextColor(input-text);
+    // @include getMainBorderColor(input-text, true);
+    padding: 7px 12px !important;
+    border-radius: 10px;
+    font-size: 1rem;
+    background-color: $white;
+    outline: none;
+    color: $grey-400;
+    border: 1px solid $stroke-color !important;
+    &::placeholder {
+        text-transform: capitalize;
+        opacity: 1;
+        color: $grey-300;
+    }
+    &:disabled{
+        opacity: 0.5;
+    }
+
+    &.input-text-focus{
+        &:active,
+        &:focus {
+            outline: none;
+            border: 1px solid $primary;
+            @include getMainBorderColor(input-text, true);
+        }
+    }
+}

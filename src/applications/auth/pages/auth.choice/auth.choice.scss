@@ -1,0 +1,46 @@
+@import '../../../../assets/styles/global.scss';
+
+.auth-choice {
+    min-height: 100vh;
+    overflow: hidden !important;
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    padding: 20px 0px;
+
+    >.logo-box {
+        margin-bottom: 10px;
+        img {
+            width: 4rem;
+            padding: 0 30px 30px;
+        }
+    }
+    h2 {
+        font-size: 1.7rem;
+        line-height: 21px;
+        color: $font;
+        padding: 0 30px;
+    }
+    >.illustration {
+        height: auto;
+        width: 100vw;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: -110px;
+        z-index: 5;
+        transform: scale(1.15);
+    }
+
+    .buttons-box {
+        padding: 40px 20px 20px;
+        height: 40vh;
+        background-color: $bg-body;
+        flex-direction: column;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+
+    }
+
+}

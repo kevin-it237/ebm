@@ -1,0 +1,42 @@
+@import "../base/variables";
+
+$input-border-color: $stroke-color;
+$input-border-size: 1px;
+$input-border-radius: 2px;
+
+$input-height: 40px;
+$input-padding: 9px 20px;
+
+$input-font-family: "Poppins Regular", sans-serif;
+$input-font-size: 14px;
+
+$input-placeholder-color: $grey-300;
+$input-text-color: $grey-500;
+
+
+
+@mixin border {
+    border-radius: $input-border-radius;
+    border: $input-border-size solid $input-border-color;
+    outline: none;
+
+    &:active,
+    &:focus {
+        outline: none;
+        border: $input-border-size solid $primary;
+    }
+    &::placeholder {
+        text-transform: capitalize;
+        opacity: 1;
+        color: $input-placeholder-color;
+    }
+}
+
+[type="text"],
+[type="password"],
+[type="email"] {
+    @include border;
+    font: $input-font-size $input-font-family;
+    color: $input-text-color;
+    padding: $input-padding;
+}

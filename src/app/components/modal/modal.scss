@@ -1,0 +1,42 @@
+@import '../../../assets/styles/global.scss';
+
+#modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    width: 100vw;
+    z-index: 20;
+    background-color: rgba($primary, 0.3);
+    animation: appear .1s ease-in;
+    @keyframes appear {
+        from {opacity: 0;}
+        to {opacity: 1;}
+    }
+    .modal--container {
+        width: 100%;
+        height: 100%;
+        display: grid;
+        justify-content: center;
+        align-items: center;
+        .modal--content {
+            position: relative;
+            width: 30rem;
+            padding: 25px;
+            border-radius: 15px;
+            background-color: $white;
+            @media screen and (max-width: 768px) {
+                width: 28rem;
+            }
+            .close--action {
+                position: absolute;
+                right: 15px;
+                top: 12px;
+                font-size: 1.6rem;
+                font-weight: bold;
+                cursor: pointer;
+            }
+        }
+    }
+}

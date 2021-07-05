@@ -1,0 +1,79 @@
+@import '../../../../assets/styles/global.scss';
+
+#home {
+    height: 100%;
+    padding: 0 20px 20px;
+    .search {
+        display: flex;
+        padding: 10px 0;
+    }
+
+    .section-title {
+        margin: 15px 0;
+        >h2 {
+            font-size: 1.7rem;
+            font-weight: bold;
+            color: $primary;
+        }
+        >span {
+            display: block;
+            height: 4px;
+            margin-top: 5px;
+            width: 55px;
+            background-color: $primary;
+        }
+    }
+
+    .services-wrapper {
+        margin: 15px 0;
+        margin-bottom: 30px;
+        display: grid;
+        grid-template-columns: 270px;
+        grid-auto-flow: column;
+        gap: 10px;
+        overflow-x: scroll;
+
+        >.service-item {
+            cursor: pointer;
+            position: relative;
+            height: 130px;
+            width: 250px;
+            border-radius: 25px;
+            background-size: contain;
+            padding: 5px;
+            >.service-title {
+                margin-top: 10px;
+                position: absolute;
+                right: 20px;
+                top: 50%;
+                >h2 {
+                    font-size: 1.85rem;
+                    font-weight: bold;
+                    color: $primary;
+                }
+                >span {
+                    display: block;
+                    height: 4px;
+                    margin-top: 5px;
+                    width: 55px;
+                    background-color: $primary;
+                }
+            }
+            &--1 {
+                background: url("../../../../assets/images/woman.png") left no-repeat;
+                background-color: rgba($primary, .1);
+            }
+            &--2 {
+                background: url("../../../../assets/images/man.png") left no-repeat;
+                background-color: $primary;
+            }
+        }
+    }
+
+    >.products-wrapper {
+        display: grid;
+        grid-template-columns:  1fr 1fr;
+        column-gap: 15px;
+        row-gap: 5px;
+    }
+}

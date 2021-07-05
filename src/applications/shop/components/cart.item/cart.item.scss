@@ -1,0 +1,42 @@
+@import '../../../../assets/styles/global.scss';
+
+.cart-item {
+   display: grid;
+   grid-template-columns: 70px 1fr;
+   gap: 20px;
+   align-items: center;
+   margin-bottom: 30px;
+   >img {
+    border-radius: 7px;
+    width: 65px;
+    height: 65px;
+   }
+   >.product-infos {
+       display: grid;
+       gap: 6px;
+       >.name {
+           font-size: 1.5rem;
+           font-weight: 600;
+       }
+       >.price {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: $primary;
+       }
+       >.items-counts {
+           >button {
+               border: none;
+               padding: 5px 10px;
+               &:first-child {
+                border-radius: 5px 0 0 5px;
+               }
+               &:last-child {
+                   border-radius: 0 5px 5px 0;
+               }
+               &.quantity {
+                   font-weight: 600;
+               }
+           }
+       }
+   }
+}

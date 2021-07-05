@@ -1,0 +1,68 @@
+@import '../../../../assets/styles/global.scss';
+
+.welcome-container {
+    min-height: 95vh;
+    overflow: hidden !important;
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    padding: 20px 5px;
+
+    >.logo-box {
+        margin-bottom: 10px;
+        img {
+            width: 4rem;
+            padding: 0 30px 30px;
+        }
+    }
+
+    >.info-box {
+        >.infos {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            h4 {
+                text-align: left;
+                font-size: 1.6rem;
+                color: $font;
+                line-height: 21px;
+                margin: 0 30px 20px;
+            }
+            img {
+                width: 100%;
+            }
+        }
+        >.circles {
+            display: flex;
+            margin-top: 20px;
+            gap: 15px;
+            justify-content: center;
+            >span {
+                cursor: pointer;
+                border: solid 2px $primary;
+                border-radius: 50%;
+                width: 10px;
+                height: 10px;
+                &.selected {
+                    background-color: $primary;
+                }
+            }
+        }
+    }
+
+    >.buttons-wrapper {
+        display: grid;
+        align-items: center;
+        justify-content: space-between;
+        grid-template-columns: repeat(2, auto);
+        margin: 25px;
+        >.btn {
+            align-self: center;
+            justify-self: center;
+            width: 45px !important;
+            height: 45px !important;
+            padding: 5px !important;
+        }
+    }
+}

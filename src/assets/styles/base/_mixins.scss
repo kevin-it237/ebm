@@ -1,0 +1,223 @@
+// REUSABLE MIXINS
+@import './variables';
+@import './shadow';
+
+@function capitalize($string) {
+	@return to-upper-case(str-slice($string, 1, 1)) + str-slice($string, 2);
+}
+
+@function overide($overide){
+	@return #{if($overide, '!important', '')};
+}
+
+// do not allow user to select text
+@mixin unSelect {
+	user-select: none;
+	-ms-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-o-user-select: none;
+}
+
+@mixin Rotate($deg) {
+	transform: rotate($deg);
+	-ms-transform: rotate($deg);
+	-moz-transform: rotate($deg);
+	-webkit-transform: rotate($deg);
+	-o-transform: rotate($deg);
+}
+
+@mixin borderedBox {
+	border: 1px solid $stroke-color;
+}
+
+@mixin setFontSize($type) {
+	@if $type == xsm {
+		font-size: 10px;
+	} @else if $type == sm {
+		font-size: 12px;
+	} @else if $type == md {
+		font-size: 14px;
+	} @else if $type == lg {
+		font-size: 16px;
+	} @else if $type == xl {
+		font-size: 20px;
+	} @else if $type == xxl {
+		font-size: 24px;
+	} @else {
+		@error "Unknown type #{$type}.";
+	}
+}
+
+//set a class with the sizes classes. 
+@mixin getFontSize ($className){
+	&.#{$className}-xsm{@include setFontSize(xsm)}
+    &.#{$className}-sm{@include setFontSize(sm)}
+    &.#{$className}-md{@include setFontSize(md)}
+    &.#{$className}-lg{@include setFontSize(lg)}
+    &.#{$className}-xl{@include setFontSize(xl)}
+    &.#{$className}-xxl{@include setFontSize(xxl)}
+}
+
+//set a class for font colors
+@mixin getMainTextColor ($className){
+	&.#{$className}-primary{color: $primary}
+	&.#{$className}-secondary{color: $secondary}
+	&.#{$className}-default{color: $grey-400}
+    &.#{$className}-success{color: $success}
+    &.#{$className}-danger{color: $danger}
+    &.#{$className}-warning{color: $warning}
+    &.#{$className}-info{color: $info}
+}
+
+//set a class for border colors
+@mixin getMainBorderColor ($className, $overide: false){
+	&.#{$className}-primary{border-color: $primary overide($overide)}
+	&.#{$className}-secondary{border-color: $secondary overide($overide)}
+	&.#{$className}-default{border-color: $grey-400 overide($overide)}
+    &.#{$className}-success{border-color: $success overide($overide)}
+    &.#{$className}-danger{border-color: $danger overide($overide)}
+    &.#{$className}-warning{border-color: $warning overide($overide)}
+    &.#{$className}-info{border-color: $info overide($overide)}
+}
+
+@mixin getStrokeColor ($className){
+	&.#{$className}-light{stroke: $grey-200;}
+	&.#{$className}-primary{stroke: $primary}
+	&.#{$className}-secondary{stroke: $secondary}
+	&.#{$className}-default{stroke: $grey-400}
+    &.#{$className}-success{stroke: $success}
+    &.#{$className}-danger{stroke: $danger}
+    &.#{$className}-warning{stroke: $warning}
+    &.#{$className}-info{stroke: $info}
+}
+
+@mixin setIconSize($type, $overide: false) {
+	@if $type == xsm {
+		width: 15px overide($overide);
+		height: 15px overide($overide);
+	} @else if $type == sm {
+		width: 20px overide($overide);
+		height: 20px overide($overide);
+	} @else if $type == md {
+		width: 25px overide($overide);
+		height: 25px overide($overide);
+	} @else if $type == lg {
+		width: 40px overide($overide);
+		height: 40px overide($overide);
+	} @else if $type == xl {
+		width: 60px overide($overide);
+		height: 60px overide($overide);
+	} @else if $type == xxl {
+		width: 75px overide($overide);
+		height: 75px overide($overide);
+	} @else {
+		@error "Unknown type #{$type}.";
+	}
+}
+
+@mixin getIconSize ($className){
+	&.#{$className}-xsm{@include setIconSize(xsm)}
+	&.#{$className}-sm{@include setIconSize(sm)}
+	&.#{$className}-md{@include setIconSize(md)}
+    &.#{$className}-lg{@include setIconSize(lg)}
+    &.#{$className}-xl{@include setIconSize(xl)}
+    &.#{$className}-xxl{@include setIconSize(xxl)}
+}
+
+@mixin svgColor ($color)
+{
+    svg{
+        path{
+            &:nth-of-type(1){
+                fill: $color !important;
+            }
+        }
+
+        ellipse{
+            fill: $color !important;
+            &:only-of-type{
+                fill: $color !important;
+            }
+        }
+
+        rect{
+            fill: $color !important;
+            &:only-of-type{
+                fill: $color !important;
+            }
+        }
+    }
+
+   &.btn-loading{
+        svg{
+            circle{
+                stroke: $color !important;
+            }
+        }
+   }
+}
+
+@mixin setFontFamily($weight) {
+	font-family: 'Poppins #{capitalize($weight)}', sans-serif;
+}
+
+@mixin transition {
+	transition: 0.5s all ease-in-out;
+}
+
+@mixin linkTextHover($color) {
+	cursor: pointer;
+	&::after {
+		content: '';
+        transform: scaleX(0);
+        width: 100%;
+		height: 1px;
+        display: block;
+		background: $color;
+ 
+        @include transition;
+        transform-origin: center center;
+        -webkit-transform-origin: center center;
+	}
+	&:hover::after {
+        transform: scaleX(1);
+	}
+}
+
+@mixin breakWord {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+// set position y and x for [data-title]
+@mixin setTitlePosition($x, $y)
+{
+	border-radius: 5px;
+	@if($x == left)
+	{right: 102%;left: unset;}
+	@else
+	{left: 102%; right: unset;}
+	@if($y == bottom)
+	{top: 102%; bottom: unset;}
+	@else 
+	{bottom: 102%; top: unset;}
+
+	@if($x == left and $y == top)
+	{border-bottom-right-radius: 0px;} 
+
+	@if($x == right and $y == top)
+	{border-bottom-left-radius: 0px;} 
+
+	@if($x == left and $y == bottom)
+	{border-top-right-radius: 0px;} 
+
+	@if($x == right and $y == bottom)
+	{border-top-left-radius: 0px;} 
+	
+}
+
+//if you wish to overide [data-title] attribute position within a element. 
+@mixin setClassTitlePosition($x, $y)
+{ &[data-title]:after{ @include setTitlePosition($x, $y) } }

@@ -1,0 +1,63 @@
+@import '../../../../assets/styles/global.scss';
+
+.bottom-drawer-backdrop {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    background-color: rgba($secondary, .35);
+}
+
+#bottom-drawer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30vh;
+    background-color: $white;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    box-shadow: 0 0 8px rgba($secondary, .15);
+    padding: 20px 30px;
+    z-index: 10;
+    animation: drawer-open .2s ease-in;
+    @keyframes drawer-open {
+        from { transform: translateY(-50px); }
+        to { transform: translateY(0px); }
+    }
+    >.line {
+        display: block;
+        margin: 0px auto;
+        height: 4px;
+        width: 60px;
+        background-color: $grey-300;
+        border-radius: 3px;
+    }
+    >.service-title {
+        margin: 15px 0;
+        position: relative;
+        >h2 {
+            font-size: 1.7rem;
+            font-weight: bold;
+            color: $primary;
+        }
+        >span {
+            display: block;
+            height: 4px;
+            margin-top: 5px;
+            width: 45px;
+            background-color: $primary;
+        }
+    }
+    >.categories {
+        margin-top: 20px;
+        display: grid;
+        gap: 10px;
+        >.category-item {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: $secondary;
+        }
+    }
+}

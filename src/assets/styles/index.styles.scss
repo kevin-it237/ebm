@@ -1,0 +1,123 @@
+@import './base/variables';
+
+@font-face {
+  font-family: 'Poppins';
+  src: url(../fonts/poppins-regular.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Poppins Bold';
+  src: url(../fonts/poppins-bold.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Poppins Light';
+  src: url(../fonts/poppins-light.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Poppins SemiBold';
+  src: url(../fonts/poppins-semibold.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Poppins Thin';
+  src: url(../fonts/poppins-thin.ttf) format('truetype');
+}
+
+
+/**************************
+*  
+* Reset and Basic Styling
+*
+****************************/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font-family: 'Poppins', sans-serif;
+  vertical-align: baseline;
+
+} 
+
+
+html {
+  font-size: 10px !important;
+}
+
+html, body {
+  background-color: transparent;
+  overflow: hidden;
+}
+
+body {
+  line-height: 1;
+  height: 100vh;
+  -webkit-app-region: drag
+}
+
+#root {
+  border-radius: 10px; 
+  background: $white; 
+  height: 100vh;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+button, a, input {
+  -webkit-app-region: no-drag;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote {
+  &:before, &:after {
+    content: '';
+    content: none;
+  }
+}
+
+q {
+  &:before, &:after {
+    content: '';
+    content: none;
+  }
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+* {
+  scrollbar-color: $grey-200;
+  scrollbar-width: thin;
+
+  /* width */
+  &::-webkit-scrollbar {
+      width: 0px;
+      height: 0px;
+  }
+
+  /* Track */
+  &::-webkit-scrollbar-track {
+      border-radius: 10px;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+      background: $grey-300;
+      border-radius: 10px;
+  }
+
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+      background: $grey-300;
+  }
+  /* Handle on focus */
+  &::-webkit-scrollbar-thumb:focus {
+      background: $grey-300;
+  }
+}

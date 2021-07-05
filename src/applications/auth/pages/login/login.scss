@@ -1,0 +1,77 @@
+@import '../../../../assets/styles/global.scss';
+
+.login-container {
+    height: 100vh;
+    display: grid;
+    width: 100vw;
+    justify-content: center;
+    align-content: flex-start;
+    background: url("../../../../assets/images/bottom-bg.svg") no-repeat bottom center;
+
+    >.logo-box {
+       padding: 20px 0;
+        >img {
+            width: 4.5rem;
+        }
+    }
+    >.big-logo__box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 25px;
+        >img {
+            width: 17rem;
+        }
+    }
+
+    .auth-container__input-container {
+        display: grid;
+        position: relative;
+        svg {
+            display: block;
+            margin: 26px 20px;
+            position: absolute;
+        }
+
+        .auth-container__input {
+            margin: 10px 0;
+            width: 310px;
+            @media screen and (max-width: 400px) {
+                width: 245px;
+            }
+        }
+
+        svg {
+            cursor: pointer;
+            right: 0;
+        }
+    }
+
+    .forgot-password__box {
+        padding: 30px 0;
+        display: flex;
+        justify-content: flex-end;
+        >a {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+    }
+
+    .auth-text {
+        font-size: 1.15rem;
+        margin-top: 10px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .auth-container__button-primary {
+        width: 100%;
+        margin: 25px auto;
+        background-color: $primary;
+        padding: 5px 70px;
+        color: $white;
+        border: 0;
+        cursor: pointer;
+        text-align: center;
+    }
+}
