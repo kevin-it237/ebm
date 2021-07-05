@@ -12,6 +12,7 @@ import SignUp from '../../applications/auth/pages/signup/signup'
 import Layout from '../components/layout/layout';
 import Home from '../../applications/shop/pages/home/home'
 import Search from '../../applications/shop/pages/search/search'
+import AdvancedSearch from '../../applications/shop/pages/advanced.search/advanced.search'
 import Cart from '../../applications/shop/pages/cart/cart'
 
 /**
@@ -34,10 +35,11 @@ const Routes = () => {
                 <Route exact={true} component={SignUp} path={'/signup'} />
                 
                 <Route exact={true} component={Cart} path={'/cart'} />
+                <Route exact={true} component={Search} path={'/search'} />
                 
                 <Layout>
                     <Route exact={true} component={Home} path={'/home'} />
-                    <Route exact={true} component={Search} path={'/search'} />
+                    <Route exact={true} component={AdvancedSearch} path={'/advanced-search'} />
                 </Layout>
             </NormalRoute>
 

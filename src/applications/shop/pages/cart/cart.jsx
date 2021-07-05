@@ -29,13 +29,17 @@ const Cart = () => {
                         <p>TOTAL</p>
                         <p className="price">$1530</p>
                     </div>
-                    <Button size="sm">CHECKOUT</Button>
+                    <Button onClick={() => setShowModal(true)} size="sm">CHECKOUT</Button>
                 </div>
             </div>
             {
-                !showModal&&
-                <Modal>
-                    HEe
+                showModal&&
+                <Modal hide={() => setShowModal(false)}>
+                    <div className="cart-modal-content">
+                        <h3>Checkout</h3>
+                        <textarea placeholder="Any comment to" name="comment" rows="7"></textarea>
+                        <Button size="sm">Complete</Button>
+                    </div>
                 </Modal>
             }
         </>

@@ -1,14 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import InputSearch from "../../../../app/components/inputs/input.search/input.search";
 import ProductItem from '../../components/product.item/product.item';
+import Menu from "../../../../assets/icons/menu.svg"
+import avatar from "../../../../assets/images/avatar.png"
 import './home.scss' 
+import HomeDrawerContent from "../../components/home.drawer.content/home.drawer.content"
+
 
 const Home = () => {
+    const history = useHistory()
+    const [showDrawer, setShowDrawer] = useState(false)
 
+    const openDrawer = () => {
+        setShowDrawer(!showDrawer)
+    }
+    
     return (
         <div id="home">
+            <div id="header">
+                <img onClick={openDrawer} className="menu" src={Menu} alt="" />
+                <img className="avatar" src={avatar} alt="" />
+            </div>
             <div className="search">
-                <InputSearch placeholder="Type something to search here..." />
+                <InputSearch onClick={() => history.push('/search')} placeholder="Type something to search here..." />
             </div>
 
             <div className="section-title">
@@ -44,6 +59,8 @@ const Home = () => {
                 <ProductItem />
                 <ProductItem />
             </div>
+        
+            {showDrawer&&<HomeDrawerContent onClose={() => openDrawer(false)} />}
         </div>
     )
   

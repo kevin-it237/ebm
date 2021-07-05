@@ -1,0 +1,134 @@
+@import '../../../../assets/styles/global.scss';
+
+#advanced-search {
+    height: 100%;
+    >.top {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px 20px 0 20px;
+        >h2 {
+            font-size: 1.7rem;
+            font-weight: bold;
+            color: $primary;
+        }
+
+    }
+    .search {
+        padding: 20px;
+        padding-bottom: 5px;
+        display: flex;
+        flex-direction: column;
+        background-position: center;
+        justify-content: center;
+        input {
+            border-radius: 8px !important;
+        }
+
+        >.actual-position {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            height: 38px;
+            border-radius: 7px;
+            background-color: $grey-100;
+            margin-top: 15px;
+            padding: 0 10px;
+            >p {
+                font-size: 1.3rem;
+                color: $grey-300;
+            }
+        }
+
+        >.filter-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            margin-top: 10px;
+            >.filter, >.view-settings {
+                div {
+                    display: flex;
+                    align-items: center;
+                    cursor: pointer;
+                    h5 {
+                        font-size: 1.2rem;
+                        color: $primary;
+                        margin-left: 8px;
+                        font-weight: 400;
+                    }
+                }
+            }
+        }
+    }
+
+    >.not-found__wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        >.not-found {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            width: 70%;
+            >h5 {
+                font-size: 1.4rem;
+                margin-top: 10px;
+            }
+            >p {
+                font-size: 1.3rem;
+                color: $grey-400;
+                margin-top: 10px;
+                font-weight: 400;
+                text-align: center;
+            }
+            >.change-option {
+                margin-top: 15px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                >h5 {
+                    font-size: 1.3rem;
+                    font-weight: 600;
+                    color: $primary;
+                }
+            }
+        }
+
+    }
+
+
+    >.search-results {
+        display: grid;
+        grid-template-columns: 1fr;
+        >.result {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 12px;
+            align-items: center;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: solid 1px $stroke-color;
+            &:first-child {
+                border-top: solid 1px $stroke-color;
+            }
+            >img {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+            }
+            .name {
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: $primary;
+            }
+            .address {
+                font-size: 1.3rem;
+                font-weight: 600;
+                color: $secondary;
+                margin-top: 6px;
+            }
+        }
+    }
+}

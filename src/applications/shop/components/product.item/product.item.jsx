@@ -4,9 +4,14 @@ import { ReactComponent as Star } from "../../../../assets/icons/star.svg"
 import cils from "../../../../assets/images/cils.jpg"
 import cart from "../../../../assets/icons/cart.svg"
 import heart from "../../../../assets/icons/heart.svg"
+import { useHistory } from 'react-router-dom';
 
 const ProductItem = () => {
-
+    const history = useHistory()
+    const goToCart = () => {
+        history.push("/cart")
+    }
+        
     return (
         <div className="product-item">
             <div className="product-item__infos">
@@ -28,7 +33,7 @@ const ProductItem = () => {
                 </div>
             </div>
             <div className="foot">
-                <div className="like"><img src={cart} alt="" /></div>
+                <div onClick={goToCart} className="cart"><img src={cart} alt="" /></div>
             </div>
         </div>
     )
