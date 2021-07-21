@@ -6,7 +6,7 @@ import cart from "../../../../assets/icons/cart.svg"
 import heart from "../../../../assets/icons/heart.svg"
 import { useHistory } from 'react-router-dom';
 
-const ProductItem = () => {
+const ProductItem = (props) => {
     const history = useHistory()
     const goToCart = () => {
         history.push("/cart")
@@ -16,13 +16,13 @@ const ProductItem = () => {
         <div className="product-item">
             <div className="product-item__infos">
                 <div className="head">
-                    <p className="discount">30% OFF</p>
+                    <p className="discount">{props.discount}% OFF</p>
                     <div className="like"><img src={heart} alt="" /></div>
                 </div>
                 <img className="product-image" src={cils} alt="" />
                 <div className="product-infos">
-                    <h4 className="name">Face Wiper</h4>
-                    <p className="price">127, 000 XAF</p>
+                    <h4 className="name">{props.name}</h4>
+                    <p className="price">{props.price} XAF</p>
                     <div className="stars">
                         <Star />
                         <Star />

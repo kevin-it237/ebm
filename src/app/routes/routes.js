@@ -8,6 +8,7 @@ import WelCome from '../../applications/auth/pages/welcome/welcome'
 import AuthChoice from '../../applications/auth/pages/auth.choice/auth.choice'
 import Login from '../../applications/auth/pages/login/login'
 import SignUp from '../../applications/auth/pages/signup/signup'
+import Verification from '../../applications/auth/pages/signup/verification'
 
 import Layout from '../components/layout/layout';
 import Home from '../../applications/shop/pages/home/home'
@@ -33,7 +34,8 @@ const Routes = () => {
                 <Route exact={true} component={AuthChoice} path={'/auth/choice'} />
                 <Route exact={true} component={Login} path={'/login'} />
                 <Route exact={true} component={SignUp} path={'/signup'} />
-                
+                <Route exact={true} component={Verification} path={'/verification'} />
+
                 <Route exact={true} component={Cart} path={'/cart'} />
                 <Route exact={true} component={Search} path={'/search'} />
                 
