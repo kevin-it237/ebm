@@ -14,6 +14,7 @@ import Home from '../../applications/shop/pages/home/home'
 import Search from '../../applications/shop/pages/search/search'
 import AdvancedSearch from '../../applications/shop/pages/advanced.search/advanced.search'
 import Cart from '../../applications/shop/pages/cart/cart'
+import Institute from '../../applications/shop/pages/institute/institute'
 
 /**
  * @description this is the main routes for the main application src/app. 
@@ -36,6 +37,7 @@ const Routes = () => {
                 
                 <Route exact={true} component={Cart} path={'/cart'} />
                 <Route exact={true} component={Search} path={'/search'} />
+                <Route exact={true} component={Institute} path={'/institute'} />
                 
                 <Layout>
                     <Route exact={true} component={Home} path={'/home'} />
