@@ -1,19 +1,57 @@
 import React from 'react';
 import './product.item.scss'
+import axios from "axios";
+import config from "../../../../config/index";
 import { ReactComponent as Star } from "../../../../assets/icons/star.svg"
+import {getToken} from "../../../../config/helpers";
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 import cils from "../../../../assets/images/cils.jpg"
 import cart from "../../../../assets/icons/cart.svg"
 import heart from "../../../../assets/icons/heart.svg"
 import { useHistory } from 'react-router-dom';
+import {connect} from "react-redux";
+import {useDispatch} from "react-redux";
 
 const ProductItem = (props) => {
-    const history = useHistory()
+    const history = useHistory();
+    const dispatch = useDispatch();
+
     const goToCart = () => {
-        history.push("/cart")
+        const token = getToken();
+        if (token === null){
+            history.push("/login");
+            return
+        }
+
+        axios.post(config.baseUrl+"/user/cart/product/register", {id: props.id})
+            .then((response)=>{
+                dispatch({
+                    type: 'ADD_TO_CART',
+                    payload: {
+                        'id': props.id,
+                        'name': props.name,
+                        'price': props.price,
+                        'discount': props.discount
+                    }
+                })
+                notifySucces(JSON.stringify(response.data.message))
+                history.push("/cart")
+            })
+            .catch((error)=>{
+                console.log(error)
+            })
+
+        //history.push("/cart")
     }
-        
+
+    const notifySucces = (err)=>{
+        toast.error(err)
+    }
+
     return (
         <div className="product-item">
+            <ToastContainer/>
             <div className="product-item__infos">
                 <div className="head">
                     <p className="discount">{props.discount}% OFF</p>

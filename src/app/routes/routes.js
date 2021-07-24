@@ -16,12 +16,18 @@ import Search from '../../applications/shop/pages/search/search'
 import AdvancedSearch from '../../applications/shop/pages/advanced.search/advanced.search'
 import Cart from '../../applications/shop/pages/cart/cart'
 import Institute from '../../applications/shop/pages/institute/institute'
+import {getToken} from "../../config/helpers";
+import axios from "axios";
 
 /**
  * @description this is the main routes for the main application src/app. 
  */
 const Routes = () => {
 
+    if (getToken() !== null){
+        axios.defaults.headers['Authorization'] = getToken();
+        axios.defaults.headers['Content-Type'] = 'application/json';
+    };
     return (
         <Switch>
             {/* Private routes here */}

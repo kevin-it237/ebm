@@ -33,8 +33,10 @@ const Login = () => {
         }
         axios.post(config.baseUrl+"/login", {...user}).
         then(response=>{
-            setToken(response.data.acces_token);
+            const token = `Bearer ${response.data.acces_token}`;
+            setToken(token);
             response.headers.Authorization = `Bearer ${JSON.stringify(response.data.acces_token)}`;
+            console.log("ifjkef")
             history.push('/home');
         }).catch(error=>{
             console.log(error);

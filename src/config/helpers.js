@@ -1,6 +1,6 @@
 
-export const setToken = (user)=>{
-    return window.localStorage.setItem('token', JSON.stringify(user));
+export const setToken = (token)=>{
+    return window.localStorage.setItem('token', token);
 }
 
 export const getToken = ()=>{

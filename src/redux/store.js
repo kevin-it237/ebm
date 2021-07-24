@@ -10,6 +10,7 @@ const store = createStore(
         applyMiddleware(sagaMiddleware),
     );
 
+
 sagaMiddleware.run(sagas);
 
 export default store;

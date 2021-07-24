@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
@@ -17,14 +17,17 @@ const Home = () => {
     const [showDrawer, setShowDrawer] = useState(false)
     const [products, setProduct] = useState("");
     const [services, setService] = useState("");
+    const [parent_services, setParent_Service] = useState("");
 
     const openDrawer = () => {
         setShowDrawer(!showDrawer)
     }
 
+    console.log(services)
+
     useEffect(()=>{
         getAllProduct();
-        getAllService();
+        getAllParentService();
     }, []);
 
     const getAllProduct = ()=> {
@@ -36,10 +39,10 @@ const Home = () => {
         })
     }
 
-    const getAllService = ()=> {
-        axios.get(config.baseUrl + '/service/index')
+    const getAllParentService = ()=> {
+        axios.get(config.baseUrl + '/parent_service/index')
             .then(response => {
-                setService(Object.values(response.data.message));
+                setParent_Service(Object.values(response.data.message));
             }).catch(err => {
             notifyFailed("Verifier votre connexion")
         })
@@ -56,20 +59,20 @@ const Home = () => {
                 <img className="avatar" src={avatar} alt="" />
             </div>
             <div className="search">
-                <InputSearch onClick={() => history.push('/search')} placeholder="Type something to search here..." />
+                <InputSearch onClick={() => history.push('/search')} placeholder="Recherchez une institution..." />
             </div>
 
             <ToastContainer/>
             <div className="section-title">
-                <h2>Services</h2>
+                <h2>Catégories de Services</h2>
                 <span></span>
             </div>
             
             <div className="services-wrapper">
-                {Object.keys(services).map((service, index)=>(
-                    <div key={index} className="service-item service-item--1">
+                {Object.keys(parent_services).map((parent_service, index)=>(
+                    <div key={index} className="service-item service-item--1" onClick={()=>{openDrawer(); setService(parent_services[parent_service]['name'])}}>
                         <div className="service-title">
-                            <h2>{services[service]['name_fr']}</h2>
+                            <h2>{parent_services[parent_service]['name']}</h2>
                             <span></span>
                         </div>
                     </div>
@@ -90,12 +93,16 @@ const Home = () => {
             <div className="products-wrapper">
                 {Object.keys(products).map((product, index)=>(
                     <div key={index}>
-                        <ProductItem name={products[product]['name_fr']} price={products[product]['price']} discount={products[product]['discount']}/>
+                        <ProductItem id={products[product]['id']}
+                                     name={products[product]['name_fr']}
+                                     price={products[product]['price']}
+                                     discount={products[product]['discount']}/>
                     </div>
                 ))}
             </div>
         
-            {showDrawer&&<HomeDrawerContent onClose={() => openDrawer(false)} />}
+            {showDrawer&&<HomeDrawerContent onClose={() => openDrawer(false) }
+                                            name={services} />}
         </div>
     )
   

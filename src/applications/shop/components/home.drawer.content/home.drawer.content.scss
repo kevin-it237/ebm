@@ -60,4 +60,8 @@
             color: $secondary;
         }
     }
+    >.spinner_load{
+        display: flex;
+        justify-content: space-around;
+    }
 }

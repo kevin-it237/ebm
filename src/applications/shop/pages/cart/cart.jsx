@@ -1,14 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ReactComponent as Back } from "../../../../assets/icons/back_arrow.svg"
 import { useHistory } from 'react-router-dom';
 import CardItem from "../../components/cart.item/cart.item"
 import Button from "../../../../app/components/buttons/button/button";
 import Modal from "../../../../app/components/modal/modal"
-import './cart.scss' 
+import './cart.scss'
+import axios from "axios";
+import config from "../../../../config/index";
+import {useSelector} from "react-redux";
 
 const Cart = () => {
     const history = useHistory()
-    const [showModal, setShowModal] = useState(false)
+    const [showModal, setShowModal] = useState(false);
+    const [carts, setCart] = useState("");
+    const [products, setProduct] = useState("");
+
+    useEffect(()=>{
+        getProduct();
+    }, []);
+
+    const getProduct = ()=>{
+        axios.get(config.baseUrl+'/user/cart/quantity')
+            .then(response=>{
+                setProduct(response.data.message)
+            })
+            .catch(error=>{
+                console.log(error)
+            })
+        }
 
     return (
         <>
@@ -19,9 +38,14 @@ const Cart = () => {
                 </div>
 
                 <div className="cart-items">
-                    <CardItem />
-                    <CardItem />
-                    <CardItem />
+                    {Object.keys(products).map((product, index)=>(
+                        <div key={index}>
+                            <CardItem name={products[product]['name']}
+                                      price={products[product]['price']}
+                                      quantity={products[product]['quantity']}
+                                      discount={products[product]['discount']}/>
+                        </div>
+                    ))}
                 </div>
 
                 <div className="footer">

@@ -39,7 +39,7 @@ const Search = () => {
         <div id="search">
             <div className="search">
                 <h2>Institutions</h2>
-                <InputSearch placeholder="Type something to search here..." value={name} onChange={(event)=>{setName(event.target.value);
+                <InputSearch placeholder="Recherchez une institution..." onFocus value={name} onChange={(event)=>{setName(event.target.value);
                 searchFilter(event.target.value)}} name="name"/>
             </div>
 
