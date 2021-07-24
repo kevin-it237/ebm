@@ -6,7 +6,9 @@ import InputSearch from "../../../../app/components/inputs/input.search/input.se
 import ProductItem from '../../components/product.item/product.item';
 import Menu from "../../../../assets/icons/menu.svg"
 import avatar from "../../../../assets/images/avatar.png"
-import './home.scss' 
+import './home.scss'
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import Loader from "react-loader-spinner";
 import HomeDrawerContent from "../../components/home.drawer.content/home.drawer.content"
 import axios from "axios";
 import config from "../../../../config/index";
@@ -22,8 +24,6 @@ const Home = () => {
     const openDrawer = () => {
         setShowDrawer(!showDrawer)
     }
-
-    console.log(services)
 
     useEffect(()=>{
         getAllProduct();
@@ -67,7 +67,7 @@ const Home = () => {
                 <h2>Catégories de Services</h2>
                 <span></span>
             </div>
-            
+            {parent_services.length !== 0 ?
             <div className="services-wrapper">
                 {Object.keys(parent_services).map((parent_service, index)=>(
                     <div key={index} className="service-item service-item--1" onClick={()=>{openDrawer(); setService(parent_services[parent_service]['name'])}}>
@@ -77,19 +77,22 @@ const Home = () => {
                         </div>
                     </div>
                 ))}
+            </div>
+                :
+            <div className="services-wrapper">
                 <div className="service-item service-item--2">
                     <div className="service-title">
                         <h2>Cheveux</h2>
                         <span></span>
                     </div>
                 </div>
-            </div>
+            </div>}
 
             <div className="section-title">
                 <h2>Produits</h2>
                 <span></span>
             </div>
-            
+            {parent_services.length !== 0 ?
             <div className="products-wrapper">
                 {Object.keys(products).map((product, index)=>(
                     <div key={index}>
@@ -100,6 +103,11 @@ const Home = () => {
                     </div>
                 ))}
             </div>
+                :
+                <div className="spinner_loader">
+                    <Loader type="Circles" height={70} width={70} color="#6B0C72"/>
+                </div>
+            }
         
             {showDrawer&&<HomeDrawerContent onClose={() => openDrawer(false) }
                                             name={services} />}

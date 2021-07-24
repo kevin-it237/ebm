@@ -1,6 +1,6 @@
 
 const initialState = {
-    payload: []
+    payload: ""
 };
 
 export default function productReducer(state = initialState, action){
@@ -11,5 +11,6 @@ export default function productReducer(state = initialState, action){
             payload: action.payload
         }
     }
+    console.log(nextState)
     return nextState||state;
 }

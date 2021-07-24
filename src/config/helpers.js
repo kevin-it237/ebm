@@ -45,3 +45,7 @@ export const verifiedPhone = (phone) =>{
     }
 
 }
+
+export const calcul = (nb, prix, discount) =>{
+    return prix*nb - prix*nb*discount;
+}

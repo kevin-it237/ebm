@@ -7,7 +7,7 @@
         height: 110px;
         display: flex;
         flex-direction: column;
-        background-image: url("../../../../assets//images//search-bg.svg");
+        background-image: url("../../../../assets/images/search-bg.svg");
         background-position: center;
         justify-content: center;
         >h2 {
@@ -68,5 +68,10 @@
                 margin-top: 6px;
             }
         }
+    }
+    .spinner_load_search{
+        display: flex;
+        justify-content: space-around;
+        align-content: center;
     }
 }

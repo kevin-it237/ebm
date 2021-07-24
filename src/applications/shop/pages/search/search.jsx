@@ -6,6 +6,8 @@ import img from "../../../../assets/images/ebm.svg"
 import config from '../../../../config/index'
 import axios from "axios";
 import {toast} from "react-toastify";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import Loader from "react-loader-spinner";
 
 const Search = () => {
 
@@ -47,6 +49,7 @@ const Search = () => {
                 <h2>{allSearch.length} {allSearch.length < 2 ? "Institution trouvée":"Institutions trouvées"}</h2>
                 <span></span>
             </div>
+            {allSearch.length !==0 ?
             <div className="search-results">
                 {Object.keys(allSearch).map((search, index)=>(
                     <div key={index} className="result">
@@ -58,6 +61,10 @@ const Search = () => {
                     </div>
                 ))}
             </div>
+                :<div className="spinner_load_search">
+                    <Loader type="Circles" height={70} width={70} color="#6B0C72"/>
+                </div>
+            }
             
         </div>
     )

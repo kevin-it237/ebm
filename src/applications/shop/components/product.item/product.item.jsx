@@ -11,11 +11,10 @@ import cart from "../../../../assets/icons/cart.svg"
 import heart from "../../../../assets/icons/heart.svg"
 import { useHistory } from 'react-router-dom';
 import {connect} from "react-redux";
-import {useDispatch} from "react-redux";
+
 
 const ProductItem = (props) => {
     const history = useHistory();
-    const dispatch = useDispatch();
 
     const goToCart = () => {
         const token = getToken();
@@ -26,15 +25,6 @@ const ProductItem = (props) => {
 
         axios.post(config.baseUrl+"/user/cart/product/register", {id: props.id})
             .then((response)=>{
-                dispatch({
-                    type: 'ADD_TO_CART',
-                    payload: {
-                        'id': props.id,
-                        'name': props.name,
-                        'price': props.price,
-                        'discount': props.discount
-                    }
-                })
                 notifySucces(JSON.stringify(response.data.message))
                 history.push("/cart")
             })
