@@ -2,5 +2,100 @@
 
 #institute {
     height: 100%;
-   
+    overflow-y: auto;
+   >.header {
+        height: 200px;
+        background-image: linear-gradient(135deg, rgba($primary, .9), rgba($primary, .1)), url("../../../../assets//images/institute_bg.jpg");
+        background-size: cover;
+        background-repeat: no-repeat;
+        >.header-title {
+            display: flex;
+            align-items: center;
+            padding: 20px 15px;
+            >h4 {
+                margin-left: 15px;
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: $white;
+            }
+        }
+   }
+
+   .institute-content {
+       padding: 15px 20px;
+       >.owner-infos {
+           display: flex;
+           align-items: center;
+           >.avatar {
+               width: 80px;
+               height: 80px;
+               border-radius: 50%;
+               margin-right: 10px;
+               box-shadow: 0 8px 15px rgba(#000, .1);
+           }
+           .name {
+                font-size: 1.5rem;
+                color: $primary;
+                font-weight: 600;
+                margin-bottom: 5px;
+           }
+           .address {
+                font-size: 1.1rem;
+                color: $secondary;
+                font-weight: 400;
+           }    
+       }
+       >.description {
+           color: $secondary;
+           line-height: 15px;
+           font-size: 1rem;
+           text-align: justify;
+           margin: 15px 0;
+       }
+
+       >.stats {
+           padding: 15px 0;
+           margin-bottom: 10px;
+           display: grid;
+           grid-template-columns: 20% auto;
+           column-gap: 15px;
+           >.rates {
+                h2 {
+                    font-size: 4.2rem;
+                    font-weight: bold;
+                    color: #000;
+                }
+                p {
+                    font-size: 1rem;
+                    font-weight: 600;
+                    color: $grey-300;
+                }
+           }
+           >.stars-group {
+               display: flex;
+               flex-direction: column;
+               gap: 10px;
+               grid-template-columns: 1fr;
+           }
+       }
+
+       >.menu {
+           display: flex;
+           margin-top: 20px;
+           >.menu-item {
+                margin-right: 25px;
+                font-size: 1.2rem;
+                font-weight: 600;
+                padding-bottom: 4px;
+                color: $grey-500;
+                &.actived {
+                    border-bottom: solid 3px $primary;
+                    color: $primary;
+                }
+           }
+       }
+       >.bottom-content {
+           margin-top: 15px;
+       }
+   }
 }

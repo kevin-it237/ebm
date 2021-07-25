@@ -1,0 +1,36 @@
+@import '../../../../assets/styles/global.scss';
+
+.stars-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+   .stars {
+       display: flex;
+       align-items: center;
+       gap: 3px;
+       width: 72px;
+       .star {
+            width: 12px;
+            height: 12px;
+            transition: all .2s ease-in-out;
+            &:hover {
+                fill: orange;
+            }
+        &.selected {
+            fill: orange;
+        }
+       }
+    }
+    .line {
+        height: 6px;
+        background-color: $primary;
+        border-radius: 6px;
+        max-width: 100px;
+    }
+    .number {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: $secondary;
+        margin-left: auto;
+    }
+}
