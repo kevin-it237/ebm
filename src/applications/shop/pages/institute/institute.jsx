@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import './institute.scss'
-import Back from "../../../../assets/icons/arrow_left.svg"
+import { useHistory } from 'react-router';
+import { ReactComponent as Back } from "../../../../assets/icons/back.svg"
 import StarsRating from "../../components/stars.rating/stars.rating"
-import user from "../../../../assets/images/user.png";
 import Reviews from "../../components/reviews/reviews"
+import Services from "../../components/services/services"
+import Localization from "../../components/localization/localization"
+import Works from "../../components/works/works"
+import img from "../../../../assets/images/mansory.png";
 
 const Institute = () => {
+    const history = useHistory()
     const [content, setContent] = useState("Revues");
 
     const MENU_ITEMS = ["Revues", "Services", "Localisation", "Oeuvres"];
@@ -15,26 +20,28 @@ const Institute = () => {
     }
 
     let bottomContent = (<Reviews />);
-    if(content === "Services") {
+    if(content === "Revues") {
         bottomContent = (<Reviews />);
+    } else if(content === "Services") {
+        bottomContent = (<Services />);
     } else if(content === "Localisation") {
-        bottomContent = (<Reviews />);
+        bottomContent = (<Localization />);
     } else {
-        bottomContent = (<Reviews />);
+        bottomContent = (<Works />);
     }
 
     return (
         <div id="institute">
             <div className="header">
                 <div className="header-title">
-                    <img src={Back} alt="" />
+                    <Back onClick={() => history.goBack()} />
                     <h4>Himalayas Institute….</h4>
                 </div>
             </div>
 
             <div className="institute-content">
                 <div className="owner-infos">
-                    <img className="avatar" src={user} alt="" />
+                    <img className="avatar" src={img} alt="" />
                     <div>
                         <h3 className="name">Institute of beauty</h3>
                         <p className="address">Yaoundé, ...</p>

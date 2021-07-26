@@ -6,7 +6,7 @@
       grid-template-columns: auto 1fr;
       row-gap: 8px;
       column-gap: 10px;
-      svg {
+      >svg {
           grid-row: 1 / span 2;
           width: 22px;
           height: 22px;

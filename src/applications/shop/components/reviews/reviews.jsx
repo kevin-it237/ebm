@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './reviews.scss'
 import { ReactComponent as User } from "../../../../assets/icons/user.svg";
-import InputText from '../../../../app/components/inputs/input.search/input.search';
+import InputSearch from '../../../../app/components/inputs/input.search/input.search';
 import StarsRating from "../stars.rating/stars.rating"
 
 const Reviews = () => {
@@ -12,7 +12,7 @@ const Reviews = () => {
            <div className="reviews-header">
                 <User />
                 <StarsRating stars={5} />
-                <InputText name="query" placeholder="Write your review here..." />
+                <InputSearch name="query" placeholder="Write your review here..." />
            </div>
            <div className="text-reviews">
                 <div className="review-item">

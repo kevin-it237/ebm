@@ -14,11 +14,10 @@
             height: 12px;
             transition: all .2s ease-in-out;
             &:hover {
-                fill: orange;
+                path {
+                    fill: orange;
+                }
             }
-        &.selected {
-            fill: orange;
-        }
        }
     }
     .line {

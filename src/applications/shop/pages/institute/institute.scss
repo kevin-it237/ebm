@@ -4,7 +4,7 @@
     height: 100%;
     overflow-y: auto;
    >.header {
-        height: 200px;
+        height: 170px;
         background-image: linear-gradient(135deg, rgba($primary, .9), rgba($primary, .1)), url("../../../../assets//images/institute_bg.jpg");
         background-size: cover;
         background-repeat: no-repeat;
@@ -18,11 +18,21 @@
                 font-weight: 600;
                 color: $white;
             }
+            svg {
+                width: 22px;
+                path { fill: $white; }
+            }
         }
    }
 
    .institute-content {
        padding: 15px 20px;
+       background-image: url("../../../../assets//images/profile_shape.svg");
+       z-index: 10;
+       margin-top: -50px;
+       background-position: top;
+       background-size: 105%;
+       background-repeat: no-repeat;
        >.owner-infos {
            display: flex;
            align-items: center;
@@ -31,7 +41,8 @@
                height: 80px;
                border-radius: 50%;
                margin-right: 10px;
-               box-shadow: 0 8px 15px rgba(#000, .1);
+               box-shadow: 0 2px 15px rgba(#000, .35);
+               margin-top: -15px;
            }
            .name {
                 font-size: 1.5rem;
@@ -83,7 +94,7 @@
            display: flex;
            margin-top: 20px;
            >.menu-item {
-                margin-right: 25px;
+                margin-right: 20px;
                 font-size: 1.2rem;
                 font-weight: 600;
                 padding-bottom: 4px;
