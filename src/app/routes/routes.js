@@ -29,31 +29,31 @@ const Routes = () => {
         axios.defaults.headers['Content-Type'] = 'application/json';
     };
     return (
-        <Switch>
-            {/* Private routes here */}
-            <PrivateRoute exact path={"/"}>
-                {/* <Route exact component={Tracker} path={"/"} /> */}
-            </PrivateRoute>
-            
-            {/* Normal routes here */}
-            <NormalRoute exact>
-                <Route exact={true} component={WelCome} path={'/welcome'} />
-                <Route exact={true} component={AuthChoice} path={'/auth/choice'} />
-                <Route exact={true} component={Login} path={'/login'} />
-                <Route exact={true} component={SignUp} path={'/signup'} />
-                <Route exact={true} component={Verification} path={'/verification'} />
+            <Switch>
+                {/* Private routes here */}
+                <PrivateRoute exact path={"/"}>
+                    {/* <Route exact component={Tracker} path={"/"} /> */}
+                </PrivateRoute>
 
-                <Route exact={true} component={Cart} path={'/cart'} />
-                <Route exact={true} component={Search} path={'/search'} />
-                <Route exact={true} component={Institute} path={'/institute'} />
-                
-                <Layout>
-                    <Route exact={true} component={Home} path={'/home'} />
-                    <Route exact={true} component={AdvancedSearch} path={'/advanced-search'} />
-                </Layout>
-            </NormalRoute>
+                {/* Normal routes here */}
+                <NormalRoute exact>
+                    <Route exact={true} component={WelCome} path={'/welcome'} />
+                    <Route exact={true} component={AuthChoice} path={'/auth/choice'} />
+                    <Route exact={true} component={Login} path={'/login'} />
+                    <Route exact={true} component={SignUp} path={'/signup'} />
+                    <Route exact={true} component={Verification} path={'/verification'} />
 
-        </Switch>)
+                    <Route exact={true} component={Cart} path={'/cart'} />
+                    <Route exact={true} component={Search} path={'/search'} />
+                    <Route exact={true} component={Institute} path={'/institute'} />
+
+                    <Layout>
+                        <Route exact={true} component={Home} path={'/home'} />
+                        <Route exact={true} component={AdvancedSearch} path={'/advanced-search'} />
+                    </Layout>
+                </NormalRoute>
+
+            </Switch>)
 }
 
 const mapStateToProps = () =>({

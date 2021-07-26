@@ -12,6 +12,7 @@ import Loader from "react-loader-spinner";
 import HomeDrawerContent from "../../components/home.drawer.content/home.drawer.content"
 import axios from "axios";
 import config from "../../../../config/index";
+import { SnackbarProvider } from 'material-ui-toast';
 
 
 const Home = () => {
