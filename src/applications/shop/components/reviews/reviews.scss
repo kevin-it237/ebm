@@ -1,0 +1,48 @@
+@import '../../../../assets/styles/global.scss';
+
+.reviews {
+    .reviews-header {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      row-gap: 8px;
+      column-gap: 10px;
+      >svg {
+          grid-row: 1 / span 2;
+          width: 22px;
+          height: 22px;
+      }
+    }
+    .text-reviews {
+        display: grid;
+        margin-top: 20px;
+        >.review-item {
+            display: grid;
+            grid-template-columns: 1fr;
+            box-shadow: 0 6px 20px rgba(#000000, .1);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            .review-header {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                row-gap: 4px;
+                column-gap: 10px;
+                svg {
+                    grid-row: 1 / span 2;
+                }
+                >h4 {
+                    font-size: 1.2rem;
+                    font-weight: 600;
+                    color: $secondary;
+                }
+            }
+            .content {
+                font-size: 1.1rem;
+                font-weight: 400;
+                color: $secondary;
+                line-height: 16px;
+                margin-top: 8px;
+            }
+        }
+    }
+}

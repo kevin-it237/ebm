@@ -32,7 +32,7 @@ const Routes = () => {
         <Switch>
             {/* Private routes here */}
             <PrivateRoute exact path={"/"}>
-                {/* <Route exact component={Tracker} path={"/"} /> */}
+                {/* <Route exact component={Home} path={"/"} /> */}
             </PrivateRoute>
             
             {/* Normal routes here */}

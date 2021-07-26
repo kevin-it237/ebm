@@ -1,0 +1,11 @@
+@import '../../../../assets/styles/global.scss';
+
+.works {
+   display: grid;
+   grid-template-columns: repeat(3, minmax(50px, 1fr));
+   >img {
+       object-fit: contain;
+       width: 100%;
+       height: 100%;
+   }
+}
