@@ -1,31 +1,72 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import './cart.item.scss'
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 import cils from "../../../../assets/images/cils.jpg"
+import axios from "axios";
+import config from "../../../../config/index";
+import {calcul} from "../../../../config/helpers";
 
-const ProductItem = () => {
-    const [count, setCount] = useState(2)
+const ProductItem = (props, state) => {
+    const [count, setCount] = useState(props.quantity);
+    //const [price_discount, setPrice_discount] = useState("");
+    const {update,index,products}=props;
 
+    const Price = ()=> {return props.price - (props.price*props.discount)/100};
+    //setPrice_discount(Price)
     const setNumberOfItems = (op) => {
+        let newCount;
         if(op === "INC") {
-            setCount(count => count+1)
+            newCount=count+1;
+            setCount(newCount);
+            axios.post(config.baseUrl+'/user/cart/changequantity/'+props.id, {quantity: newCount})
+                .then(response=>{
+                })
+                .catch(error=>{
+                    notifyFailed(error);
+                })
         } else {
             if(count === 1) return;
-            setCount(count => count-1)
+            newCount=count-1;
+            setCount(newCount);
+            axios.post(config.baseUrl+'/user/cart/changequantity/'+props.id, {quantity: newCount})
+                .then(response=>{
+                })
+                .catch(error=>{
+                    notifyFailed(error);
+                })
         }
+        let currentProduct = products[index];
+        currentProduct.quantity = newCount;
+        products[index]=currentProduct;
+        update([...products])
+    }
+
+    const notifyFailed = (err)=>{
+        toast.error(err)
     }
 
     return (
         <div className="cart-item">
             <img src={cils} alt="" />
             <div className="product-infos">
-                <h4 className="name">Product name</h4>
-                <p className="price">$1100</p>
+                <h4 className="name">{props.name}</h4>
+                {props.discount !==0 ?
+                    <div className="price align-price">
+                        <p className="price-discount">{props.price} XAF</p>
+                        <p className="price">{props.price - (props.price*props.discount)/100} XAF</p>
+                    </div>
+                    :
+                    <div className="price align-price"><p className="price">{props.price} XAF</p></div>
+                }
                 <div className="items-counts">
                     <button onClick={() => setNumberOfItems("INC")}>+</button>
                     <button className="quantity">{count}</button>
                     <button onClick={() => setNumberOfItems("DEC")}>-</button>
                 </div>
             </div>
+            <ToastContainer/>
         </div>
     )
   

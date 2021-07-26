@@ -7,6 +7,7 @@
     justify-content: center;
     align-content: flex-start;
     background: url("../../../../assets/images/bottom-bg.svg") no-repeat bottom center;
+    overflow: auto;
 
     >.logo-box {
        padding: 15px 0;
@@ -112,4 +113,9 @@
             }
         }
     }
+}
+
+.errorMessage{
+  font-size: x-small;
+  color: red;
 }

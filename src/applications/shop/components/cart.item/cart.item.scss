@@ -19,9 +19,13 @@
            font-weight: 600;
        }
        >.price {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 400;
             color: $primary;
+       }
+       >.align-price{
+         display: flex;
+         justify-content: space-around;
        }
        >.items-counts {
            >button {
@@ -39,4 +43,8 @@
            }
        }
    }
+    .price-discount{
+      color: red;
+      text-decoration: line-through;
+    }
 }

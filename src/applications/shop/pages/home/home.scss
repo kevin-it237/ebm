@@ -94,4 +94,8 @@
         column-gap: 15px;
         row-gap: 5px;
     }
+  >.spinner_loader{
+    display: flex;
+    justify-content: space-around;
+  }
 }
