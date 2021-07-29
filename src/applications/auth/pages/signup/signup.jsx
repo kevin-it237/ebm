@@ -38,20 +38,32 @@ const SignUp = () => {
             setFormStep(2);
             return;
         }
-        const user = {
-            username : signupForm1.username,
-            firstname : signupForm1.firstname,
-            lastname : signupForm1.lastname,
-            email : signupForm1.email,
-            password : signupForm1.password,
-            password_confirmation : signupForm1.confirmation,
-            address : Form2.address,
-            phone : Form2.phone,
-            role : role
+       /* const user = {
+            username: signupForm1.username,
+            firstname: signupForm1.firstname,
+            lastname: signupForm1.lastname,
+            email: signupForm1.email,
+            password: signupForm1.password,
+            password_confirmation: signupForm1.confirmation,
+            address: Form2.address,
+            phone: Form2.phone,
+            role: role.role
         }
-        console.log("le role "+user.role)
+
+        */
+        console.log("le role "+role.role)
         setLoading(true)
-        axios.post(config.baseUrl+"/register", {...user})
+        axios.post(config.baseUrl+"/register", {
+            username: signupForm1.username,
+            firstname: signupForm1.firstname,
+            lastname: signupForm1.lastname,
+            email: signupForm1.email,
+            password: signupForm1.password,
+            password_confirmation: signupForm1.confirmation,
+            address: Form2.address,
+            phone: Form2.phone,
+            role: role.role
+        })
             .then(res =>{
                 history.push('/verification')
             })

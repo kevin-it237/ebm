@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom';
 import InputSearch from "../../../../app/components/inputs/input.search/input.search";
 import './search.scss' 
@@ -11,6 +12,8 @@ import Loader from "react-loader-spinner";
 
 const Search = () => {
 
+    const dispatch = useDispatch();
+    const selesct = useSelector((state)=>state.product.payload);
     const history = useHistory();
     const [allSearch, setAllSearch] = useState("");
     const [name, setName] = useState("");
@@ -24,15 +27,28 @@ const Search = () => {
             axios.post(config.baseUrl+'/institution/search', {name})
                 .then(response=>{
                     setAllSearch(response.data);
-                    console.log(response.data)
                 })
                 .catch(error=>{
-                    console.log("error "+error)
                 });
         }else {
             setAllSearch("");
         }
     }, [name]);
+
+    const onHandleClick = (event) =>{
+        event.preventDefault();
+        console.log(selesct)
+    };
+
+    const getIdentity = (name, id) =>{
+        dispatch ({
+            type: 'SEARCH_INSTITUTE',
+            payload: {
+                'name': name,
+            'identity': id}
+        });
+        history.push('/institute');
+    }
 
     const notifyFailed = (err)=>{
         toast.error(err)
@@ -52,7 +68,7 @@ const Search = () => {
             {allSearch.length !==0 ?
             <div className="search-results">
                 {Object.keys(allSearch).map((search, index)=>(
-                    <div key={index} className="result">
+                    <div key={index} className="result" onClick={(event)=>{onHandleClick(event); getIdentity(allSearch[search]['username'], allSearch[search]['id'])}}>
                         <img src={allSearch[search]['logo']} alt={allSearch[search]['username']} />
                         <div>
                             <h4 className="name">{allSearch[search]['username']}</h4>

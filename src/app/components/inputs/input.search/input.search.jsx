@@ -32,7 +32,8 @@ const InputText = React.forwardRef(({
         className={`input-search ${size ? `input-text-${size}` : ''} 
         ${className ? className : ''} ${variant ? `input-text-${variant}` : ''}
         ${focus ? `input-text-focus` : ''}`}
-        name={name} 
+        name={name}
+        required
         value={value} 
         placeholder={placeholder} 
         onChange={onChange} 

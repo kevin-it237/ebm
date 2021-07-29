@@ -93,7 +93,7 @@ const Home = () => {
                 <h2>Produits</h2>
                 <span></span>
             </div>
-            {parent_services.length !== 0 ?
+            {products.length !== 0 ?
             <div className="products-wrapper">
                 {Object.keys(products).map((product, index)=>(
                     <div key={index}>

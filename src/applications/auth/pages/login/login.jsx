@@ -36,7 +36,6 @@ const Login = () => {
             const token = `Bearer ${response.data.acces_token}`;
             setToken(token);
             response.headers.Authorization = `Bearer ${JSON.stringify(response.data.acces_token)}`;
-            console.log("ifjkef")
             history.push('/home');
         }).catch(error=>{
             console.log(error);

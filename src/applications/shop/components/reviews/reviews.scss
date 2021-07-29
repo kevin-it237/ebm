@@ -1,0 +1,67 @@
+@import '../../../../assets/styles/global.scss';
+
+.reviews {
+    overflow: auto;
+    .reviews-header {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      row-gap: 8px;
+      column-gap: 10px;
+        overflow: auto;
+      >svg {
+          grid-row: 1 / span 2;
+          width: 22px;
+          height: 22px;
+      }
+    }
+    .text-reviews {
+        display: flex;
+        flex-direction: column-reverse;
+        margin-top: 20px;
+        >.review-item {
+            display: grid;
+            grid-template-columns: 1fr;
+            box-shadow: 0 6px 20px rgba(#000000, .1);
+            padding: 15px;
+            word-break: break-word;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            .review-header {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                row-gap: 4px;
+                column-gap: 10px;
+                svg {
+                    grid-row: 1 / span 2;
+                }
+                >h4 {
+                    font-size: 1.2rem;
+                    font-weight: 600;
+                    color: $secondary;
+                }
+            }
+            .content {
+                font-size: 1.1rem;
+                font-weight: 400;
+                color: $secondary;
+                line-height: 16px;
+                margin-top: 8px;
+            }
+        }
+    }
+    .aucun_comment{
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: $secondary;
+    }
+}
+
+.spinner_load_search{
+    display: flex;
+    margin-top: 1px;
+    justify-content: space-around;
+    align-content: center;
+}

@@ -1,0 +1,49 @@
+@import '../../../../assets/styles/global.scss';
+
+.services {
+   .service-group {
+    >.title-wrapper {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        cursor: pointer;
+        svg {
+            width: 10px;
+        }
+        >h3 {
+            color: $primary;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-left: 7px;
+        }
+    }
+    >.items {
+        margin-left: 30px;
+        animation: listAppear .25s ease-out;
+        >p {
+            font-size: 1rem;
+            color: $secondary;
+            margin: 12px 0;
+        }
+        @keyframes listAppear {
+            from { opacity: 0; height: 0;}
+            to { opacity: 1; height: 100%;}
+        }
+    }
+    &.actived {
+        .title-wrapper svg {
+            transform: rotate(90deg);
+        }
+    }
+   }
+
+   .button-wrapper {
+       margin-top: 40px;
+   }
+
+  .spinner_load_search{
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+  }
+}
