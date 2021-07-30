@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
+import { Link } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
 import InputSearch from "../../../../app/components/inputs/input.search/input.search";
 import './search.scss' 
@@ -20,7 +21,7 @@ const Search = () => {
 
     useEffect(()=>{
         searchFilter(name);
-    }, [name]);
+    }, []);
 
     const searchFilter = useCallback((name)=>{
         if (name.length !== 0){
@@ -47,7 +48,6 @@ const Search = () => {
                 'name': name,
             'identity': id}
         });
-        history.push('/institute');
     }
 
     const notifyFailed = (err)=>{
@@ -68,13 +68,13 @@ const Search = () => {
             {allSearch.length !==0 ?
             <div className="search-results">
                 {Object.keys(allSearch).map((search, index)=>(
-                    <div key={index} className="result" onClick={(event)=>{onHandleClick(event); getIdentity(allSearch[search]['username'], allSearch[search]['id'])}}>
+                    <Link to={"/institute/" + allSearch[search]['username']} key={index} className="result" >
                         <img src={allSearch[search]['logo']} alt={allSearch[search]['username']} />
                         <div>
                             <h4 className="name">{allSearch[search]['username']}</h4>
                             <p className="address">{allSearch[search]['address']}</p>
                         </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
                 :<div className="spinner_load_search">

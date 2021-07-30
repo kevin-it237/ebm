@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './institute.scss'
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux'
 import { ReactComponent as Back } from "../../../../assets/icons/back.svg"
-//import StarsRating from "../../components/stars.rating/stars.rating"
-import Rating from "@material-ui/lab/Rating";
-import { makeStyles } from "@material-ui/core/styles";
+import {useParams} from "react-router-dom";
 import Reviews from "../../components/reviews/reviews"
 import Services from "../../components/services/services"
 import Localization from "../../components/localization/localization"
@@ -16,10 +13,12 @@ import config from "../../../../config/index";
 import {rate} from "../../../../config/helpers";
 import StarsRating from "../../components/stars.rating/stars.rating";
 
-const Institute = () => {
+const Institute = (props) => {
+    const params = useParams();
     const history = useHistory();
-    const select = useSelector((state)=>state.product.payload.name);
-    const identity = useSelector((state)=>state.product.payload.identity);
+    const select = params.slug;
+
+    
 
     const [content, setContent] = useState("Revues");
     const [institut, setInstitut] = useState([]);
@@ -27,18 +26,12 @@ const Institute = () => {
     const [star, setStar] = useState(0);
     const [total, setTotal] = useState(0);
     const [each, setEach] = useState([]);
-    const [vote, setVote] = useState([]);
 
     useEffect(()=>{
         getInfoInstitut();
         getStarVote();
         getEachVote();
-        let tab = [];
-        for (let i =0; i<each.length; i++){
-            tab[i] = Object.values(each[i]).length;
-        }
-        setVote(tab)
-    },[]);
+    }, []);
 
     const MENU_ITEMS = ["Revues", "Services", "Localisation", "Oeuvres"];
 
@@ -55,7 +48,7 @@ const Institute = () => {
                 console.log(error)
             })
 
-        axios.get(config.baseUrl+"/institution/show/service/"+identity)
+        axios.get(config.baseUrl+"/institution/show/service/"+select)
             .then(response=>{
                 setServices(response.data.message)
             })
@@ -63,9 +56,8 @@ const Institute = () => {
                 console.log(error)
             })
     }
-
     const getStarVote = () =>{
-        axios.get(config.baseUrl+'/user/rate/show/'+identity)
+        axios.get(config.baseUrl+'/institution/rate/show/'+select)
             .then(response=>{
                 setStar(rate(response.data.message));
                 setTotal(response.data.message.length)
@@ -75,10 +67,8 @@ const Institute = () => {
             })
     }
 
-    console.log(each)
-
     const getEachVote = () =>{
-        axios.get(config.baseUrl+'/institution/review/rate/'+identity)
+        axios.get(config.baseUrl+'/institution/review/rate/'+select)
             .then(response=>{
                 setEach(response.data.message);
             })
@@ -86,6 +76,8 @@ const Institute = () => {
                 console.log(error)
             })
     }
+
+    console.log(each)
 
     let bottomContent = (<Reviews/>);
     if(content === "Revues") {
@@ -109,15 +101,15 @@ const Institute = () => {
 
             <div className="institute-content">
                 <div className="owner-infos">
-                    <img className="avatar" src={institut.logo} alt={institut.username} />
+                    <img className="avatar" alt={institut.username} />
                     <div>
-                        <h3 className="name">{institut.type}</h3>
+                        <h3 className="name">{institut.username}</h3>
                         <p className="address">{institut.address}</p>
                     </div>
                 </div>
 
                 <p className="description">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    {institut.description}
                 </p>
 
                 <div className="stats">
@@ -125,14 +117,17 @@ const Institute = () => {
                         <h2>{star}</h2>
                         <p>{total} ratings</p>
                     </div>
-                    <div className="stars-group">
-                        <StarsRating showNumberOfVotes={true} showProgresBar={true} stars={5} total={total} votes={vote[5]}/>
-                        <StarsRating showNumberOfVotes={true} showProgresBar={true} stars={4} total={total} votes={vote[4]}/>
-                        <StarsRating showNumberOfVotes={true} showProgresBar={true} stars={3} total={total} votes={vote[3]}/>
-                        <StarsRating showNumberOfVotes={true} showProgresBar={true} stars={2} total={total} votes={vote[2]}/>
-                        <StarsRating showNumberOfVotes={true} showProgresBar={true} stars={1} total={total} votes={vote[1]}/>
-                        <StarsRating showNumberOfVotes={true} showProgresBar={true} stars={0} total={total} votes={vote[0]}/>
-                    </div>
+                    {
+                        each.length !==0?
+                        <div className="stars-group">
+                            {each.map((vote, index)=>(
+                                <StarsRating showNumberOfVotes={true} showProgresBar={true} stars={index} total={total} votes={vote}/>
+                            ))  
+                            }
+                        </div>
+                        :
+                        <div className="aucun-vote">Aucun vote</div>
+                    }
                 </div>
 
                 <div className="menu">

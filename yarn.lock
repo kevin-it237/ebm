@@ -1390,7 +1390,7 @@
   dependencies:
     "@babel/runtime" "^7.4.4"
 
-"@material-ui/lab@^4.0.0-alpha.56":
+"@material-ui/lab@^4.0.0-alpha.56", "@material-ui/lab@latest":
   "integrity" "sha512-fadlYsPJF+0fx2lRuyqAuJj7hAS1tLDdIEEdov5jlrpb5pp4b+mRDUqQTUxi4inRZHS1bEXpU8QWUhO6xX88aA=="
   "resolved" "https://registry.npmjs.org/@material-ui/lab/-/lab-4.0.0-alpha.60.tgz"
   "version" "4.0.0-alpha.60"
@@ -9561,6 +9561,11 @@
   "version" "4.0.0"
   dependencies:
     "prop-types" "^15.7.2"
+
+"react-navigator-online@^1.0.7":
+  "integrity" "sha512-D1zjqWSxIvq4mkQSsTJqYE44zgt8FAPtIK4NSxdIBQa92k97eyyUIoczFODZh7XH9esUGcvKoE9PzjtriiYtFA=="
+  "resolved" "https://registry.npmjs.org/react-navigator-online/-/react-navigator-online-1.0.7.tgz"
+  "version" "1.0.7"
 
 "react-promise-loader@^1.1.2":
   "integrity" "sha512-HEfUoa1uIEU/ClwSeXqmyX/Vi0O8Cc3AgeRuIWtXdu/j3VLlM1xnf6xJldO4POIqn7sMisVziBjWVpyilCPORQ=="
