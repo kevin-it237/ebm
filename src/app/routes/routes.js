@@ -16,6 +16,7 @@ import Search from '../../applications/shop/pages/search/search'
 import AdvancedSearch from '../../applications/shop/pages/advanced.search/advanced.search'
 import Cart from '../../applications/shop/pages/cart/cart'
 import Institute from '../../applications/shop/pages/institute/institute'
+import Expert from '../../applications/shop/pages/expert/expert'
 import {getToken} from "../../config/helpers";
 import axios from "axios";
 
@@ -46,6 +47,9 @@ const Routes = () => {
                     <Route exact={true} component={Cart} path={'/cart'} />
                     <Route exact={true} component={Search} path={'/search'} />
                     <Route exact={true} component={Institute} path={'/institute'} />
+                    <Route path={'/institute/:slug'} component={Institute} />
+                    <Route exact={true} component={Expert} path={'/expert'} />
+                    <Route path={'/expert/:slug'} component={Expert} />
 
                     <Layout>
                         <Route exact={true} component={Home} path={'/home'} />
