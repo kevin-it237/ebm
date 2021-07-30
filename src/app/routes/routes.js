@@ -16,6 +16,7 @@ import Search from '../../applications/shop/pages/search/search'
 import AdvancedSearch from '../../applications/shop/pages/advanced.search/advanced.search'
 import Cart from '../../applications/shop/pages/cart/cart'
 import Institute from '../../applications/shop/pages/institute/institute'
+import Conversation from '../../applications/shop/pages/conversation/conversation'
 import {getToken} from "../../config/helpers";
 import axios from "axios";
 
@@ -32,7 +33,7 @@ const Routes = () => {
         <Switch>
             {/* Private routes here */}
             <PrivateRoute exact path={"/"}>
-                {/* <Route exact component={Tracker} path={"/"} /> */}
+                {/* <Route exact component={Home} path={"/"} /> */}
             </PrivateRoute>
             
             {/* Normal routes here */}
@@ -46,6 +47,7 @@ const Routes = () => {
                 <Route exact={true} component={Cart} path={'/cart'} />
                 <Route exact={true} component={Search} path={'/search'} />
                 <Route exact={true} component={Institute} path={'/institute'} />
+                <Route exact={true} component={Conversation} path={'/conversation'} />
                 
                 <Layout>
                     <Route exact={true} component={Home} path={'/home'} />

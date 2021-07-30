@@ -26,7 +26,6 @@ $input-text-color: $grey-500;
         border: $input-border-size solid $primary;
     }
     &::placeholder {
-        text-transform: capitalize;
         opacity: 1;
         color: $input-placeholder-color;
     }
