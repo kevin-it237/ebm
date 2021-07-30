@@ -17,6 +17,8 @@ import AdvancedSearch from '../../applications/shop/pages/advanced.search/advanc
 import Cart from '../../applications/shop/pages/cart/cart'
 import Institute from '../../applications/shop/pages/institute/institute'
 import Conversation from '../../applications/shop/pages/conversation/conversation'
+import RateExpert from '../../applications/shop/pages/rate/rate'
+
 import {getToken} from "../../config/helpers";
 import axios from "axios";
 
@@ -48,6 +50,7 @@ const Routes = () => {
                 <Route exact={true} component={Search} path={'/search'} />
                 <Route exact={true} component={Institute} path={'/institute'} />
                 <Route exact={true} component={Conversation} path={'/conversation'} />
+                <Route exact={true} component={RateExpert} path={'/rate-expert'} />
                 
                 <Layout>
                     <Route exact={true} component={Home} path={'/home'} />

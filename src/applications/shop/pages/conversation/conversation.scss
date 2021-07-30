@@ -130,6 +130,11 @@
         }
         .input-text {
             border: none !important;
+            outline: none !important;
+            &:focus {
+                border: none;
+                outline: none !important;
+            }
         }
     }
 }
