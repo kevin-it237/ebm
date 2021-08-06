@@ -94,16 +94,16 @@ const Home = () => {
                 <span></span>
             </div>
             {products.length !== 0 ?
-            <div className="products-wrapper">
-                {Object.keys(products).map((product, index)=>(
-                    <div key={index}>
-                        <ProductItem id={products[product]['id']}
-                                     name={products[product]['name_fr']}
-                                     price={products[product]['price']}
-                                     discount={products[product]['discount']}/>
-                    </div>
-                ))}
-            </div>
+                <div className="products-wrapper">
+                    {Object.keys(products).map((product, index)=>(
+                        <div key={index}>
+                            <ProductItem id={products[product]['id']}
+                                         name={products[product]['name_fr']}
+                                         price={products[product]['price']}
+                                         discount={products[product]['discount']}/>
+                        </div>
+                    ))}
+                </div>
                 :
                 <div className="spinner_loader">
                     <Loader type="Circles" height={70} width={70} color="#6B0C72"/>

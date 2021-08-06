@@ -182,11 +182,10 @@ const AdvancedSearch = () => {
     }
 
     const getSelectService = (name) => {
-        setAllInstitutLocation("");
-        setAllInstitut("");
+        setSearch([]);
         axios.post(config.baseUrl + '/user/service/search', {name: name})
             .then(response => {
-                setAllSearch(response.data.message);
+                console.log(response.data.message);
                 setSearch(response.data.message);
             })
             .catch(error => {
@@ -195,6 +194,22 @@ const AdvancedSearch = () => {
     }
 
     const getServiceAround = () => {
+        let location = [lat, long];
+        location = location.join(",")
+        if (distance !== 0) {
+            axios.post(config.baseUrl + '/user/service/search',
+                {around: distance, location: location})
+                .then(response => {
+                    setServiceAround(response.data.message)
+                    setSearch(response.data.message)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
+    }
+
+    const getServiceByNameDistance = () => {
         let location = [lat, long];
         location = location.join(",")
         if (distance !== 0) {
@@ -234,9 +249,7 @@ const AdvancedSearch = () => {
     }
 
     const getServiceByLike = () => {
-        setAllSearch("");
-        setAllInstitutLocation("");
-        setAllInstitut("");
+        setSearch([]);
         axios.post(config.baseUrl + '/institution/rate/show', {rating: star})
             .then(response => {
                 setRateSearch(response.data.message)
@@ -250,17 +263,26 @@ const AdvancedSearch = () => {
 
     const saveCommand = (event) => {
         event.preventDefault();
-        if (distance !== 0 && recherche !== "" && star !== 0) {
+        console.log('0')
+        if (distance !== 0 && recherche !== "" && star !== null) {
+            console.log('1')
             getServiceByAllParameter();
         } else if (distance !== 0 && star === 0 && recherche ==="") {
+            console.log('uhjfkenfeifek')
             getServiceAround();
-        }else if (star !== 0 && distance === 0 && recherche === ""){
+        }else if (star !== null && distance === 0 && recherche === ""){
             getServiceByLike();
+        }else if (star === null && distance === 0 && recherche !== ""){
+            getSelectService();
+        }else if (star === 0 && distance !== 0 && recherche !== ""){
+            getSelectService();
         }
         setShowFilter(false);
     }
 
-    console.log(search)
+    console.log(distance)
+    console.log(star)
+    console.log(recherche)
 
     return (
         <>
@@ -299,49 +321,6 @@ const AdvancedSearch = () => {
                 {
                     display === "LIST" ?
                         <div className="search-results">
-                            {/*Object.keys(search).map((sear, index) => (
-                                <div key={index} className="result">
-                                    <img src={img} alt=""/>
-                                    <div>
-                                        <h4 className="name"> {search[sear].username}</h4>
-                                        <p className="address">{search[sear].institution_address}</p>
-                                    </div>
-                                </div>
-                            ))*/}
-                            {/*Object.keys(allInstitut).map((search, index) => (
-                                <div key={index} className="result">
-                                    <img src={img} alt=""/>
-                                    <div>
-                                        <h4 className="name"> {allInstitut[search].username}</h4>
-                                        <p className="address">{allInstitut[search].address}</p>
-                                    </div>
-                                </div>
-                            ))*/}
-                            {/*Object.keys(allInstitutLocation).map((search, index) => (
-                                <div key={index} className="result">
-                                    <img src={img} alt=""/>
-                                    <div>
-                                        <h4 className="name"> {allInstitutLocation[search].username}</h4>
-                                        <p className="address">{allInstitutLocation[search].address}</p>
-                                    </div>
-                                </div>
-                            ))*/}
-                            {/*Object.keys(rateSearch).map((search, index) => (
-                                <div key={index} className="result">
-                                    <img src={img} alt=""/>
-                                    <div style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center'
-                                    }}>
-                                        <div>
-                                            <h4 className="name"> {rateSearch[search].institution.username}</h4>
-                                            <p className="address">{rateSearch[search].institution.address}</p>
-                                        </div>
-                                        <Rating value={rateSearch[search].rating} precision={0.5}/>
-                                    </div>
-                                </div>
-                            ))*/}
                             {Object.keys(search).map((sear, index) => (
                                 <div key={index} className="result">
                                     <img src={img} alt=""/>
@@ -351,14 +330,17 @@ const AdvancedSearch = () => {
                                         alignItems: 'center'
                                     }}>
                                         <div style={{display: 'flex', flexDirection: 'column'}}>
-                                            <h4 className="name"> {search[sear].username}</h4>
-                                            <p className="address">{search[sear].institution_address}</p>
+                                            {search[sear].username ? <h4 className="name"> {search[sear].username}</h4> :
+                                                search[sear].institution.username ? <h4 className="name"> {search[sear].institution.username}</h4>: ""}
+                                            {search[sear].institution_address ? <p className="address">{search[sear].institution_address}</p> :
+                                                search[sear].institution.address ? <p className="address">{search[sear].institution.address}</p>:""}
                                         </div>
-                                        {search[sear].distance_f ? <p className="address">{search[sear].distance_f} {unit}</p> : ""}
+                                        {search[sear].distance_f ? <p className="address">{search[sear].distance_f} {unit}</p> :
+                                            search[sear].rating ? <Rating value={search[sear].rating} precision={0.5}/> : ""}
                                     </div>
                                 </div>
                             ))}
-                            {Object.keys(serviceByAllParameter).map((search, index) => (
+                            {/*Object.keys(serviceByAllParameter).map((search, index) => (
                                 <div key={index} className="result">
                                     <img src={img} alt=""/>
                                     <div style={{
@@ -373,7 +355,7 @@ const AdvancedSearch = () => {
                                         <p className="address">{serviceByAllParameter[search].distance_f} {unit}</p>
                                     </div>
                                 </div>
-                            ))}
+                            ))*/}
                         </div>
                         :
                         <div>
