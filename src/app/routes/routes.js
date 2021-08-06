@@ -13,9 +13,11 @@ import Verification from '../../applications/auth/pages/signup/verification'
 import Layout from '../components/layout/layout';
 import Home from '../../applications/shop/pages/home/home'
 import Search from '../../applications/shop/pages/search/search'
+import ProductSearch from '../../applications/shop/pages/product.search/search'
 import AdvancedSearch from '../../applications/shop/pages/advanced.search/advanced.search'
 import Cart from '../../applications/shop/pages/cart/cart'
 import Institute from '../../applications/shop/pages/institute/institute'
+import MyProfile from '../../applications/shop/pages/myprofile/myprofile'
 import Conversation from '../../applications/shop/pages/conversation/conversation'
 import RateExpert from '../../applications/shop/pages/rate/rate'
 
@@ -23,7 +25,7 @@ import {getToken} from "../../config/helpers";
 import axios from "axios";
 
 /**
- * @description this is the main routes for the main application src/app. 
+ * @description this is the main routes for the main application src/app.
  */
 const Routes = () => {
 
@@ -37,7 +39,7 @@ const Routes = () => {
             <PrivateRoute exact path={"/"}>
                 {/* <Route exact component={Home} path={"/"} /> */}
             </PrivateRoute>
-            
+
             {/* Normal routes here */}
             <NormalRoute exact>
                 <Route exact={true} component={WelCome} path={'/welcome'} />
@@ -48,10 +50,12 @@ const Routes = () => {
 
                 <Route exact={true} component={Cart} path={'/cart'} />
                 <Route exact={true} component={Search} path={'/search'} />
+                <Route exact={true} component={ProductSearch} path={'/products'} />
                 <Route exact={true} component={Institute} path={'/institute'} />
+                <Route exact={true} component={MyProfile} path={'/profile'} />
                 <Route exact={true} component={Conversation} path={'/conversation'} />
                 <Route exact={true} component={RateExpert} path={'/rate-expert'} />
-                
+
                 <Layout>
                     <Route exact={true} component={Home} path={'/home'} />
                     <Route exact={true} component={AdvancedSearch} path={'/advanced-search'} />

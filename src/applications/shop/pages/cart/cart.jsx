@@ -3,7 +3,7 @@ import {ReactComponent as Back} from "../../../../assets/icons/back_arrow.svg"
 import {useHistory} from 'react-router-dom';
 import CardItem from "../../components/cart.item/cart.item"
 import Button from "../../../../app/components/buttons/button/button";
-import Modal from "../../../../app/components/modal/modal"
+import Modal from "../../../../app/components/modal/modal";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from "react-loader-spinner";
 import './cart.scss'
@@ -97,9 +97,6 @@ const Cart = () => {
                 <Modal hide={() => setShowModal(false)}>
                     <div className="cart-modal-content">
                         <h3>Checkout</h3>
-                        <textarea placeholder="Enregistrer votre commentaire..." name="comment" rows="7"
-                                  onChange={onChange}
-                                  value={comment}></textarea>
                         <Button size="sm" onClick={() => {
                             saveCommand();
                             setShowModal(false)
