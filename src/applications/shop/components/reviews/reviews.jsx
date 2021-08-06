@@ -7,7 +7,6 @@ import Rating from "@material-ui/lab/Rating";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import config from "../../../../config/index";
-import {useSelector} from "react-redux";
 import Loader from "react-loader-spinner";
 
 const useStyles = makeStyles((theme) => ({

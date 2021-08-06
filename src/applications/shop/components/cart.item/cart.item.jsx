@@ -10,8 +10,6 @@ const ProductItem = (props, state) => {
     const [count, setCount] = useState(props.quantity);
     const {update,index,products}=props;
 
-    const Price = ()=> {return props.price - (props.price*props.discount)/100};
-    //setPrice_discount(Price)
     const setNumberOfItems = (op) => {
         let newCount;
         if(op === "INC") {
@@ -55,7 +53,7 @@ const ProductItem = (props, state) => {
                         <p className="price">{props.price - (props.price*props.discount)/100} XAF</p>
                     </div>
                     :
-                    <div className="price align-price"><p className="price">{props.price} XAF</p></div>
+                    <div className="price"><p className="price">{props.price} XAF</p></div>
                 }
                 <div className="items-counts">
                     <button onClick={() => setNumberOfItems("INC")}>+</button>

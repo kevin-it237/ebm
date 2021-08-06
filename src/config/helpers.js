@@ -54,7 +54,7 @@ export const rate = (tab) =>{
             som += index.rating
         ))
         const x = som/tab.length;
-        return x.toFixed(2);
+        return x.toFixed(1);
     }else{
         return 0;
     }

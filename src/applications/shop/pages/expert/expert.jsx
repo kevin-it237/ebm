@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './expert.scss'
 import { useHistory, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux'
-import NavigatorOnline from 'react-navigator-online'
 import { ReactComponent as Back } from "../../../../assets/icons/back.svg"
 import Reviews from "../../components/reviews_expert/reviews_expert"
 import Services from "../../components/services/services"
@@ -25,6 +23,7 @@ const Expert = () => {
     const [total, setTotal] = useState(0);
     const [each, setEach] = useState([]);
     const [messageOnline, setmessageOnline] = useState("");
+
 
     useEffect(()=>{
         getInfoExpert();
@@ -68,7 +67,6 @@ const Expert = () => {
             })
     }
 
-    console.log("err "+messageOnline)
     const showStatus=(status)=>{
         if (navigator.onLine) {
             console.log(navigator.onLine)
@@ -79,7 +77,7 @@ const Expert = () => {
         }
     }
 
-    console.log(each)
+    console.log(expert)
 
     const getEachVote = () =>{
         axios.get(config.baseUrl+'/expert/review/rate/'+select)
@@ -95,7 +93,7 @@ const Expert = () => {
     if(content === "Revues") {
         bottomContent = (<Reviews/>);
     } else if(content === "Services") {
-        bottomContent = (<Services services={services}/>);
+        bottomContent = (<Services services={services} role="expert" expert={select}/>);
     } else {
         bottomContent = (<Works />);
     }
@@ -105,7 +103,7 @@ const Expert = () => {
             <div className="header">
                 <div className="header-title">
                     <Back onClick={() => history.goBack()} />
-                    <h4>{select}</h4>
+                    <h4>Profil Expert</h4>
                 </div>
             </div>
 
@@ -131,7 +129,7 @@ const Expert = () => {
                         each.length !==0?
                         <div className="stars-group">
                             {each.map((vote, index)=>(
-                                <StarsRating showNumberOfVotes={true} showProgresBar={true} stars={index} total={total} votes={vote}/>
+                                <StarsRating key={index} showNumberOfVotes={true} showProgresBar={true} stars={index+1} total={total} votes={vote}/>
                             ))  
                             }
                         </div>

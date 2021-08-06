@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './app/app';
 import reportWebVitals from './reportWebVitals';
 import './assets/styles/index.styles.scss'
+import 'semantic-ui-css/semantic.min.css'
 
 
 import store from './redux/store';

@@ -15,7 +15,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 30vh;
+    height: 40vh;
     background-color: $white;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
@@ -34,5 +34,20 @@
         width: 60px;
         background-color: $grey-300;
         border-radius: 3px;
+    }
+
+    .section-title {
+        >h2 {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: $primary;
+        }
+        >span {
+            display: block;
+            height: 2px;
+            margin-top: 5px;
+            width: 30px;
+            background-color: $primary;
+        }
     }
 }

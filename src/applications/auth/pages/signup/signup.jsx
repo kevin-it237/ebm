@@ -82,7 +82,7 @@ const SignUp = () => {
                 password_confirmation: signupForm1.confirmation,
                 address: Form2.address,
                 phone: Form2.phone,
-                role: role.role,
+                role: role.role.toLowerCase(),
             };
         }
 
@@ -91,7 +91,8 @@ const SignUp = () => {
         setLoading(true)
         axios.post(config.baseUrl+"/register", user)
             .then(res =>{
-                history.push('/verification')
+                console.log(res.data)
+                history.push('/verification/'+user.role.toLowerCase())
             })
             .catch(err=>{
                 console.log(err.response.data)

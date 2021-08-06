@@ -18,7 +18,6 @@ const Institute = (props) => {
     const history = useHistory();
     const select = params.slug;
 
-    
 
     const [content, setContent] = useState("Revues");
     const [institut, setInstitut] = useState([]);
@@ -48,14 +47,18 @@ const Institute = (props) => {
                 console.log(error)
             })
 
+        console.log(institut)
         axios.get(config.baseUrl+"/institution/show/service/"+select)
             .then(response=>{
                 setServices(response.data.message)
+                console.log(response)
             })
             .catch(error=>{
                 console.log(error)
             })
     }
+
+    console.log(services)
     const getStarVote = () =>{
         axios.get(config.baseUrl+'/institution/rate/show/'+select)
             .then(response=>{
@@ -77,13 +80,11 @@ const Institute = (props) => {
             })
     }
 
-    console.log(each)
-
     let bottomContent = (<Reviews/>);
     if(content === "Revues") {
         bottomContent = (<Reviews/>);
     } else if(content === "Services") {
-        bottomContent = (<Services services={services}/>);
+        bottomContent = (<Services services={services} role="institut" select={select}/>);
     } else if(content === "Localisation") {
         bottomContent = (<Localization localization={institut.location} address={institut.address}/>);
     } else {
@@ -121,7 +122,7 @@ const Institute = (props) => {
                         each.length !==0?
                         <div className="stars-group">
                             {each.map((vote, index)=>(
-                                <StarsRating showNumberOfVotes={true} showProgresBar={true} stars={index} total={total} votes={vote}/>
+                                <StarsRating showNumberOfVotes={true} showProgresBar={true} stars={index+1} total={total} votes={vote}/>
                             ))  
                             }
                         </div>

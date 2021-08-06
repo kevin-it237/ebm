@@ -8,6 +8,7 @@ import axios from "axios";
 import config from "../../../../config/index";
 import {useSelector} from "react-redux";
 import Loader from "react-loader-spinner";
+import {useParams} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -20,7 +21,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Reviews = () => {
-    const identity = useSelector((state)=>state.product.payload.identity);
+    const params = useParams();
+
+    const identity = params.slug;
+    //const identity = useSelector((state)=>state.product.payload.identity);
     const [reviews, setReviews] = useState([]);
     const [star, setStar] = useState(0);
 
@@ -34,32 +38,6 @@ const Reviews = () => {
             })
     }, [])
 
-    const onKeyPress = (event)=>{
-        const value = event.target.value;
-        if (event.key === 'Enter'){
-            axios.post(config.baseUrl+'/expert/review/store/'+identity, {review: value, rating: star})
-                .then(response=>{
-                    console.log("response "+response.response.data)
-                })
-                .catch(error=>{
-                    console.log(error)
-                })
-            axios.get(config.baseUrl+'/expert/review/show/'+identity)
-                .then(response=>{
-                    setReviews(response.data.message);
-                })
-                .catch(error=>{
-                    console.log(error)
-                })
-
-            event.target.value = "";
-            setStar(0);
-        }
-    }
-
-    const onClick = (event)=>{
-        event.preventDefault();
-    }
 
     return (
         <div className="reviews_expert">

@@ -1,0 +1,66 @@
+@import '../../../../assets/styles/global.scss';
+
+#rate-expert {
+    >.header {
+        background-color: $primary;
+        height: 70px;
+        padding: 20px 25px;
+        >.top {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            .title {
+                text-transform: capitalize;
+                color: $white;
+                font-size: 1.5rem;
+                margin-left: 10px;
+            }
+            .check-icon {
+                width: 20px;
+                margin-left: auto;
+                polygon { fill: $white !important ;}
+            }
+            .close {
+                width: 20px;
+                path { fill: $white !important ;}
+            }
+        }
+        .idInput {
+            background-color: transparent !important;
+            border: none !important;
+            font-weight: 400;
+            font-size: 1.4rem;
+        }
+    }
+
+    >.rate-content {
+        padding: 35px 25px 25px;
+        >.box {
+            min-height: 140px;
+            >h5 {
+                font-size: 1.5rem;
+                font-weight: 600;
+                margin-bottom: 15px;
+                color: $secondary;
+            }
+            .input-comment {
+                background-color: transparent !important;
+                border: none !important;
+                font-weight: 400;
+                font-size: 1.4rem;
+                padding: 10px 0 !important;
+                width: 100%;
+                outline: none !important;
+                font-family: inherit;
+                &:focus {
+                    border: none;
+                    outline: none !important;
+                }
+                &::placeholder {
+                    font-size: 1.1rem;
+                    color: $grey-300;
+                }
+            }
+        }
+    }
+}

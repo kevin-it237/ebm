@@ -14,8 +14,6 @@ import config from "../../../../config/index";
 const Cart = () => {
     const history = useHistory()
     const [showModal, setShowModal] = useState(false);
-    const [Total, setTotal] = useState("");
-    const [totalProd, settotalProd] = useState("");
     const [products, setProduct] = useState("");
     const [comment, setComment] = useState("");
 
@@ -40,6 +38,7 @@ const Cart = () => {
         }
     }
 
+    console.log(products)
     const saveCommand = () => {
         axios.post(config.baseUrl + '/user/commande/register', {comment: comment})
             .then(response => {
@@ -69,13 +68,11 @@ const Cart = () => {
                 {products.length !== 0 ?
                     <div className="cart-items">
                         {Object.keys(products).map((product, index) => (
-                            <SwipeToDelete key={index}>
-                                <CardItem id={products[product]['id']} products={products}
-                                          name={products[product]['name']}
-                                          price={products[product]['price']}
-                                          quantity={products[product]['quantity']}
-                                          discount={products[product]['discount']} update={setProduct} index={index}/>
-                            </SwipeToDelete>
+                            <CardItem id={products[product]['id']} products={products}
+                                      name={products[product]['name']}
+                                      price={products[product]['price']}
+                                      quantity={products[product]['quantity']}
+                                      discount={products[product]['discount']} update={setProduct} index={index}/>
                         ))}
                     </div> : <div className="spinner_load">
                         <Loader type="Circles" height={90} width={90} color="#6B0C72"/>
@@ -99,7 +96,9 @@ const Cart = () => {
                         <h3>Valider la Commande</h3>
                         <textarea placeholder="Enregistrer votre commentaire..." name="comment" rows="7"
                                   onChange={onChange}
-                                  value={comment}></textarea>
+                                  value={comment}>
+
+                        </textarea>
                         <Button size="sm" onClick={() => {
                             saveCommand();
                             setShowModal(false)

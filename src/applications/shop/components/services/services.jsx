@@ -2,28 +2,87 @@ import React, { useState, useEffect } from 'react';
 import { ReactComponent as FilledArrow } from "../../../../assets/icons/filled_arrow.svg";
 import Button from "../../../../app/components/buttons/button/button"
 import './services.scss';
-import index from "../../../../config";
-import {useSelector} from "react-redux";
 import axios from "axios";
-import {convertNwSeToNeSw} from "google-map-react";
+import Select from 'react-select'
 import Loader from "react-loader-spinner";
+import Modal from "../../../../app/components/modal/modal";
+import config from "../../../../config";
+import {useParams} from "react-router-dom";
 
 const Services = (props) => {
-    
+
+    const param = useParams();
+    const select = param.slug;
+
     const [services, setServices] = useState([]);
-    const [selected, setSelected] = useState([]);
+    const [selectService, setselectService] = useState([]);
+    const [services_order, setService_Order] = useState([]);
+    const [comment, setComment] = useState([]);
+    const [showModal, setShowModal] = useState(false);
     const [activeServiceIndex, setActiveServiceIndex] = useState(-1);
 
-
+    const role = props.role;
     useEffect(() => {
-        setServices(props.services)
+        setServices(props.services);
+        getServiceInstitut();
     }, [])
 
-    console.log(services)
+    const onClick=(event)=>{
+        event.preventDefault()
+    }
 
+    const selectCat = Object.keys(services).map((service, index)=>({
+            'id': index,
+            'value': service
+        }
+    ))
 
-    const onClick = (event)=>{
-        event.preventDefault();
+    const getServiceInstitut = () =>{
+        axios.get(config.baseUrl+"/institution/service/show/"+select)
+            .then(response=>{
+                setselectService(response.data.message);
+            })
+            .catch(error=>{
+                console.log(error)
+            })
+    }
+
+    const selectServiceItem = Object.keys(selectService).map((service, index)=>(
+        {
+            'value': selectService[service].id,
+            'label': selectService[service].name_fr
+        }
+    ))
+
+    const saveCommand = () => {
+        if (role === 'institut'){
+            services_order.map(service=>(
+                axios.post(config.baseUrl + '/user/service/order/register', {
+                    service_id: service.value, institution_id: props.select, comment: comment})
+                    .then(response => {
+                        console.log(response.data.message)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+            ))
+        }else {
+            axios.post(config.baseUrl + '/institution/expert/order', {expert_id: props.expert, comment: comment})
+                .then(response => {
+                    console.log(response)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
+
+    }
+    const onSelect=(event)=>{
+        setService_Order(event)
+    }
+
+    const onChange=(event)=>{
+        setComment(event.target.value)
     }
 
     const toggleService = (index) => {
@@ -61,9 +120,46 @@ const Services = (props) => {
                 </div>
             }
 
-            <div className="button-wrapper">
-                <Button size="md">Book a service</Button>
-            </div>
+            {services.length !== 0 ?
+                    <div className="button-wrapper">
+                        <Button size="md"
+                                onClick={() => setShowModal(true)}>{role === 'institut' ? "Acheter Un Service" : "Commander Cet Expert"}</Button>
+                    </div>
+                :""
+            }
+
+            {
+                showModal &&
+                <Modal hide={() => setShowModal(false)}>
+                    <div className="cart-modal-content">
+                        {role === 'institut' ?
+                            <h3>Choisir un(les) service(s)</h3> : <h3>Demander cet expert</h3>
+                        }
+
+                        {role==='institut' ?
+                            <div className="registation-final__step">
+                                <Select options={selectServiceItem} isMulti onChange={onSelect}/>
+                            </div>
+                            : ""}
+                        {
+                            role==='institut' ?
+                            <h3 className="cart-modal-content">Commentaire</h3> : ""
+                        }
+
+                        <textarea placeholder="Enregistrer votre commentaire..." name="comment" rows="7"
+                                  onChange={onChange}
+                                  value={comment}/>
+                        <Button size="sm" onClick={() => {
+                                saveCommand();
+                                setShowModal(false)
+                            }}>
+                            {role === 'institut' ?
+                                <h3>Commander un service(s)</h3> : <h3>Commander cet expert</h3>
+                            }
+                        </Button>
+                    </div>
+                </Modal>
+            }
         </div>
     )
   

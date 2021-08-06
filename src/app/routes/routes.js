@@ -16,9 +16,18 @@ import Search from '../../applications/shop/pages/search/search'
 import AdvancedSearch from '../../applications/shop/pages/advanced.search/advanced.search'
 import Cart from '../../applications/shop/pages/cart/cart'
 import Institute from '../../applications/shop/pages/institute/institute'
+//import Expert from '../../applications/shop/pages/expert/expert'
 import Expert from '../../applications/shop/pages/expert/expert'
+//import Conversation from '../../applications/shop/pages/conversation/conversation'
+//import RateExpert from '../../applications/shop/pages/rate/rate'
+import Conversation from '../../applications/shop/pages/conversation/conversation'
+import RateExpert from '../../applications/shop/pages/rate/rate'
 import {getToken} from "../../config/helpers";
 import axios from "axios";
+import Questions from "../../applications/shop/pages/question/questions";
+import VerificationEmail from "../../applications/auth/pages/reset.password/verification.email";
+import ResetPassword from "../../applications/auth/pages/reset.password/reset.password";
+import VerificationToken from "../../applications/auth/pages/reset.password/verification.token";
 
 /**
  * @description this is the main routes for the main application src/app. 
@@ -43,6 +52,11 @@ const Routes = () => {
                     <Route exact={true} component={Login} path={'/login'} />
                     <Route exact={true} component={SignUp} path={'/signup'} />
                     <Route exact={true} component={Verification} path={'/verification'} />
+                    <Route component={Verification} path={'/verification/:slug'} />
+                    <Route component={Questions} path={'/questions/:slug'} />
+                    <Route component={ResetPassword} path={'/reset-password/:slug'} />
+                    <Route component={VerificationEmail} path={'/verification-email'} />
+                    <Route component={VerificationToken} path={'/verification-token'} />
 
                     <Route exact={true} component={Cart} path={'/cart'} />
                     <Route exact={true} component={Search} path={'/search'} />
@@ -50,6 +64,8 @@ const Routes = () => {
                     <Route path={'/institute/:slug'} component={Institute} />
                     <Route exact={true} component={Expert} path={'/expert'} />
                     <Route path={'/expert/:slug'} component={Expert} />
+                    <Route exact={true} component={Conversation} path={'/conversation'} />
+                    <Route exact={true} component={RateExpert} path={'/rate-expert'} />
 
                     <Layout>
                         <Route exact={true} component={Home} path={'/home'} />

@@ -9,9 +9,9 @@ import ebmLogo from "../../../../assets/images/ebm.svg"
 import ebmLogoBig from "../../../../assets/images/ebm_big.png"
 import './login.scss'
 import config from "../../../../config/index";
-import {ToastContainer, toast} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'
-import {getToken, setToken, verifiedEmail, verifiedPassword} from "../../../../config/helpers";
+import { ToastContainer, toast } from 'material-react-toastify';
+import 'material-react-toastify/dist/ReactToastify.css';
+import {setToken, verifiedEmail, verifiedPassword} from "../../../../config/helpers";
 
 
 const Login = () => {
@@ -33,21 +33,24 @@ const Login = () => {
         }
         axios.post(config.baseUrl+"/login", {...user}).
         then(response=>{
-            const token = `Bearer ${response.data.acces_token}`;
-            setToken(token);
-            response.headers.Authorization = `Bearer ${JSON.stringify(response.data.acces_token)}`;
-            history.push('/home');
+            if(response.data.message === "Votre compte est en cours de vérification"){
+                notifyInfo("Votre compte est en cours de vérification")
+            }else {
+                const token = `Bearer ${response.data.acces_token}`;
+                setToken(token);
+                response.headers.Authorization = `Bearer ${JSON.stringify(response.data.acces_token)}`;
+                history.push('/home');
+            }
         }).catch(error=>{
-            console.log(error);
-            notifyFailed("Email ou Mot de passe incorret")
+            console.log(error.message);
+            notify(error.message)
         }).finally(e=>{
             setLoading(false)
         })
     }
 
-    const notifyFailed = (err)=>{
-        toast.error(err)
-    }
+    const notify = (err) => toast.error(err);
+    const notifyInfo = (err) => toast.info(err);
 
     // Change form input values. 
     const onChange = (e) => setLoginForm({...loginForm,  [e.target.name]: e.target.value })
@@ -74,13 +77,13 @@ const Login = () => {
 
     return (
         <div className="login-container">
+            <ToastContainer position="top-center" autoClose="5000" pauseOnHover/>
             <div className="logo-box">
                 <img src={ebmLogo} alt="" />
             </div>
             <div className="big-logo__box">
                 <img src={ebmLogoBig} alt="" />
             </div>
-            <ToastContainer/>
             <form onSubmit={onSubmit} className="auth-container" >
                 {Object.keys(loginForm).map((input, index) => (
                     <div key={index} className="auth-container__input-container">
@@ -109,7 +112,7 @@ const Login = () => {
                 </div>
 
                 <div className="forgot-password__box">
-                    <Link to="/reset-password">Mot de Passe Oublié ?</Link>
+                    <Link to="/verification-email">Mot de Passe Oublié ?</Link>
                 </div>
 
                 <Button 
