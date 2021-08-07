@@ -13,6 +13,7 @@ import Verification from '../../applications/auth/pages/signup/verification'
 import Layout from '../components/layout/layout';
 import Home from '../../applications/shop/pages/home/home'
 import Search from '../../applications/shop/pages/search/search'
+import ProductSearch from '../../applications/shop/pages/product.search/search'
 import AdvancedSearch from '../../applications/shop/pages/advanced.search/advanced.search'
 import Cart from '../../applications/shop/pages/cart/cart'
 import Institute from '../../applications/shop/pages/institute/institute'
@@ -20,6 +21,7 @@ import Institute from '../../applications/shop/pages/institute/institute'
 import Expert from '../../applications/shop/pages/expert/expert'
 //import Conversation from '../../applications/shop/pages/conversation/conversation'
 //import RateExpert from '../../applications/shop/pages/rate/rate'
+import MyProfile from '../../applications/shop/pages/myprofile/myprofile'
 import Conversation from '../../applications/shop/pages/conversation/conversation'
 import RateExpert from '../../applications/shop/pages/rate/rate'
 import {getToken} from "../../config/helpers";
@@ -30,7 +32,7 @@ import ResetPassword from "../../applications/auth/pages/reset.password/reset.pa
 import VerificationToken from "../../applications/auth/pages/reset.password/verification.token";
 
 /**
- * @description this is the main routes for the main application src/app. 
+ * @description this is the main routes for the main application src/app.
  */
 const Routes = () => {
 
@@ -60,7 +62,9 @@ const Routes = () => {
 
                     <Route exact={true} component={Cart} path={'/cart'} />
                     <Route exact={true} component={Search} path={'/search'} />
+                    <Route exact={true} component={ProductSearch} path={'/products'} />
                     <Route exact={true} component={Institute} path={'/institute'} />
+                    <Route exact={true} component={MyProfile} path={'/profile'} />
                     <Route path={'/institute/:slug'} component={Institute} />
                     <Route exact={true} component={Expert} path={'/expert'} />
                     <Route path={'/expert/:slug'} component={Expert} />

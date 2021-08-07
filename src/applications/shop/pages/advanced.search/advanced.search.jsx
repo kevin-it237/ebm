@@ -12,7 +12,6 @@ import Select from 'react-select'
 import { ToastContainer, toast } from 'material-react-toastify';
 import 'material-react-toastify/dist/ReactToastify.css';
 import MapIcon from "../../../../assets/icons/map.svg";
-import MoneyIcon from '@material-ui/icons/Money';
 import List from "../../../../assets/icons/list.svg";
 import Telescope from "../../../../assets/images/telescope.png"
 import BottomDrawer from "../../../../app/components/bottom.drawer/bottom.drawer"
@@ -200,7 +199,7 @@ const AdvancedSearch = () => {
             axios.post(config.baseUrl + '/user/service/search',
                 {around: distance, location: location})
                 .then(response => {
-                    setServiceAround(response.data.message)
+                    //console.log(response.data)
                     setSearch(response.data.message)
                 })
                 .catch(error => {
@@ -261,13 +260,29 @@ const AdvancedSearch = () => {
             })
     }
 
+    const getServiceByDistanceLike = () => {
+        let location = [lat, long];
+        location = location.join(",")
+        axios.post(config.baseUrl + '/institution/rate/around/show', {rating: star, around: distance, location: location})
+            .then(response => {
+                setSearch(response.data.message)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    console.log(star)
     const saveCommand = (event) => {
         event.preventDefault();
-        console.log('0')
+        setSearch([])
         if (distance !== 0 && recherche !== "" && star !== null) {
             console.log('1')
             getServiceByAllParameter();
-        } else if (distance !== 0 && star === 0 && recherche ==="") {
+        } else if (distance !== 0 && recherche === "" && star !== null) {
+            console.log('2')
+            getServiceByDistanceLike();
+        } else if (distance !== 0 && star===null && recherche ==="") {
             console.log('uhjfkenfeifek')
             getServiceAround();
         }else if (star !== null && distance === 0 && recherche === ""){
@@ -280,9 +295,7 @@ const AdvancedSearch = () => {
         setShowFilter(false);
     }
 
-    console.log(distance)
-    console.log(star)
-    console.log(recherche)
+    console.log(search)
 
     return (
         <>

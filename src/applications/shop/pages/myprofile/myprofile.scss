@@ -1,0 +1,112 @@
+@import '../../../../assets/styles/global.scss';
+
+#institute {
+    height: 100%;
+    overflow-y: auto;
+   >.header {
+        height: 170px;
+        background: $primary;
+        background-size: cover;
+        background-repeat: no-repeat;
+        >.header-title {
+            display: flex;
+            align-items: center;
+            padding: 20px 15px;
+            >h4 {
+                margin-left: 15px;
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: $white;
+            }
+            svg {
+                width: 22px;
+                path { fill: $white; }
+            }
+        }
+   }
+
+   .institute-content {
+       padding: 15px 20px;
+       background-image: url("../../../../assets//images/profile_shape.svg");
+       z-index: 10;
+       margin-top: -50px;
+       background-position: top;
+       background-size: 105%;
+       background-repeat: no-repeat;
+       >.owner-infos {
+           display: flex;
+           align-items: center;
+           >.avatar {
+               width: 80px;
+               height: 80px;
+               border-radius: 50%;
+               margin-right: 10px;
+               box-shadow: 0 2px 15px rgba(#000, .35);
+               margin-top: -15px;
+           }
+           .name {
+                font-size: 1.5rem;
+                color: $primary;
+                font-weight: 600;
+                margin-bottom: 5px;
+           }
+           .address {
+                font-size: 1.1rem;
+                color: $secondary;
+                font-weight: 400;
+           }
+       }
+       >.description {
+           color: $secondary;
+           line-height: 15px;
+           font-size: 1rem;
+           text-align: justify;
+           margin: 15px 0;
+       }
+
+       >.stats {
+           padding: 15px 0;
+           margin-bottom: 10px;
+           display: grid;
+           grid-template-columns: 20% auto;
+           column-gap: 15px;
+           >.rates {
+                h2 {
+                    font-size: 4.2rem;
+                    font-weight: bold;
+                    color: #000;
+                }
+                p {
+                    font-size: 1rem;
+                    font-weight: 600;
+                    color: $grey-300;
+                }
+           }
+           >.stars-group {
+               display: flex;
+               flex-direction: column;
+               gap: 10px;
+               grid-template-columns: 1fr;
+           }
+       }
+
+       >.menu {
+           display: flex;
+           margin-top: 20px;
+           >.menu-item {
+                margin-right: 20px;
+                font-size: 1.2rem;
+                font-weight: 600;
+                padding-bottom: 4px;
+                color: $grey-500;
+                &.actived {
+                    border-bottom: solid 3px $primary;
+                    color: $primary;
+                }
+           }
+       }
+       >.bottom-content {
+           margin-top: 15px;
+       }
+   }
+}

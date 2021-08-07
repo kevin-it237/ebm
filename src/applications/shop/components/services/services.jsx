@@ -13,7 +13,6 @@ const Services = (props) => {
 
     const param = useParams();
     const select = param.slug;
-
     const [services, setServices] = useState([]);
     const [selectService, setselectService] = useState([]);
     const [services_order, setService_Order] = useState([]);
@@ -162,7 +161,7 @@ const Services = (props) => {
             }
         </div>
     )
-  
+
 }
 
 export default Services;

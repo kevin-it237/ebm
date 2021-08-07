@@ -21,7 +21,6 @@ const ProductItem = (props) => {
             history.push("/login");
             return
         }
-
         axios.post(config.baseUrl+"/user/cart/product/register", {id: props.id})
             .then((response)=>{
                 notifySucces(JSON.stringify(response.data.message))
@@ -64,7 +63,7 @@ const ProductItem = (props) => {
             </div>
         </div>
     )
-  
+
 }
 
 export default ProductItem;
