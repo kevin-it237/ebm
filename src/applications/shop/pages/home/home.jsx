@@ -25,7 +25,9 @@ const Home = () => {
     const [parent_services, setParent_Service] = useState("");
 
     const openDrawer = () => {
-        setShowDrawer(!showDrawer)
+        if(window.setDrawerOpen){
+            window.setDrawerOpen(true)
+        }
     }
 
     useEffect(()=>{
@@ -116,12 +118,12 @@ const Home = () => {
                     <Loader type="Circles" height={70} width={70} color="#6B0C72"/>
                 </div>
             }
-        
+
             {showDrawer&&<HomeDrawerContent onClose={() => openDrawer(false) }
                                             name={services} />}
         </div>
     )
-  
+
 }
 
 export default Home;

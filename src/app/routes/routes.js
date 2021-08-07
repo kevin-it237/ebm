@@ -59,7 +59,6 @@ const Routes = () => {
                     <Route component={ResetPassword} path={'/reset-password/:slug'} />
                     <Route component={VerificationEmail} path={'/verification-email'} />
                     <Route component={VerificationToken} path={'/verification-token'} />
-
                     <Route exact={true} component={Cart} path={'/cart'} />
                     <Route exact={true} component={Search} path={'/search'} />
                     <Route exact={true} component={ProductSearch} path={'/products'} />
@@ -73,9 +72,13 @@ const Routes = () => {
 
                     <Layout>
                         <Route exact={true} component={Home} path={'/home'} />
+                        <Route exact={true} component={MyProfile} path={'/profile'} />
+                        <Route exact={true} component={ProductSearch} path={'/products'} />
+                        <Route exact={true} component={Conversation} path={'/conversation'} />
                         <Route exact={true} component={AdvancedSearch} path={'/advanced-search'} />
                     </Layout>
                 </NormalRoute>
+
 
             </Switch>)
 }
