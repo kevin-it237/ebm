@@ -21,6 +21,7 @@ const ProductItem = (props) => {
             history.push("/login");
             return
         }
+        console.log("hfjkfnfifdlkjf,")
         axios.post(config.baseUrl+"/user/cart/product/register", {id: props.id})
             .then((response)=>{
                 notifySucces(JSON.stringify(response.data.message))

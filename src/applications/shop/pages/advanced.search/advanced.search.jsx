@@ -180,7 +180,7 @@ const AdvancedSearch = () => {
             })
     }
 
-    const getSelectService = (name) => {
+    const getServiceByName = (name) => {
         setSearch([]);
         axios.post(config.baseUrl + '/user/service/search', {name: name})
             .then(response => {
@@ -243,7 +243,7 @@ const AdvancedSearch = () => {
         event.preventDefault();
     }
     const onSelect = (event) => {
-        getSelectService(event.label);
+        getServiceByName(event.label);
         setRecherche(event.label)
     }
 
@@ -260,10 +260,11 @@ const AdvancedSearch = () => {
             })
     }
 
-    const getServiceByDistanceLike = () => {
+    const getServiceByNameDistanceLike = () => {
         let location = [lat, long];
         location = location.join(",")
-        axios.post(config.baseUrl + '/institution/rate/around/show', {rating: star, around: distance, location: location})
+        axios.post(config.baseUrl + '/institution/rate/around/show',
+            {rating: star, around: distance, location: location, name: recherche})
             .then(response => {
                 setSearch(response.data.message)
             })
@@ -272,30 +273,60 @@ const AdvancedSearch = () => {
             })
     }
 
-    console.log(star)
+    const getServiceByDistanceLike = () => {
+        let location = [lat, long];
+        location = location.join(",")
+        axios.post(config.baseUrl + '/institution/rate/around/show',
+            {rating: star, around: distance, location: location})
+            .then(response => {
+                setSearch(response.data.message)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    const getServiceByNameLike = () => {
+        axios.post(config.baseUrl + '/institution/rate/name/show',
+            {rating: star, around: distance})
+            .then(response => {
+                setSearch(response.data.message)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
     const saveCommand = (event) => {
         event.preventDefault();
         setSearch([])
-        if (distance !== 0 && recherche !== "" && star !== null) {
-            console.log('1')
-            getServiceByAllParameter();
-        } else if (distance !== 0 && recherche === "" && star !== null) {
-            console.log('2')
-            getServiceByDistanceLike();
-        } else if (distance !== 0 && star===null && recherche ==="") {
-            console.log('uhjfkenfeifek')
-            getServiceAround();
-        }else if (star !== null && distance === 0 && recherche === ""){
-            getServiceByLike();
-        }else if (star === null && distance === 0 && recherche !== ""){
-            getSelectService();
-        }else if (star === 0 && distance !== 0 && recherche !== ""){
-            getSelectService();
+        if (recherche === ""){
+            if (distance !==0 && star ===0){
+                getServiceAround();
+            }else if(distance === 0 && star !== 0){
+                getServiceByLike();
+            }else if (distance !== 0 && star!==0){
+                getServiceByDistanceLike();
+            }
+        }else{
+            if (distance !==0 && star ===0){
+                console.log('1')
+                getServiceByNameDistance()
+            }else if(distance === 0 && star !== 0){
+                console.log('2')
+                getServiceByNameLike()
+            }else if (distance !== 0 && star!==0){
+                console.log('3')
+                getServiceByNameDistanceLike()
+            }else if (distance ===0 && star===0){
+                console.log("4")
+                getServiceByName();
+            }
         }
         setShowFilter(false);
     }
 
-    console.log(search)
+    console.log(recherche)
 
     return (
         <>
