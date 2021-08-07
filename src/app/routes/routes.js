@@ -50,14 +50,14 @@ const Routes = () => {
 
                 <Route exact={true} component={Cart} path={'/cart'} />
                 <Route exact={true} component={Search} path={'/search'} />
-                <Route exact={true} component={ProductSearch} path={'/products'} />
                 <Route exact={true} component={Institute} path={'/institute'} />
-                <Route exact={true} component={MyProfile} path={'/profile'} />
-                <Route exact={true} component={Conversation} path={'/conversation'} />
                 <Route exact={true} component={RateExpert} path={'/rate-expert'} />
 
                 <Layout>
                     <Route exact={true} component={Home} path={'/home'} />
+                    <Route exact={true} component={MyProfile} path={'/profile'} />
+                    <Route exact={true} component={ProductSearch} path={'/products'} />
+                    <Route exact={true} component={Conversation} path={'/conversation'} />
                     <Route exact={true} component={AdvancedSearch} path={'/advanced-search'} />
                 </Layout>
             </NormalRoute>
