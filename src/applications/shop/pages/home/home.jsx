@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+import {Link, useHistory, useParams} from 'react-router-dom';
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import InputSearch from "../../../../app/components/inputs/input.search/input.search";
@@ -17,6 +17,8 @@ import { SnackbarProvider } from 'material-ui-toast';
 
 const Home = () => {
     const history = useHistory();
+    const params = useParams();
+    const profile = params.slug;
     const [showDrawer, setShowDrawer] = useState(false)
     const [products, setProduct] = useState("");
     const [services, setService] = useState("");
@@ -49,6 +51,10 @@ const Home = () => {
         })
     }
 
+    const myProfile = ()=>{
+        history.push('/profile')
+    }
+
     const notifyFailed = (err)=>{
         toast.error(err)
     }
@@ -57,7 +63,8 @@ const Home = () => {
         <div id="home">
             <div id="header">
                 <img onClick={openDrawer} className="menu" src={Menu} alt="" />
-                <img className="avatar" src={avatar} alt="" />
+                <img className="avatar" onClick={myProfile} src={avatar} alt=""/>
+
             </div>
             <div className="search">
                 <InputSearch onClick={() => history.push('/search')} placeholder="Recherchez une institution..." />

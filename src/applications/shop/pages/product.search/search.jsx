@@ -13,7 +13,7 @@ import ProductItem from "../../components/product.item/product.item";
 const Search = () => {
 
     const history = useHistory();
-    const [allSearch, setAllSearch] = useState([2,3,3,4,3,56,35]);
+    const [allSearch, setAllSearch] = useState([]);
     const [name, setName] = useState("");
 
     useEffect(()=>{
@@ -21,10 +21,10 @@ const Search = () => {
     }, [name]);
 
     const searchFilter = useCallback((name)=>{
-       /* if (name.length !== 0){
-            axios.post(config.baseUrl+'/institution/search', {name})
+       if (name.length !== 0){
+            axios.post(config.baseUrl+'/user/product/search', {name})
                 .then(response=>{
-                    setAllSearch(response.data);
+                    setAllSearch(response.data.message);
                     console.log(response.data)
                 })
                 .catch(error=>{
@@ -32,12 +32,13 @@ const Search = () => {
                 });
         }else {
             setAllSearch("");
-        }*/
+        }
     }, [name]);
 
     const notifyFailed = (err)=>{
         toast.error(err)
     }
+
     return (
         <div id="search" className="product-search">
             <div className="search">
@@ -52,27 +53,11 @@ const Search = () => {
             </div>
             {allSearch.length !==0 ?
                 <div className="products-wrapper">
-                {[{
-                    discount:20,
-                    name:"Babayaga Product",
-                    price:3000
-                },{
-                    discount:20,
-                    name:"Babayaga Product",
-                    price:3000
-                },].map((item,index)=>(
+                {Object.keys(allSearch).map((item,index)=>(
                     <div key={index}>
-                        <ProductItem {...item}/></div>
+                        <ProductItem price={allSearch[item]['price']} discount={allSearch[item]['discount']}
+                                     name={allSearch[item]['name_fr']} id={allSearch[item]['id']}/></div>
                 ))}
-            {/*    {Object.keys(allSearch).map((search, index)=>(
-                    <div key={index} className="result">
-                        <img src={allSearch[search]['logo']} alt={allSearch[search]['username']} />
-                        <div>
-                            <h4 className="name">{allSearch[search]['username']}</h4>
-                            <p className="address">{allSearch[search]['address']}</p>
-                        </div>
-                    </div>
-                ))}*/}
             </div>
                 :<div className="spinner_load_search">
                     <Loader type="Circles" height={70} width={70} color="#6B0C72"/>
