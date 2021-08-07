@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import {ToastContainer, toast} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'
-import { useHistory } from 'react-router-dom'
+import { ToastContainer, toast } from 'material-react-toastify';
+import 'material-react-toastify/dist/ReactToastify.css';
+import {Link, useHistory, useParams} from 'react-router-dom'
 import Button from '../../../../app/components/buttons/button/button';
 import ebmLogo from "../../../../assets/images/ebm.svg"
 import ebmLogoBig from "../../../../assets/images/ebm_big.png"
@@ -10,49 +10,62 @@ import './signup.scss'
 import config from "../../../../config/index";
 
 const Verification = () => {
-    const history = useHistory()
+    const history = useHistory();
+    const params = useParams();
+
+    const role = params.slug;
 
     const [signupForm1, setForm1] = useState({verCode: ""});
     const [loading,setLoading]= useState(false);
+
+    useEffect(()=>{
+        notify("Un code vous a été envoyé par Email");
+    }, []);
 
     const onSubmit = (e) => {
         e.preventDefault();
         const user = {
             verCode : signupForm1.verCode
         }
-        console.log("le role "+user.verCode)
+
         setLoading(true)
         axios.post(config.baseUrl+"/verification", {...user})
             .then(res =>{
-                history.push('/login')
+                if (res.data.message === 'Ce code est incorrect'){
+                    notifyError("Ce code de vérification est incorrect");
+                }else {
+                    if (role.toLowerCase() === 'expert'){
+                        history.push('/questions/'+role.toLocaleString())
+                    }else history.push('/login')
+                }
             })
             .catch(err=>{
-                console.log("err "+err.response.data)
                 if (err.response.data){
                     const error = err.response.data.errors;
+                    console.log(error)
                     if (error.verCode){
-                        notifyFailed(error.verCode[0])
+                        notifyError(error.verCode[0])
                     }
                 }else if (!err.response.data || !err){
-                    notifyFailed("Verifiez votre connexion internet");
+                    notifyError("Verifiez votre connexion internet");
                 }
             }).finally(e=>{
             setLoading(false)
         })
     }
+    const notify = (err) => toast.info(err);
+    const notifyError = (err) => toast.error(err);
 
-    const notifyFailed = (err)=>{
-        toast.error(err)
-    }
+
 
     // Change form input values.
     const onChange = (e) => {
-        console.log("le nom "+e.target.name)
         setForm1({...signupForm1,  [e.target.name]: e.target.value });
     }
 
     return (
         <div className="signup-container">
+            <ToastContainer position="top-center"/>
             <div className="logo-box">
                 <img src={ebmLogo} alt="" />
             </div>
@@ -75,7 +88,6 @@ const Verification = () => {
                                 />
                             </div>
                         ))}
-                        <ToastContainer/>
                         <Button
                             variant="primary"
                             type="submit"

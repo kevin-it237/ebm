@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import Routes from '../app/routes/routes';
+import 'semantic-ui-css/semantic.min.css'
 
 
 const App = () => {

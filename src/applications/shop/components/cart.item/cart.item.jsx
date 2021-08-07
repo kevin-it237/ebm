@@ -1,20 +1,15 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
 import './cart.item.scss'
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import cils from "../../../../assets/images/cils.jpg"
 import axios from "axios";
 import config from "../../../../config/index";
-import {calcul} from "../../../../config/helpers";
 
 const ProductItem = (props, state) => {
     const [count, setCount] = useState(props.quantity);
-    //const [price_discount, setPrice_discount] = useState("");
     const {update,index,products}=props;
 
-    const Price = ()=> {return props.price - (props.price*props.discount)/100};
-    //setPrice_discount(Price)
     const setNumberOfItems = (op) => {
         let newCount;
         if(op === "INC") {
@@ -58,7 +53,7 @@ const ProductItem = (props, state) => {
                         <p className="price">{props.price - (props.price*props.discount)/100} XAF</p>
                     </div>
                     :
-                    <div className="price align-price"><p className="price">{props.price} XAF</p></div>
+                    <div className="price"><p className="price">{props.price} XAF</p></div>
                 }
                 <div className="items-counts">
                     <button onClick={() => setNumberOfItems("INC")}>+</button>

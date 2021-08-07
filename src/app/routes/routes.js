@@ -17,12 +17,19 @@ import ProductSearch from '../../applications/shop/pages/product.search/search'
 import AdvancedSearch from '../../applications/shop/pages/advanced.search/advanced.search'
 import Cart from '../../applications/shop/pages/cart/cart'
 import Institute from '../../applications/shop/pages/institute/institute'
+//import Expert from '../../applications/shop/pages/expert/expert'
+import Expert from '../../applications/shop/pages/expert/expert'
+//import Conversation from '../../applications/shop/pages/conversation/conversation'
+//import RateExpert from '../../applications/shop/pages/rate/rate'
 import MyProfile from '../../applications/shop/pages/myprofile/myprofile'
 import Conversation from '../../applications/shop/pages/conversation/conversation'
 import RateExpert from '../../applications/shop/pages/rate/rate'
-
 import {getToken} from "../../config/helpers";
 import axios from "axios";
+import Questions from "../../applications/shop/pages/question/questions";
+import VerificationEmail from "../../applications/auth/pages/reset.password/verification.email";
+import ResetPassword from "../../applications/auth/pages/reset.password/reset.password";
+import VerificationToken from "../../applications/auth/pages/reset.password/verification.token";
 
 /**
  * @description this is the main routes for the main application src/app.
@@ -34,35 +41,46 @@ const Routes = () => {
         axios.defaults.headers['Content-Type'] = 'application/json';
     };
     return (
-        <Switch>
-            {/* Private routes here */}
-            <PrivateRoute exact path={"/"}>
-                {/* <Route exact component={Home} path={"/"} /> */}
-            </PrivateRoute>
+            <Switch>
+                {/* Private routes here */}
+                <PrivateRoute exact path={"/"}>
+                    {/* <Route exact component={Tracker} path={"/"} /> */}
+                </PrivateRoute>
 
-            {/* Normal routes here */}
-            <NormalRoute exact>
-                <Route exact={true} component={WelCome} path={'/welcome'} />
-                <Route exact={true} component={AuthChoice} path={'/auth/choice'} />
-                <Route exact={true} component={Login} path={'/login'} />
-                <Route exact={true} component={SignUp} path={'/signup'} />
-                <Route exact={true} component={Verification} path={'/verification'} />
-
-                <Route exact={true} component={Cart} path={'/cart'} />
-                <Route exact={true} component={Search} path={'/search'} />
-                <Route exact={true} component={Institute} path={'/institute'} />
-                <Route exact={true} component={RateExpert} path={'/rate-expert'} />
-
-                <Layout>
-                    <Route exact={true} component={Home} path={'/home'} />
-                    <Route exact={true} component={MyProfile} path={'/profile'} />
+                {/* Normal routes here */}
+                <NormalRoute exact>
+                    <Route exact={true} component={WelCome} path={'/welcome'} />
+                    <Route exact={true} component={AuthChoice} path={'/auth/choice'} />
+                    <Route exact={true} component={Login} path={'/login'} />
+                    <Route exact={true} component={SignUp} path={'/signup'} />
+                    <Route exact={true} component={Verification} path={'/verification'} />
+                    <Route component={Verification} path={'/verification/:slug'} />
+                    <Route component={Questions} path={'/questions/:slug'} />
+                    <Route component={ResetPassword} path={'/reset-password/:slug'} />
+                    <Route component={VerificationEmail} path={'/verification-email'} />
+                    <Route component={VerificationToken} path={'/verification-token'} />
+                    <Route exact={true} component={Cart} path={'/cart'} />
+                    <Route exact={true} component={Search} path={'/search'} />
                     <Route exact={true} component={ProductSearch} path={'/products'} />
+                    <Route exact={true} component={Institute} path={'/institute'} />
+                    <Route exact={true} component={MyProfile} path={'/profile'} />
+                    <Route path={'/institute/:slug'} component={Institute} />
+                    <Route exact={true} component={Expert} path={'/expert'} />
+                    <Route path={'/expert/:slug'} component={Expert} />
                     <Route exact={true} component={Conversation} path={'/conversation'} />
-                    <Route exact={true} component={AdvancedSearch} path={'/advanced-search'} />
-                </Layout>
-            </NormalRoute>
+                    <Route exact={true} component={RateExpert} path={'/rate-expert'} />
 
-        </Switch>)
+                    <Layout>
+                        <Route exact={true} component={Home} path={'/home'} />
+                        <Route exact={true} component={MyProfile} path={'/profile'} />
+                        <Route exact={true} component={ProductSearch} path={'/products'} />
+                        <Route exact={true} component={Conversation} path={'/conversation'} />
+                        <Route exact={true} component={AdvancedSearch} path={'/advanced-search'} />
+                    </Layout>
+                </NormalRoute>
+
+
+            </Switch>)
 }
 
 const mapStateToProps = () =>({

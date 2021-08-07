@@ -19,18 +19,13 @@ const HomeDrawerContent = ({ onClose , name}) => {
             console.log(error)
     });
 
-    /*const openService = (name) =>{
-        console.log('/service'+{name})
-        //history.push('/service'+{name})
-    }*/
-
     return (
         <BottomDrawer onClose={onClose}>
             <div className="service-title">
                 <h2>{name}</h2>
                 <span></span>
             </div>
-            {services.length !==0 ?
+            {services.length !== 0 ?
             <div className="categories">
                 {Object.keys(services).map((service, index)=>(
                     <p className="category-item" key={index}>{services[service]['name_fr']}</p>

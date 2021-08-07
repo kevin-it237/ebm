@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import './institute.scss'
-import { useHistory } from 'react-router-dom';
+import './expert.scss'
+import { useHistory, useParams } from 'react-router-dom';
 import { ReactComponent as Back } from "../../../../assets/icons/back.svg"
-import {useParams} from "react-router-dom";
-import Reviews from "../../components/reviews/reviews"
+import Reviews from "../../components/reviews_expert/reviews_expert"
 import Services from "../../components/services/services"
-import Localization from "../../components/localization/localization"
 import Works from "../../components/works/works"
 import img from "../../../../assets/images/mansory.png";
 import axios from "axios";
@@ -13,54 +11,53 @@ import config from "../../../../config/index";
 import {rate} from "../../../../config/helpers";
 import StarsRating from "../../components/stars.rating/stars.rating";
 
-const Institute = (props) => {
+const Expert = () => {
     const params = useParams();
     const history = useHistory();
     const select = params.slug;
 
-
     const [content, setContent] = useState("Revues");
-    const [institut, setInstitut] = useState([]);
+    const [expert, setExpert] = useState([]);
     const [services, setServices] = useState([]);
     const [star, setStar] = useState(0);
     const [total, setTotal] = useState(0);
     const [each, setEach] = useState([]);
+    const [messageOnline, setmessageOnline] = useState("");
+
 
     useEffect(()=>{
-        getInfoInstitut();
+        getInfoExpert();
         getStarVote();
         getEachVote();
-    }, []);
+        showStatus();
+    },[]);
 
-    const MENU_ITEMS = ["Revues", "Services", "Localisation", "Oeuvres"];
+    const MENU_ITEMS = ["Revues", "Services", "Oeuvres"];
 
     const changeContent = (contentName) => {
         setContent(contentName);
     }
 
-    const getInfoInstitut = () =>{
-        axios.get(config.baseUrl+"/institution/show/"+select)
+    const getInfoExpert = () =>{
+        axios.get(config.baseUrl+"/expert/show/"+select)
             .then(response=>{
-                setInstitut(response.data.message);
+                setExpert(response.data.message);
             })
             .catch(error=>{
                 console.log(error)
             })
 
-        console.log(institut)
-        axios.get(config.baseUrl+"/institution/show/service/"+select)
+        axios.get(config.baseUrl+"/expert/show/service/"+select)
             .then(response=>{
                 setServices(response.data.message)
-                console.log(response)
             })
             .catch(error=>{
                 console.log(error)
             })
     }
 
-    console.log(services)
     const getStarVote = () =>{
-        axios.get(config.baseUrl+'/institution/rate/show/'+select)
+        axios.get(config.baseUrl+'/expert/rate/show/'+select)
             .then(response=>{
                 setStar(rate(response.data.message));
                 setTotal(response.data.message.length)
@@ -70,8 +67,20 @@ const Institute = (props) => {
             })
     }
 
+    const showStatus=(status)=>{
+        if (navigator.onLine) {
+            console.log(navigator.onLine)
+            setmessageOnline("Online");
+        }else{
+            console.log(navigator.onLine)
+            setmessageOnline("Vue à 9h");
+        }
+    }
+
+    console.log(expert)
+
     const getEachVote = () =>{
-        axios.get(config.baseUrl+'/institution/review/rate/'+select)
+        axios.get(config.baseUrl+'/expert/review/rate/'+select)
             .then(response=>{
                 setEach(response.data.message);
             })
@@ -84,33 +93,31 @@ const Institute = (props) => {
     if(content === "Revues") {
         bottomContent = (<Reviews/>);
     } else if(content === "Services") {
-        bottomContent = (<Services services={services} role="institut" select={select}/>);
-    } else if(content === "Localisation") {
-        bottomContent = (<Localization localization={institut.location} address={institut.address}/>);
+        bottomContent = (<Services services={services} role="expert" expert={select}/>);
     } else {
         bottomContent = (<Works />);
     }
 
     return (
-        <div id="institute">
+        <div id="expert">
             <div className="header">
                 <div className="header-title">
                     <Back onClick={() => history.goBack()} />
-                    <h4>{select}</h4>
+                    <h4>Profil Expert</h4>
                 </div>
             </div>
 
             <div className="institute-content">
                 <div className="owner-infos">
-                    <img className="avatar" alt={institut.username} />
+                    <img className="avatar" src={expert.logo} alt={expert.username} />
                     <div>
-                        <h3 className="name">{institut.username}</h3>
-                        <p className="address">{institut.address}</p>
+                        <h3 className="name">{expert.username}</h3>
+                        <div>status {messageOnline}</div>
                     </div>
                 </div>
 
                 <p className="description">
-                    {institut.description}
+                    {expert.description}
                 </p>
 
                 <div className="stats">
@@ -122,7 +129,7 @@ const Institute = (props) => {
                         each.length !==0?
                         <div className="stars-group">
                             {each.map((vote, index)=>(
-                                <StarsRating showNumberOfVotes={true} showProgresBar={true} stars={index+1} total={total} votes={vote}/>
+                                <StarsRating key={index} showNumberOfVotes={true} showProgresBar={true} stars={index+1} total={total} votes={vote}/>
                             ))  
                             }
                         </div>
@@ -146,4 +153,4 @@ const Institute = (props) => {
     )
 }
 
-export default Institute;
+export default Expert;

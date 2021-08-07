@@ -1,6 +1,6 @@
 @import '../../../../assets/styles/global.scss';
 
-#institute {
+#expert {
     height: 100%;
     overflow-y: auto;
    >.header {
@@ -54,14 +54,13 @@
            }
            .address {
                 font-size: 1.1rem;
-             text-transform: capitalize;
                 color: $secondary;
                 font-weight: 400;
            }    
        }
        >.description {
-            word-break: break-word;
            color: $secondary;
+         word-break: break-word;
            line-height: 15px;
            font-size: 1rem;
            text-align: justify;
@@ -76,7 +75,7 @@
            column-gap: 15px;
            >.rates {
                 h2 {
-                    font-size: 3.5rem;
+                  font-size: 3.5rem;
                     font-weight: bold;
                     color: #000;
                 }
@@ -93,11 +92,11 @@
                grid-template-columns: 1fr;
            }
            >.aucun-vote {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: $grey-300;
-            text-align: center;
-       }
+                font-size: 1.3rem;
+                font-weight: 600;
+                color: $grey-300;
+                text-align: center;
+           }
        }
 
        >.menu {

@@ -4,6 +4,7 @@
    .service-group {
     >.title-wrapper {
         display: flex;
+      text-transform: capitalize;
         align-items: center;
         padding: 10px 0;
         cursor: pointer;
@@ -19,6 +20,7 @@
     }
     >.items {
         margin-left: 30px;
+      text-transform: capitalize;
         animation: listAppear .25s ease-out;
         >p {
             font-size: 1rem;
@@ -38,6 +40,46 @@
    }
 
    .button-wrapper {
+     text-transform: capitalize;
        margin-top: 40px;
    }
+
+  .spinner_load_search{
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+  }
+
+  .registation-final__step {
+    select::-ms-expand {
+      display: none;
+    }
+    select {
+      display: block;
+      box-sizing: border-box;
+      padding: 1.5rem 2rem;
+      border: 1px solid #eee;
+      font-size: 1.5rem;
+      line-height: inherit;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      -ms-appearance: none;
+      appearance: none;
+      background-repeat: no-repeat;
+      background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+      background-position: right 15px top 1em, right 10px top 1em;
+      background-size: 5px 5px, 5px 5px;
+    }
+    select {
+      margin: 10px 0;
+      width: 310px;
+      @media screen and (max-width: 400px) {
+        width: 285px;
+      }
+    }
+
+    .option:hover{
+      background-color: $primary;
+    }
+  }
 }

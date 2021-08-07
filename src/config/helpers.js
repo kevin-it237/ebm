@@ -1,3 +1,4 @@
+import index from "./index";
 
 export const setToken = (token)=>{
     return window.localStorage.setItem('token', token);
@@ -46,6 +47,15 @@ export const verifiedPhone = (phone) =>{
 
 }
 
-export const calcul = (nb, prix, discount) =>{
-    return prix*nb - prix*nb*discount;
+export const rate = (tab) =>{
+    if (tab.length !== 0){
+        let som = 0;
+        tab.map(index=>(
+            som += index.rating
+        ))
+        const x = som/tab.length;
+        return x.toFixed(1);
+    }else{
+        return 0;
+    }
 }

@@ -1,5 +1,6 @@
 @import '../../../../assets/styles/global.scss';
 
+
 #search {
     height: 100%;
     .search {
@@ -43,6 +44,7 @@
         >.result {
             display: grid;
             grid-template-columns: auto 1fr;
+            text-decoration: none;
             gap: 12px;
             align-items: center;
             padding: 12px 20px;

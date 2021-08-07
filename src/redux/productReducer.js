@@ -11,6 +11,12 @@ export default function productReducer(state = initialState, action){
             payload: action.payload
         }
     }
-    console.log(nextState)
+
+    if (action.type === 'SEARCH_INSTITUTE'){
+        nextState = {
+            ...state,
+            payload: action.payload
+        }
+    }
     return nextState||state;
 }

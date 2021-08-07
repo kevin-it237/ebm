@@ -10,7 +10,6 @@ import cils from "../../../../assets/images/cils.jpg"
 import cart from "../../../../assets/icons/cart.svg"
 import heart from "../../../../assets/icons/heart.svg"
 import { useHistory } from 'react-router-dom';
-import {connect} from "react-redux";
 
 
 const ProductItem = (props) => {

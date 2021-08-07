@@ -1,4 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
+import { Link } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
 import InputSearch from "../../../../app/components/inputs/input.search/input.search";
 import './search.scss' 
@@ -11,28 +13,42 @@ import Loader from "react-loader-spinner";
 
 const Search = () => {
 
+    const dispatch = useDispatch();
+    const selesct = useSelector((state)=>state.product.payload);
     const history = useHistory();
     const [allSearch, setAllSearch] = useState("");
     const [name, setName] = useState("");
 
     useEffect(()=>{
         searchFilter(name);
-    }, [name]);
+    }, []);
 
     const searchFilter = useCallback((name)=>{
         if (name.length !== 0){
             axios.post(config.baseUrl+'/institution/search', {name})
                 .then(response=>{
                     setAllSearch(response.data);
-                    console.log(response.data)
                 })
                 .catch(error=>{
-                    console.log("error "+error)
                 });
         }else {
             setAllSearch("");
         }
     }, [name]);
+
+    const onHandleClick = (event) =>{
+        event.preventDefault();
+        console.log(selesct)
+    };
+
+    const getIdentity = (name, id) =>{
+        dispatch ({
+            type: 'SEARCH_INSTITUTE',
+            payload: {
+                'name': name,
+            'identity': id}
+        });
+    }
 
     const notifyFailed = (err)=>{
         toast.error(err)
@@ -52,13 +68,13 @@ const Search = () => {
             {allSearch.length !==0 ?
             <div className="search-results">
                 {Object.keys(allSearch).map((search, index)=>(
-                    <div key={index} className="result">
+                    <Link to={"/institute/" + allSearch[search]['username']} key={index} className="result" >
                         <img src={allSearch[search]['logo']} alt={allSearch[search]['username']} />
                         <div>
                             <h4 className="name">{allSearch[search]['username']}</h4>
                             <p className="address">{allSearch[search]['address']}</p>
                         </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
                 :<div className="spinner_load_search">

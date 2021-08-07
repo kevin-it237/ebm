@@ -16,7 +16,7 @@
     }
     .search {
         padding: 20px;
-        padding-bottom: 5px;
+        margin-top: 10px;
         display: flex;
         flex-direction: column;
         background-position: center;
@@ -59,6 +59,18 @@
                     }
                 }
             }
+        }
+
+    }
+
+    .filters{
+        display: flex;
+        margin-top: 30vh;
+        font-weight: bold;
+
+        >.option{
+            font-weight: bold;
+            font-size: larger;
         }
     }
 
@@ -130,5 +142,11 @@
                 margin-top: 6px;
             }
         }
+    }
+    .MuiSlider-rail {
+        width: 100% !important;
+        height: 88px !important;
+
+        background-color: currentColor;
     }
 }
