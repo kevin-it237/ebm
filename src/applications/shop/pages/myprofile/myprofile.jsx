@@ -6,7 +6,7 @@ import StarsRating from "../../components/stars.rating/stars.rating"
 import Reviews from "../../components/reviews/reviews"
 import Services from "../../components/services.profile/services.profile"
 import Localization from "../../components/localization/localization"
-import Works from "../../components/works/works"
+import Works from "../../components/works.profile/works.profile"
 import img from "../../../../assets/images/mansory.png";
 import {ReactComponent as Uneye} from "../../../../assets/icons/uneye.svg";
 import {ReactComponent as Eye} from "../../../../assets/icons/eye.svg";
