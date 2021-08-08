@@ -1,15 +1,55 @@
-import React, {useState} from 'react'
-import { NavLink } from 'react-router-dom'
+import React, {useCallback, useEffect, useState} from 'react'
+import {NavLink, useHistory} from 'react-router-dom'
 import './layout.scss'
 import Home from "../../../assets/icons/home.svg"
 import Chat from "../../../assets/icons/chat.svg"
 import Search from "../../../assets/icons/search.svg"
 import Document from "../../../assets/icons/documents.svg"
 import UserAccount from "../../../assets/icons/user_account.svg"
+import axios from "axios";
+import config from "../../../config/index";
+import {getToken} from "../../../config/helpers";
 
 const Layout = ({children}) => {
+    const history = useHistory();
     const [drawerOpen,setDrawerOpen]=useState(false);
+    const [user,setUser]=useState([]);
     window.setDrawerOpen =  setDrawerOpen;
+
+    useEffect(()=>{
+        getUser();
+    }, []);
+
+    console.log(user)
+
+    const getUser=()=>{
+        axios.get(config.baseUrl+'/user/show')
+            .then(response=>{
+                console.log(response.data.message)
+                setUser(response.data.message)
+            })
+            .catch(error=>{
+                console.log(error)
+            })
+    }
+
+    const onLock=(event)=>{
+        event.preventDefault();
+        setDrawerOpen(false);
+    }
+
+    const logout=()=>{
+        axios.get(config.baseUrl+'/user/logout')
+            .then(response=>{
+                window.localStorage.removeItem('token');
+                setUser([]);
+                setDrawerOpen(false)
+                history.push('/login')
+            })
+            .catch(error=>{
+                console.log(error)
+            })
+    }
     return (
         <>
             <div id="layout">
@@ -25,10 +65,14 @@ const Layout = ({children}) => {
                     </div>
                     <div style={{height:'calc(100vh -  210px)',overflowY:'auto',overflowX:'hidden'}}>
                         <ul>
-                            <li> <NavLink to={"/home"} >Acceuil</NavLink> </li>
-                            <li> <NavLink to={"/products"} >Produits</NavLink> </li>
-                            <li> <NavLink to={"/profile"} >Profil</NavLink> </li>
-                            <li> <NavLink to={"/advanced-search"} >Recherche</NavLink> </li>
+                            <li> <NavLink to={"/home"} onClick={(event)=> {event.preventDefault();
+                                history.push('/home'); setDrawerOpen(false)}}>Acceuil</NavLink> </li>
+                            <li> <NavLink to={"/products"} onClick={(event)=> {event.preventDefault();
+                                history.push('/products'); setDrawerOpen(false)}}>Produits</NavLink> </li>
+                            <li> <NavLink to={"/profile"} onClick={(event)=> {event.preventDefault();
+                                history.push('/profile'); setDrawerOpen(false)}}>Profil</NavLink> </li>
+                            <li> <NavLink to={"/advanced-search"} onClick={(event)=> {event.preventDefault();
+                                history.push('/advanced-search'); setDrawerOpen(false)}}>Recherche</NavLink> </li>
                         </ul>
                     </div>
                     <div style={{display:'flex',flexDirection:"row",height:60,alignItems:"center",borderTop:"1px solid rgb(0, 0, 0, 0.05)"}}>
@@ -36,8 +80,8 @@ const Layout = ({children}) => {
                             <img src={require('../../../assets/images/avatar.png').default} style={{height:40,borderRadius:"50%",backgroundColor:"#eee",marginRight:20,marginLeft:15}}/>
                         </div>
                         <div style={{flexGrow:1,display:'flex',flexDirection:'column',justifyContent:"center"}}>
-                            <h2 style={{fontSize:10,marginBottom:5}} id={"nav-bar-username"}>Tamko K Clarence (Expert)</h2>
-                            <strong>Logout</strong>
+                            <h2 style={{fontSize:10,marginBottom:5}} id={"nav-bar-username"}>{user.firstname} {user.lastname} ({user.role})</h2>
+                            <strong onClick={logout}>Logout</strong>
                         </div>
                     </div>
 

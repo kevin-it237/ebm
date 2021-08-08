@@ -288,8 +288,9 @@ const AdvancedSearch = () => {
 
     const getServiceByNameLike = () => {
         axios.post(config.baseUrl + '/institution/rate/name/show',
-            {rating: star, around: distance})
+            {rating: star, name: recherche})
             .then(response => {
+                console.log(response.data)
                 setSearch(response.data.message)
             })
             .catch(error => {

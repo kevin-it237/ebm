@@ -31,9 +31,10 @@ const MyProfile = () => {
                 if (response.data.message.role === 'INSTITUTION'){
                     axios.get(config.baseUrl+'/institution/info')
                         .then(response=>{
+                            console.log(response.data.message)
                             setInfoForm({
-                                name: infoUser.firstname,
-                                surname: infoUser.lastname,
+                                name: response.data.message.name,
+                                surname: response.data.message.surname,
                                 email: response.data.message.email,
                                 address: response.data.message.address,
                                 phone: response.data.message.phone
@@ -56,23 +57,34 @@ const MyProfile = () => {
                 console.log(error)
             })
     }, []);
-
     const editProfile=(event)=>{
         event.preventDefault();
-        const user = {
+        let user = {
             firstname: infoForm.name,
             lastname: infoForm.surname,
-            email: infoForm.email,
-            address: infoForm.address,
-            phone: infoForm.phone
+            email: infoForm.email
         }
-        axios.put(config.baseUrl+'/user/update', {...user})
-            .then(response=>{
-                console.log(response)
-            })
-            .catch(error=>{
-                console.log(error)
-            })
+        if (infoUser.role === 'INSTITUTION'){
+            user['institution_address'] = infoForm.address;
+            user['institution_phone'] = infoForm.phone;
+            axios.put(config.baseUrl+'/institution/update', {...user})
+                .then(response=>{
+                    console.log(response)
+                })
+                .catch(error=>{
+                    console.log(error)
+                })
+        }else{
+            user['address'] = infoForm.address;
+            user['phone'] = infoForm.phone;
+            axios.put(config.baseUrl+'/user/update', {...user})
+                .then(response=>{
+                    console.log(response)
+                })
+                .catch(error=>{
+                    console.log(error)
+                })
+        }
     }
 
     const editProfilePassword=(event)=>{

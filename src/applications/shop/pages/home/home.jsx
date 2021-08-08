@@ -13,12 +13,11 @@ import HomeDrawerContent from "../../components/home.drawer.content/home.drawer.
 import axios from "axios";
 import config from "../../../../config/index";
 import { SnackbarProvider } from 'material-ui-toast';
+import {getToken} from "../../../../config/helpers";
 
 
 const Home = () => {
     const history = useHistory();
-    const params = useParams();
-    const profile = params.slug;
     const [showDrawer, setShowDrawer] = useState(false)
     const [products, setProduct] = useState("");
     const [services, setService] = useState("");

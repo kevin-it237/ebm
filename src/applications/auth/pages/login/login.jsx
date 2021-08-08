@@ -31,11 +31,14 @@ const Login = () => {
             password: loginForm.password,
             role: role.role
         }
+
+        console.log(user)
         axios.post(config.baseUrl+"/login", {...user}).
         then(response=>{
             if(response.data.message === "Votre compte est en cours de vérification"){
                 notifyInfo("Votre compte est en cours de vérification")
             }else {
+                console.log(response.data.acces_token)
                 const token = `Bearer ${response.data.acces_token}`;
                 setToken(token);
                 response.headers.Authorization = `Bearer ${JSON.stringify(response.data.acces_token)}`;
