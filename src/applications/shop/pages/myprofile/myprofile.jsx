@@ -3,7 +3,8 @@ import './myprofile.scss'
 import { useHistory } from 'react-router';
 import { ReactComponent as Back } from "../../../../assets/icons/back.svg"
 import Services from "../../components/services.profile/services.profile"
-import Works from "../../components/works/works"
+import Localization from "../../components/localization/localization"
+import Works from "../../components/works.profile/works.profile"
 import img from "../../../../assets/images/mansory.png";
 import {ReactComponent as Uneye} from "../../../../assets/icons/uneye.svg";
 import {ReactComponent as Eye} from "../../../../assets/icons/eye.svg";
