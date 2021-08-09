@@ -5,6 +5,10 @@ import './services.profile.scss';
 import Modal from "../../../../app/components/modal/modal";
 import Select from 'react-select'
 import makeAnimated from 'react-select/animated';
+import axios from "axios";
+import config from "../../../../config";
+import {toast} from "material-react-toastify";
+import LoaderIcon from "react-loader-icon";
 
 const SERVICES_LIST = [
     {
@@ -24,27 +28,54 @@ const animatedComponents = makeAnimated();
 
 const ServicesProfile = () => {
 
-    const [services, setServices] = useState([]);
+    const [services, setServices] = useState([]);//contient les services de l'institution
     const [showModal, setShowModal] = useState(false);
+    const [selectService, setselectService] = useState([]); //contient tous les services de la base
+    const [activeServiceIndex, setActiveServiceIndex] = useState(-1); //contient tous les services de la base
 
     useEffect(() => {
-        setServices(SERVICES_LIST);
+        getServiceInstitut();
+        getAllservice();
+        //setServices(SERVICES_LIST);
     }, [])
 
-    const toggleService = (serviceId) => {
-        const serviceList = services.map(ser => {
-            if(ser.id === serviceId) {
-                ser.actived = !ser.actived
-            }
-            return ser;
-        })
-        setServices(serviceList);
+    const getAllservice = () => {
+        let tab = []
+        axios.get(config.baseUrl + '/user/service/index')
+            .then(response => {
+                Object.keys(response.data.message).map((search, index) => (
+                    tab[index] = {
+                        value: response.data.message[search].id,
+                        label: response.data.message[search].name_fr,
+                    }
+                ))
+                setselectService(tab)
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
-    const options = [
-        { value: 'chocolate', label: 'Chocolate' },
-        { value: 'strawberry', label: 'Strawberry' },
-        { value: 'vanilla', label: 'Vanilla' }
-    ]
+
+    console.log(services)
+    const toggleService = (index) => {
+        setActiveServiceIndex(activeServiceIndex===index?-1:index)
+    }
+
+    const getServiceInstitut = () =>{
+        axios.get(config.baseUrl+"/institution/services/show")
+            .then(response=>{
+                console.log(response.data.message)
+                setServices(response.data.message)
+            })
+            .catch(error=>{
+                notify(error)
+            })
+    }
+
+    const notify = (err) => toast.error(err);
+
+    console.log(selectService)
+    console.log(services)
     const groupStyles = {
         display: 'flex',
         alignItems: 'center',
@@ -64,30 +95,38 @@ const ServicesProfile = () => {
     };
     return (
         <div className="services">
-            {
-                services.map((service, i) => (
-                    <div key={i} className={`service-group ${service.actived ? "actived" : ""}`}>
-                        <div className="title-wrapper">
-                            <FilledArrow />
-                            <h3 onClick={() => toggleService(service.id)} className="title">{service.title}</h3>
-                        </div>
-                        {
-                            service.actived&&
-                            <div key={i} className="items">
-                                {
-                                    service.items.map(item => (
-                                        <p key={item}>{item}</p>
-                                    ))
-                                }
+            {services.length !== 0 ?
+                <div>
+                    {
+                        Object.keys(services).map((service, i) => (
+                            <div key={i} className={`service-group ${activeServiceIndex === i ? 'actived' : ''}`}>
+                                <div className="title-wrapper" onClick={(event) => {
+                                    event.preventDefault();
+                                    toggleService(i)
+                                }}>
+                                    <FilledArrow/>
+                                    <h3 className="title">{service}</h3>
+                                </div>
+                                {activeServiceIndex === i && (services[service]).map(item => (
+                                    <div key={i} className="items">
+                                        {
+                                            <p>{item.name_fr}</p>
+                                        }
+                                    </div>
+                                ))}
+
+
                             </div>
-                        }
-                    </div>
-                ))
+                        ))
+                    }</div>
+                : <div className="spinner_load_search">
+                    <LoaderIcon type={"cylon"} color={"#6B0C72"}/>
+                </div>
             }
            <div className="button-wrapper" onClick={e=>{
                setShowModal(true);
            }}>
-                <Button size="md">Add a service</Button>
+                <Button size="md">Ajouter un Service</Button>
             </div>
             {
                 showModal &&
@@ -95,14 +134,15 @@ const ServicesProfile = () => {
                     <div className="cart-modal-content">
                         <h3>Choisir un service</h3>
                         <Select
+                            placeholder="Service(s)..."
                             closeMenuOnSelect={false}
                             components={animatedComponents}
                             isMulti
-                            options={options}
+                            options={selectService}
                         />
                         <Button size="sm" onClick={() => {
                             setShowModal(false)
-                        }}>Completer</Button>
+                        }}>Enregistrer</Button>
                     </div>
                 </Modal>
             }

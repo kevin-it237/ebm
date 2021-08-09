@@ -18,6 +18,15 @@
             height: 4rem;
             border-radius: 50%;
             border: solid 1px $stroke-color;
+            background-color: $primary;
+        }
+        >.avatar-shop {
+            width: 3.5rem;
+            height: 3.5rem;
+            padding: 1vh;
+            border-radius: 50%;
+            border: solid 1px $stroke-color;
+            background-color: $primary;
         }
         >.link-profile{
             width: 4rem;
@@ -104,4 +113,47 @@
     display: flex;
     justify-content: space-around;
   }
+}
+.cart-modal-service {
+    display: flex;
+    flex-direction: column;
+    .like-service{
+        display: flex;
+        justify-content: space-around;
+        height: 5vh;
+        align-items: center;
+    }
+    .like {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        box-shadow: 0px 3px 10px rgba($secondary, .1);
+        border-radius: 50%;
+    }
+    .section-title-product {
+        font-size: 1.7rem;
+        font-weight: bold;
+        color: $primary;
+        margin-top: -8px;
+        margin-bottom: 2vh;
+    }
+    .name-service{
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: $secondary;
+    }
+    .product-image-product{
+        height: 280px;
+        width: 210px;
+        margin: 1.5vh;
+    }
+}
+.cart {
+    padding: 10px;
+    //width: 20px;
+    background-color: $primary;
+    border-bottom-right-radius: 15px;
+    cursor: pointer;
 }

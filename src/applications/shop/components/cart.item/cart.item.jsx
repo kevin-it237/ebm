@@ -38,6 +38,7 @@ const ProductItem = (props, state) => {
         update([...products])
     }
 
+    console.log(count)
     const notifyFailed = (err)=>{
         toast.error(err)
     }

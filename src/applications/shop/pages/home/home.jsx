@@ -5,23 +5,35 @@ import 'react-toastify/dist/ReactToastify.css'
 import InputSearch from "../../../../app/components/inputs/input.search/input.search";
 import ProductItem from '../../components/product.item/product.item';
 import Menu from "../../../../assets/icons/menu.svg"
-import avatar from "../../../../assets/images/avatar.png"
 import './home.scss'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-import Loader from "react-loader-spinner";
 import HomeDrawerContent from "../../components/home.drawer.content/home.drawer.content"
 import axios from "axios";
 import config from "../../../../config/index";
-import { SnackbarProvider } from 'material-ui-toast';
-import {getToken} from "../../../../config/helpers";
+import LoaderIcon from "react-loader-icon";
+import img from "../../../../assets/images/mansory.png";
+import { withStyles } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import Badge from '@material-ui/core/Badge';
 
 
 const Home = () => {
     const history = useHistory();
-    const [showDrawer, setShowDrawer] = useState(false)
+    const [selectProduct, setSelectProduct] = useState([])
+    const [showDrawerService, setShowDrawerService] = useState(false)
     const [products, setProduct] = useState("");
     const [services, setService] = useState("");
     const [parent_services, setParent_Service] = useState("");
+    const [favorites, setFavorites] = useState([]);
+    const [star, setStar] = useState(0);
+    const [Qty, setQty] = useState(0);
+
+    const StyleBadge = withStyles((theme)=>({
+        badge: {
+            fontSize: 11,
+        },
+    }))(Badge)
 
     const openDrawer = () => {
         if(window.setDrawerOpen){
@@ -32,6 +44,8 @@ const Home = () => {
     useEffect(()=>{
         getAllProduct();
         getAllParentService();
+        getFavorites();
+        getCartQuantity();
     }, []);
 
     const getAllProduct = ()=> {
@@ -52,6 +66,24 @@ const Home = () => {
         })
     }
 
+    const getFavorites = ()=> {
+        axios.get(config.baseUrl + '/user/favorites')
+            .then(response => {
+                setFavorites(response.data.message);
+            }).catch(err => {
+            notifyFailed(err)
+        })
+    }
+
+    const getCartQuantity = ()=> {
+        axios.get(config.baseUrl + '/user/cart/quantity/somme')
+            .then(response => {
+                setQty(response.data.message);
+            }).catch(err => {
+            notifyFailed(err)
+        })
+    }
+
     const myProfile = ()=>{
         history.push('/profile')
     }
@@ -64,8 +96,12 @@ const Home = () => {
         <div id="home">
             <div id="header">
                 <img onClick={openDrawer} className="menu" src={Menu} alt="" />
-                <img className="avatar" onClick={myProfile} src={avatar} alt=""/>
-
+                <IconButton aria-label="cart">
+                    <StyleBadge badgeContent={Qty} color="secondary">
+                        <ShoppingCartIcon style={{width: 30, height: 30}} onClick={(e)=>{e.preventDefault();
+                        history.push('/cart')}}/>
+                    </StyleBadge>
+                </IconButton>
             </div>
             <div className="search">
                 <InputSearch onClick={() => history.push('/search')} placeholder="Recherchez une institution..." />
@@ -79,7 +115,7 @@ const Home = () => {
             {parent_services.length !== 0 ?
             <div className="services-wrapper">
                 {Object.keys(parent_services).map((parent_service, index)=>(
-                    <div key={index} className="service-item service-item--1" onClick={()=>{openDrawer(); setService(parent_services[parent_service]['name'])}}>
+                    <div key={index} className="service-item service-item--1" onClick={()=>{setShowDrawerService(true); setService(parent_services[parent_service]['name'])}}>
                         <div className="service-title">
                             <h2>{parent_services[parent_service]['name']}</h2>
                             <span></span>
@@ -88,14 +124,10 @@ const Home = () => {
                 ))}
             </div>
                 :
-            <div className="services-wrapper">
-                <div className="service-item service-item--2">
-                    <div className="service-title">
-                        <h2>Cheveux</h2>
-                        <span></span>
-                    </div>
-                </div>
-            </div>}
+                <div className="spinner_loader">
+                    {/*<Loader type="Circles" height={70} width={70} color="#6B0C72"/>*/}
+                    <LoaderIcon type="cylon" color="#6B0C72"/>
+                </div>}
 
             <div className="section-title">
                 <h2>Produits</h2>
@@ -114,11 +146,12 @@ const Home = () => {
                 </div>
                 :
                 <div className="spinner_loader">
-                    <Loader type="Circles" height={70} width={70} color="#6B0C72"/>
+                    {/*<Loader type="Circles" height={70} width={70} color="#6B0C72"/>*/}
+                    <LoaderIcon type="cylon" color="#6B0C72"/>
                 </div>
             }
 
-            {showDrawer&&<HomeDrawerContent onClose={() => openDrawer(false) }
+            {showDrawerService&&<HomeDrawerContent onClose={() => setShowDrawerService(false) }
                                             name={services} />}
         </div>
     )

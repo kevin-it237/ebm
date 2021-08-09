@@ -23,6 +23,7 @@ import config from "../../../../config";
 import Button from "../../../../app/components/buttons/button/button"
 import Slider from '@material-ui/core/Slider';
 import {MapGoogle} from "../../../../app/components/map/map.google";
+import LoaderIcon from "react-loader-icon";
 
 
 const AdvancedSearch = () => {
@@ -51,6 +52,7 @@ const AdvancedSearch = () => {
     const [rateSearch, setRateSearch] = useState([]); //for the filter institution by like
     const [serviceAround, setServiceAround] = useState([]); //for the filter institution by distance
     const [search, setSearch] = useState([]); //for the filter institution by distance
+    const [loading, setLoading] = useState(false); //for the loader
     const [showFilter, setShowFilter] = useState(false)
     const history = useHistory()
 
@@ -65,7 +67,6 @@ const AdvancedSearch = () => {
     useEffect(() => {
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(function (position) {
-                //resultLocation(position.coords.latitude, position.coords.longitude);
                 setLat(position.coords.latitude)
                 setLong(position.coords.longitude)
             })
@@ -86,26 +87,6 @@ const AdvancedSearch = () => {
             })
         }
     }, [])
-
-    const RangeSlider = withStyles({
-        thumb: {
-            height: 20,
-            width: 20,
-            backgroundColor: '#fff',
-            marginTop: -8,
-            marginLeft: -12,
-            boxShadow: '-1px 1px #d4d4d4'
-        },
-        track: {
-            height: 6,
-            borderRadius: 4,
-        },
-        rail: {
-            height: 6,
-            borderRadius: 4,
-            backgroundColor: 'gray',
-        },
-    })(Slider);
 
     /*const getPosition=()=>{
         if ("geolocation" in navigator){
@@ -182,33 +163,41 @@ const AdvancedSearch = () => {
 
     const getServiceByName = (name) => {
         setSearch([]);
+        setLoading(true)
         axios.post(config.baseUrl + '/user/service/search', {name: name})
             .then(response => {
                 console.log(response.data.message);
                 setSearch(response.data.message);
+                setLoading(false)
             })
             .catch(error => {
-                console.log(error)
+                notify(error)
+                setLoading(false)
             });
     }
 
     const getServiceAround = () => {
         let location = [lat, long];
         location = location.join(",")
+        setLoading(true)
         if (distance !== 0) {
             axios.post(config.baseUrl + '/user/service/search',
                 {around: distance, location: location})
                 .then(response => {
-                    //console.log(response.data)
+                    setLoading(false)
                     setSearch(response.data.message)
                 })
                 .catch(error => {
-                    console.log(error)
+                    notify(error)
+                    setLoading(false)
                 })
         }
     }
 
+    const notify = (err) => toast.error(err);
+
     const getServiceByNameDistance = () => {
+        setLoading(true)
         let location = [lat, long];
         location = location.join(",")
         if (distance !== 0) {
@@ -217,13 +206,16 @@ const AdvancedSearch = () => {
                 .then(response => {
                     setServiceAround(response.data.message)
                     setSearch(response.data.message)
+                    setLoading(false)
                 })
                 .catch(error => {
                     console.log(error)
+                    setLoading(false)
                 })
         }
     }
 
+    /*
     const getServiceByAllParameter = () => {
         let location = [lat, long];
         location = location.join(",")
@@ -238,96 +230,114 @@ const AdvancedSearch = () => {
                 console.log(error)
             })
     }
-
+*/
+    /*
     const getRate = (event) => {
         event.preventDefault();
     }
+
+     */
     const onSelect = (event) => {
         getServiceByName(event.label);
         setRecherche(event.label)
     }
 
     const getServiceByLike = () => {
+        setLoading(true)
         setSearch([]);
         axios.post(config.baseUrl + '/institution/rate/show', {rating: star})
             .then(response => {
                 setRateSearch(response.data.message)
                 setSearch(response.data.message)
-                console.log(response.data.message)
+                setLoading(false)
             })
             .catch(error => {
-                console.log(error)
+                notify(error)
+                setLoading(false)
             })
     }
 
     const getServiceByNameDistanceLike = () => {
+        setLoading(true)
         let location = [lat, long];
         location = location.join(",")
         axios.post(config.baseUrl + '/institution/rate/around/show',
             {rating: star, around: distance, location: location, name: recherche})
             .then(response => {
                 setSearch(response.data.message)
+                setLoading(false)
             })
             .catch(error => {
-                console.log(error)
+                notify(error)
+                setLoading(false)
             })
     }
 
     const getServiceByDistanceLike = () => {
+        setLoading(true)
         let location = [lat, long];
         location = location.join(",")
         axios.post(config.baseUrl + '/institution/rate/around/show',
             {rating: star, around: distance, location: location})
             .then(response => {
                 setSearch(response.data.message)
+                setLoading(false)
             })
             .catch(error => {
-                console.log(error)
+                notify(error)
+                setLoading(false)
             })
     }
 
     const getServiceByNameLike = () => {
+        setLoading(true)
         axios.post(config.baseUrl + '/institution/rate/name/show',
             {rating: star, name: recherche})
             .then(response => {
-                console.log(response.data)
                 setSearch(response.data.message)
+                setLoading(false)
             })
             .catch(error => {
-                console.log(error)
+                notify(error)
+                setLoading(false)
             })
     }
 
     const saveCommand = (event) => {
         event.preventDefault();
         setSearch([])
-        if (recherche === ""){
-            if (distance !==0 && star ===0){
+        if (star === null) {
+            setStar(0)
+        }
+        if (recherche === "") {
+            if (distance !== 0 && star === 0) {
+                console.log('5')
                 getServiceAround();
-            }else if(distance === 0 && star !== 0){
+            } else if (distance === 0 && star !== 0) {
+                console.log('6')
                 getServiceByLike();
-            }else if (distance !== 0 && star!==0){
+            } else if (distance !== 0 && star !== 0) {
+                console.log('7')
+                console.log(star)
                 getServiceByDistanceLike();
             }
-        }else{
-            if (distance !==0 && star ===0){
+        } else {
+            if (distance !== 0 && star === 0) {
                 console.log('1')
                 getServiceByNameDistance()
-            }else if(distance === 0 && star !== 0){
+            } else if (distance === 0 && star !== 0) {
                 console.log('2')
                 getServiceByNameLike()
-            }else if (distance !== 0 && star!==0){
+            } else if (distance !== 0 && star !== 0) {
                 console.log('3')
                 getServiceByNameDistanceLike()
-            }else if (distance ===0 && star===0){
+            } else if (distance === 0 && star === 0) {
                 console.log("4")
                 getServiceByName();
             }
         }
         setShowFilter(false);
     }
-
-    console.log(recherche)
 
     return (
         <>
@@ -375,32 +385,35 @@ const AdvancedSearch = () => {
                                         alignItems: 'center'
                                     }}>
                                         <div style={{display: 'flex', flexDirection: 'column'}}>
-                                            {search[sear].username ? <h4 className="name"> {search[sear].username}</h4> :
-                                                search[sear].institution.username ? <h4 className="name"> {search[sear].institution.username}</h4>: ""}
-                                            {search[sear].institution_address ? <p className="address">{search[sear].institution_address}</p> :
-                                                search[sear].institution.address ? <p className="address">{search[sear].institution.address}</p>:""}
+                                            {search[sear].username ?
+                                                <h4 className="name"> {search[sear].username}</h4> :
+                                                search[sear].institution.username ?
+                                                    <h4 className="name"> {search[sear].institution.username}</h4> : ""}
+                                            {search[sear].institution_address ?
+                                                <p className="address">{search[sear].institution_address}</p> :
+                                                search[sear].institution.address ?
+                                                    <p className="address">{search[sear].institution.address}</p> : ""}
                                         </div>
-                                        {search[sear].distance_f ? <p className="address">{search[sear].distance_f} {unit}</p> :
-                                            search[sear].rating ? <Rating value={search[sear].rating} precision={0.5}/> : ""}
+                                        {search[sear].distance_f ?
+                                            <p className="address">{search[sear].distance_f} {unit}</p> :
+                                            search[sear].rating ?
+                                                <Rating value={search[sear].rating} precision={0.5}/> : ""}
                                     </div>
                                 </div>
                             ))}
-                            {/*Object.keys(serviceByAllParameter).map((search, index) => (
-                                <div key={index} className="result">
-                                    <img src={img} alt=""/>
-                                    <div style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center'
-                                    }}>
-                                        <div style={{display: 'flex', flexDirection: 'column'}}>
-                                            <h4 className="name"> {serviceByAllParameter[search].username}</h4>
-                                            <p className="address">{serviceByAllParameter[search].institution_address}</p>
-                                        </div>
-                                        <p className="address">{serviceByAllParameter[search].distance_f} {unit}</p>
-                                    </div>
-                                </div>
-                            ))*/}
+                            {!loading && search.length === 0 && <div>
+                                <center>
+                                    <br/>
+                                    <img src={require("../../../../assets/images/telescope.png").default}/>
+                                    <p>{search.length !== 0 ? "Aucun resultat trouve" : "Rechercher une institution"}</p>
+                                </center>
+                            </div>}
+                            {loading && <div>
+                                <center>
+                                    <br/>
+                                    <LoaderIcon type={"cylon"} color={"#6B0C72"}/>
+                                </center>
+                            </div>}
                         </div>
                         :
                         <div>

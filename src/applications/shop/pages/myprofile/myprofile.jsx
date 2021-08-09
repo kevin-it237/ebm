@@ -11,6 +11,8 @@ import {ReactComponent as Eye} from "../../../../assets/icons/eye.svg";
 import Button from "../../../../app/components/buttons/button/button";
 import config from "../../../../config/index";
 import axios from "axios";
+import Loader from "react-loader-spinner";
+import LoaderIcon from "react-loader-icon";
 
 const MyProfile = () => {
     const history = useHistory()
@@ -38,7 +40,8 @@ const MyProfile = () => {
                                 surname: response.data.message.surname,
                                 email: response.data.message.email,
                                 address: response.data.message.address,
-                                phone: response.data.message.phone
+                                phone: response.data.message.phone,
+                                logo: response.data.message.logo
                             })
                         })
                         .catch(error=>{
@@ -58,6 +61,8 @@ const MyProfile = () => {
                 console.log(error)
             })
     }, []);
+
+    console.log(infoForm)
     const editProfile=(event)=>{
         event.preventDefault();
         let user = {
@@ -130,7 +135,7 @@ const MyProfile = () => {
     let bottomContent;
     if (content === "Information") {
         bottomContent = (<div className={"signup-container"} style={{width:"100%"}}>
-            <form onSubmit={onSubmit} className="auth-container">
+            {infoForm ?<form onSubmit={onSubmit} className="auth-container">
                 {Object.keys(infoForm).map((input, index) => (
                     <div key={index} className="auth-container__input-container">
                         <input
@@ -149,11 +154,16 @@ const MyProfile = () => {
                 ))}
 
                 <Button onClick={editProfile}
-                    variant="primary"
-                    type="submit"
-                    size="lg">Valider
+                        variant="primary"
+                        type="submit"
+                        size="lg">Valider
                 </Button>
-            </form>
+            </form>:
+                <div className="spinner_load_search">
+                    {/*<Loader type="Circles" height={70} width={70} color="#6B0C72"/>*/}
+                    <LoaderIcon type="cylon" color="#6B0C72"/>
+                </div>
+            }
         </div>);
     }else  if (content === "Mot de passe") {
             bottomContent = (<div className={"signup-container"} style={{width:"100%"}}>
@@ -207,7 +217,16 @@ const MyProfile = () => {
 
                 <div className="institute-content">
                     <div className="owner-infos">
-                        <img className="avatar" src={img} alt=""/>
+                        {infoForm.logo ? <img className="avatar" src={infoForm.logo} alt={infoUser.username}/>
+                        : <div style={{
+                                backgroundColor: "#eee", opacity: 0.8, display: "flex",
+                                alignItems: "center", justifyContent: "center", height: 75,
+                                width: 75, marginRight: 10, borderRadius: '50%', boxShadow: '0 2px 15px rgba(#000, .35)'
+                            }}>
+
+                                <strong style={{color: "white", fontSize: 34}}>+</strong>
+
+                            </div>}
                         <div>
                             <h3 className="name">{infoUser.firstname} {infoUser.lastname}</h3>
                             <p className="address">Joined 2 days ago</p>

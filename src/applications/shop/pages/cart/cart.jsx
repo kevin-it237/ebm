@@ -38,6 +38,8 @@ const Cart = () => {
         }
     }
 
+    console.log(products.quantity)
+
     console.log(products)
     const saveCommand = () => {
         axios.post(config.baseUrl + '/user/commande/register', {comment: comment})

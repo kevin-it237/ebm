@@ -10,6 +10,7 @@ import axios from "axios";
 import {toast} from "react-toastify";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from "react-loader-spinner";
+import LoaderIcon from "react-loader-icon";
 
 const Search = () => {
 
@@ -17,19 +18,22 @@ const Search = () => {
     const selesct = useSelector((state)=>state.product.payload);
     const history = useHistory();
     const [allSearch, setAllSearch] = useState("");
+    const [loading,setLoading] =useState(false);
     const [name, setName] = useState("");
 
     useEffect(()=>{
-        searchFilter(name);
+        //searchFilter(name);
     }, []);
-
     const searchFilter = useCallback((name)=>{
+        setLoading(true)
         if (name.length !== 0){
             axios.post(config.baseUrl+'/institution/search', {name})
                 .then(response=>{
                     setAllSearch(response.data);
+                    setLoading(false);
                 })
                 .catch(error=>{
+                    setLoading(false);
                 });
         }else {
             setAllSearch("");
@@ -41,18 +45,6 @@ const Search = () => {
         console.log(selesct)
     };
 
-    const getIdentity = (name, id) =>{
-        dispatch ({
-            type: 'SEARCH_INSTITUTE',
-            payload: {
-                'name': name,
-            'identity': id}
-        });
-    }
-
-    const notifyFailed = (err)=>{
-        toast.error(err)
-    }
     return (
         <div id="search">
             <div className="search">
@@ -65,23 +57,33 @@ const Search = () => {
                 <h2>{allSearch.length} {allSearch.length < 2 ? "Institution trouvée":"Institutions trouvées"}</h2>
                 <span></span>
             </div>
-            {allSearch.length !==0 ?
-            <div className="search-results">
-                {Object.keys(allSearch).map((search, index)=>(
-                    <Link to={"/institute/" + allSearch[search]['username']} key={index} className="result" >
-                        <img src={allSearch[search]['logo']} alt={allSearch[search]['username']} />
-                        <div>
-                            <h4 className="name">{allSearch[search]['username']}</h4>
-                            <p className="address">{allSearch[search]['address']}</p>
-                        </div>
-                    </Link>
-                ))}
-            </div>
-                :<div className="spinner_load_search">
-                    <Loader type="Circles" height={70} width={70} color="#6B0C72"/>
-                </div>
-            }
-            
+            {!loading && allSearch.length !==0 && name &&
+                <div className="search-results">
+                    {Object.keys(allSearch).map((search, index)=>(
+                        <Link to={"/institute/" + allSearch[search]['username']} key={index} className="result" >
+                            <img src={allSearch[search]['logo']} alt={allSearch[search]['username']} />
+                            <div>
+                                <h4 className="name">{allSearch[search]['username']}</h4>
+                                <p className="address">{allSearch[search]['address']}</p>
+                            </div>
+                        </Link>
+                    ))}
+                </div>}
+
+            {!loading && allSearch.length===0 && <div>
+                <center>
+                    <br/>
+                    <img src={require("../../../../assets/images/telescope.png").default}/>
+                    <p>{name!==""?"Aucun resultat trouve":"Rechercher une institution"}</p>
+                </center>
+            </div>}
+            {loading && <div>
+                <center>
+                    <br/>
+                    <LoaderIcon type={"cylon"} color={"#6B0C72"}/>
+                </center>
+            </div>}
+
         </div>
     )
 }

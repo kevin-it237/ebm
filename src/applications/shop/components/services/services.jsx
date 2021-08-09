@@ -8,6 +8,7 @@ import Loader from "react-loader-spinner";
 import Modal from "../../../../app/components/modal/modal";
 import config from "../../../../config";
 import {useParams} from "react-router-dom";
+import LoaderIcon from "react-loader-icon";
 
 const Services = (props) => {
 
@@ -88,6 +89,7 @@ const Services = (props) => {
         setActiveServiceIndex(activeServiceIndex===index?-1:index)
     }
 
+    console.log(services)
 
     return (
         <div className="services">
@@ -114,8 +116,9 @@ const Services = (props) => {
 
                         </div>
                     ))
-                }</div> : <div className="spinner_load_search">
-                    <Loader type="Circles" height={70} width={70} color="#6B0C72"/>
+                }</div>
+                : <div className="spinner_load_search">
+                    <LoaderIcon type={"cylon"} color={"#6B0C72"}/>
                 </div>
             }
 
