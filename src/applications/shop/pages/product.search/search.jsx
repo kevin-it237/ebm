@@ -9,6 +9,7 @@ import {toast} from "react-toastify";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import ProductItem from "../../components/product.item/product.item";
 import LoaderIcon from "react-loader-icon";
+import SwipeToDelete from 'react-swipe-to-delete-component';
 
 const Search = () => {
 
@@ -53,9 +54,12 @@ const Search = () => {
                 !loading && allSearch.length !==0 &&
                 <div className="products-wrapper">
                     {Object.keys(allSearch).map((item,index)=>(
+
                         <div key={index}>
                             <ProductItem price={allSearch[item]['price']} discount={allSearch[item]['discount']}
-                                         name={allSearch[item]['name_fr']} id={allSearch[item]['id']}/></div>
+                                         name={allSearch[item]['name_fr']} id={allSearch[item]['id']}/>
+                        </div>
+
                     ))}
                 </div>
             }

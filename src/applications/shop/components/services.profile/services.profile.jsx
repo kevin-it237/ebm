@@ -5,38 +5,30 @@ import './services.profile.scss';
 import Modal from "../../../../app/components/modal/modal";
 import Select from 'react-select'
 import makeAnimated from 'react-select/animated';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import axios from "axios";
 import config from "../../../../config";
 import {toast} from "material-react-toastify";
 import LoaderIcon from "react-loader-icon";
 
-const SERVICES_LIST = [
-    {
-        id: 1,
-        title: "Coupe Homme",
-        items: [ "Coupe et brushing femme", "Brushing", "Soin capillaire femme", "Coupe femme"],
-        actived: true
-    },
-    {
-        id: 2,
-        title: "Coupe Femme",
-        items: [ "Coupe et brushing femme", "Brushing", "Soin capillaire femme", "Coupe femme"],
-        actived: false
-    },
-]
 const animatedComponents = makeAnimated();
 
 const ServicesProfile = () => {
 
     const [services, setServices] = useState([]);//contient les services de l'institution
+    const [loading, setLoading] = useState(false);
+    const [data, setData] = useState(false);
+    const [identity, setIdentity] = useState("");
+    const [idDelete, setIdDelete] = useState("");
+    const [message, setMessage] = useState("");//Message a affiché
     const [showModal, setShowModal] = useState(false);
+    const [del, setDel] = useState(false);
     const [selectService, setselectService] = useState([]); //contient tous les services de la base
     const [activeServiceIndex, setActiveServiceIndex] = useState(-1); //contient tous les services de la base
 
     useEffect(() => {
         getServiceInstitut();
         getAllservice();
-        //setServices(SERVICES_LIST);
     }, [])
 
     const getAllservice = () => {
@@ -56,46 +48,73 @@ const ServicesProfile = () => {
             })
     }
 
-    console.log(services)
-    const toggleService = (index) => {
-        setActiveServiceIndex(activeServiceIndex===index?-1:index)
+    const deleteService = () => {
+        axios.post(config.baseUrl + '/institution/delete/service', {id: idDelete})
+            .then(res => {
+                getServiceInstitut()
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
 
-    const getServiceInstitut = () =>{
-        axios.get(config.baseUrl+"/institution/services/show")
-            .then(response=>{
-                console.log(response.data.message)
+    const toggleService = (index) => {
+        setActiveServiceIndex(activeServiceIndex === index ? -1 : index)
+    }
+
+    const getServiceInstitut = () => {
+        setLoading(true)
+        axios.get(config.baseUrl + "/institution/services/show")
+            .then(response => {
                 setServices(response.data.message)
+                setLoading(false)
+            })
+            .catch(error => {
+                notify(error)
+                setLoading(false)
+            })
+    }
+
+    console.log(services)
+
+    const addService = () => {
+        setLoading(true)
+        axios.post(config.baseUrl+'/institution/service/add', {service_id: identity})
+            .then(res=>{
+                console.log(res.data.message)
+                if (res.data.message){
+                    setData(true)
+                    setMessage(res.data.message)
+                }
+                axios.get(config.baseUrl + "/institution/services/show")
+                    .then(response => {
+                        console.log(res.data.message)
+                        setServices(response.data.message)
+                        setLoading(false)
+                    })
+                    .catch(error => {
+                        notify(error)
+                        setLoading(false)
+                    })
+                setLoading(false)
             })
             .catch(error=>{
-                notify(error)
+                console.log(error)
+                setLoading(false)
             })
     }
 
     const notify = (err) => toast.error(err);
 
+    const handleChange =(e)=>{
+        setIdentity(e.value)
+    }
+
     console.log(selectService)
-    console.log(services)
-    const groupStyles = {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    };
-    const groupBadgeStyles = {
-        backgroundColor: '#EBECF0',
-        borderRadius: '2em',
-        color: '#172B4D',
-        display: 'inline-block',
-        fontSize: 12,
-        fontWeight: 'normal',
-        lineHeight: '1',
-        minWidth: 1,
-        padding: '0.16666666666667em 0.5em',
-        textAlign: 'center',
-    };
+
     return (
         <div className="services">
-            {services.length !== 0 ?
+            {!loading && services.length !== 0 &&
                 <div>
                     {
                         Object.keys(services).map((service, i) => (
@@ -110,22 +129,34 @@ const ServicesProfile = () => {
                                 {activeServiceIndex === i && (services[service]).map(item => (
                                     <div key={i} className="items">
                                         {
-                                            <p>{item.name_fr}</p>
+                                            <div style={{
+                                                display: "flex", justifyContent: "space-between", height: 25,
+                                                fontSize: 12, marginRight: 20
+                                            }}>
+                                                <p>{item.name_fr}</p>
+                                                <DeleteOutlineIcon style={{height: 20, width: 20}} onClick={(e)=> {
+                                                    e.preventDefault(); setIdDelete(item.id); setDel(true)
+                                                }}/>
+                                            </div>
                                         }
                                     </div>
                                 ))}
-
-
                             </div>
                         ))
                     }</div>
-                : <div className="spinner_load_search">
-                    <LoaderIcon type={"cylon"} color={"#6B0C72"}/>
-                </div>
             }
-           <div className="button-wrapper" onClick={e=>{
-               setShowModal(true);
-           }}>
+            {
+                loading &&<LoaderIcon type={"cylon"} color={"#6B0C72"}/>
+            }
+            {
+                !loading && services.length === 0 &&
+                    <center>
+                        <h2 style={{marginTop: '10vh', fontSize: 12}}>Aucun Sevice</h2>
+                    </center>
+            }
+            <div className="button-wrapper" onClick={e => {
+                setShowModal(true);
+            }}>
                 <Button size="md">Ajouter un Service</Button>
             </div>
             {
@@ -135,14 +166,34 @@ const ServicesProfile = () => {
                         <h3>Choisir un service</h3>
                         <Select
                             placeholder="Service(s)..."
+                            onChange={handleChange}
                             closeMenuOnSelect={false}
                             components={animatedComponents}
-                            isMulti
                             options={selectService}
                         />
-                        <Button size="sm" onClick={() => {
-                            setShowModal(false)
+                        <Button size="sm" onClick={(e) => {e.preventDefault();
+                            setShowModal(false); addService()
                         }}>Enregistrer</Button>
+                    </div>
+                </Modal>
+            }
+            {
+                data &&
+                <Modal hide={() => {
+                    setShowModal(false); setData(false)
+                }}>
+                    <h2>{message}</h2>
+                </Modal>
+            }
+            {
+                del &&
+                <Modal hide={() => {setShowModal(false); setData(false)}}>
+                    <center><h2>Voulez vous vraiment supprimer ?</h2></center>
+                    <div style={{display: "flex", justifyContent: "space-between", marginTop: 20}}>
+                        <Button size="sm" onClick={() => {setDel(false)
+                        }}>Annuler</Button>
+                        <Button size="sm" style={{backgroundColor: 'red'}}
+                                onClick={() => {deleteService(); setDel(false)}}>Confirmer</Button>
                     </div>
                 </Modal>
             }

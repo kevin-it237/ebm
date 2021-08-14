@@ -11,6 +11,7 @@ import img from "../../../../assets/images/mansory.png";
 import axios from "axios";
 import config from "../../../../config/index";
 import {rate} from "../../../../config/helpers";
+import logoLink from "../../../../config/logo.link";
 import StarsRating from "../../components/stars.rating/stars.rating";
 
 const Institute = (props) => {
@@ -25,6 +26,7 @@ const Institute = (props) => {
     const [star, setStar] = useState(0);
     const [total, setTotal] = useState(0);
     const [each, setEach] = useState([]);
+    const [imageProfile, setImageProfile] = useState("");
 
     useEffect(()=>{
         getInfoInstitut();
@@ -52,6 +54,14 @@ const Institute = (props) => {
             .then(response=>{
                 setServices(response.data.message)
                 console.log(response)
+            })
+            .catch(error=>{
+                console.log(error)
+            })
+        axios.get(config.baseUrl+'/user/profile/photo')
+            .then(res=>{
+                console.log(res.data.message)
+                setImageProfile(res.data.message)
             })
             .catch(error=>{
                 console.log(error)
@@ -102,9 +112,9 @@ const Institute = (props) => {
 
             <div className="institute-content">
                 <div className="owner-infos">
-                    <img className="avatar" alt={institut.username} />
+                    <img className="avatar" src={logoLink.link + imageProfile} alt={institut.username} />
                     <div>
-                        <h3 className="name">{institut.username}</h3>
+                        <h3 className="name">{institut.username} {institut.lastname}</h3>
                         <p className="address">{institut.address}</p>
                     </div>
                 </div>

@@ -1,11 +1,11 @@
 
 const initialState = {
-    payload : 0
+    payload: ""
 };
 
-export default function productReducer(state = initialState, action){
+export default function cartReducer(state = initialState, action){
     let nextState;
-    if (action.type === 'ADD_TO_FAVORITE'){
+    if (action.type === 'ADD_TO_CART'){
         nextState = {
             ...state,
             payload: action.payload

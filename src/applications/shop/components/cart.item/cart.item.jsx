@@ -44,14 +44,14 @@ const ProductItem = (props, state) => {
     }
 
     return (
-        <div className="cart-item">
+        <div className="cart-item" style={{backgroundColor:"white",padding:"0 20px"}}>
             <img src={cils} alt="" />
             <div className="product-infos">
                 <h4 className="name">{props.name}</h4>
                 {props.discount !==0 ?
-                    <div className="price align-price">
-                        <p className="price-discount">{props.price} XAF</p>
+                    <div className="price align-price" style={{justifyContent:"start",alignItems:"flex-end"}}>
                         <p className="price">{props.price - (props.price*props.discount)/100} XAF</p>
+                        <p className="price-discount" style={{marginLeft:5,opacity:0.6,fontSize:11}}>{props.price} XAF</p>
                     </div>
                     :
                     <div className="price"><p className="price">{props.price} XAF</p></div>

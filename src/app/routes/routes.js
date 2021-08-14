@@ -17,10 +17,7 @@ import ProductSearch from '../../applications/shop/pages/product.search/search'
 import AdvancedSearch from '../../applications/shop/pages/advanced.search/advanced.search'
 import Cart from '../../applications/shop/pages/cart/cart'
 import Institute from '../../applications/shop/pages/institute/institute'
-//import Expert from '../../applications/shop/pages/expert/expert'
 import Expert from '../../applications/shop/pages/expert/expert'
-//import Conversation from '../../applications/shop/pages/conversation/conversation'
-//import RateExpert from '../../applications/shop/pages/rate/rate'
 import MyProfile from '../../applications/shop/pages/myprofile/myprofile'
 import Conversation from '../../applications/shop/pages/conversation/conversation'
 import RateExpert from '../../applications/shop/pages/rate/rate'
@@ -30,6 +27,7 @@ import Questions from "../../applications/shop/pages/question/questions";
 import VerificationEmail from "../../applications/auth/pages/reset.password/verification.email";
 import ResetPassword from "../../applications/auth/pages/reset.password/reset.password";
 import VerificationToken from "../../applications/auth/pages/reset.password/verification.token";
+import Favorites from "../../applications/shop/pages/favorites/favorites";
 
 /**
  * @description this is the main routes for the main application src/app.
@@ -69,6 +67,7 @@ const Routes = () => {
                     <Route path={'/expert/:slug'} component={Expert} />
                     <Route exact={true} component={Conversation} path={'/conversation'} />
                     <Route exact={true} component={RateExpert} path={'/rate-expert'} />
+                    <Route exact={true} component={Favorites} path={'/favorites'}/>
 
                     <Layout>
                         <Route exact={true} component={Home} path={'/home'} />

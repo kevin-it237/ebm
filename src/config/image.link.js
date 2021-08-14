@@ -1,3 +1,4 @@
+
 export default {
-    link: "http://localhost:8000/storage/"
+    link: "http://192.168.1.190:8000/storage/"
 }

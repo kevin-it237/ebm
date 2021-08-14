@@ -7,9 +7,8 @@ import './search.scss'
 import img from "../../../../assets/images/ebm.svg"
 import config from '../../../../config/index'
 import axios from "axios";
-import {toast} from "react-toastify";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-import Loader from "react-loader-spinner";
+import logoLink from "../../../../config/logo.link";
 import LoaderIcon from "react-loader-icon";
 
 const Search = () => {
@@ -61,7 +60,7 @@ const Search = () => {
                 <div className="search-results">
                     {Object.keys(allSearch).map((search, index)=>(
                         <Link to={"/institute/" + allSearch[search]['username']} key={index} className="result" >
-                            <img src={allSearch[search]['logo']} alt={allSearch[search]['username']} />
+                            <img src={logoLink.link+allSearch[search]['logo']} alt={allSearch[search]['username']} />
                             <div>
                                 <h4 className="name">{allSearch[search]['username']}</h4>
                                 <p className="address">{allSearch[search]['address']}</p>

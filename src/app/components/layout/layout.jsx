@@ -20,18 +20,17 @@ const Layout = ({children}) => {
         getUser();
     }, []);
 
-    console.log(user)
-
     const getUser=()=>{
         axios.get(config.baseUrl+'/user/show')
             .then(response=>{
-                console.log(response.data.message)
                 setUser(response.data.message)
             })
             .catch(error=>{
                 console.log(error)
             })
     }
+
+    console.log(user)
 
     const onLock=(event)=>{
         event.preventDefault();
@@ -73,6 +72,11 @@ const Layout = ({children}) => {
                                 history.push('/profile'); setDrawerOpen(false)}}>Profil</NavLink> </li>
                             <li> <NavLink to={"/advanced-search"} onClick={(event)=> {event.preventDefault();
                                 history.push('/advanced-search'); setDrawerOpen(false)}}>Recherche</NavLink> </li>
+                            {user.role === 'user' ?<li><NavLink to={"/rate-expert"} onClick={(event) => {
+                                event.preventDefault();
+                                history.push('/rate-expert');
+                                setDrawerOpen(false)
+                            }}>Notez Expert</NavLink></li> : ""}
                         </ul>
                     </div>
                     <div style={{display:'flex',flexDirection:"row",height:60,alignItems:"center",borderTop:"1px solid rgb(0, 0, 0, 0.05)"}}>

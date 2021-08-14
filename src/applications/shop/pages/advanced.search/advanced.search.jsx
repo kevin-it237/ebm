@@ -1,12 +1,9 @@
 import React, {useCallback, useState, useRef, useEffect} from 'react';
-import InputSearch from "../../../../app/components/inputs/input.search/input.search";
-
+import { Link } from "react-router-dom";
 import { ReactComponent as Close } from "../../../../assets/icons/close.svg";
 import { ReactComponent as Filter } from "../../../../assets/icons/filter.svg";
-import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Region from "../../../../assets/icons/region.svg"
 import './advanced.search.scss'
-import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import Select from 'react-select'
 import { ToastContainer, toast } from 'material-react-toastify';
@@ -24,6 +21,7 @@ import Button from "../../../../app/components/buttons/button/button"
 import Slider from '@material-ui/core/Slider';
 import {MapGoogle} from "../../../../app/components/map/map.google";
 import LoaderIcon from "react-loader-icon";
+import logoLink from "../../../../config/logo.link";
 
 
 const AdvancedSearch = () => {
@@ -51,6 +49,7 @@ const AdvancedSearch = () => {
     const [serviceByAllParameter, setServiceByAllParameter] = useState([]); //for the service with location, name and around
     const [rateSearch, setRateSearch] = useState([]); //for the filter institution by like
     const [serviceAround, setServiceAround] = useState([]); //for the filter institution by distance
+    const [randInstitut, setRandInstitut] = useState([]); //for the filter institution by distance
     const [search, setSearch] = useState([]); //for the filter institution by distance
     const [loading, setLoading] = useState(false); //for the loader
     const [showFilter, setShowFilter] = useState(false)
@@ -70,50 +69,18 @@ const AdvancedSearch = () => {
                 setLat(position.coords.latitude)
                 setLong(position.coords.longitude)
             })
-        } else {
-            confirmAlert({
-                title: 'Localisation',
-                message: 'Activer votre localisation ?',
-                buttons: [
-                    {
-                        label: 'Oui',
-                        onClick: () => alert('Oui')
-                    },
-                    {
-                        label: 'Non',
-                        onClick: () => alert('Non')
-                    }
-                ]
-            })
         }
+        axios.get(config.baseUrl + '/rand')
+            .then(response => {
+                console.log(response.data.message)
+                setRandInstitut(response.data.message)
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }, [])
 
-    /*const getPosition=()=>{
-        if ("geolocation" in navigator){
-            navigator.geolocation.getCurrentPosition(function (position){
-                resultLocation(position.coords.latitude, position.coords.longitude);
-                setLat(position.coords.latitude)
-                setLong(position.coords.longitude)
-            })
-        }else {
-            confirmAlert({
-                title: 'Localisation',
-                message: 'Activer votre localisation ?',
-                buttons: [
-                    {
-                        label: 'Oui',
-                        onClick: ()=>alert('Oui')
-                    },
-                    {
-                        label: 'Non',
-                        onClick: ()=>alert('Non')
-                    }
-                ]
-            })
-        }
-    }
-
-     */
+    console.log(search)
 
     const resultLocation = (lat, long) => {
         let location = [lat, long];
@@ -215,28 +182,16 @@ const AdvancedSearch = () => {
         }
     }
 
-    /*
-    const getServiceByAllParameter = () => {
-        let location = [lat, long];
-        location = location.join(",")
-        setServiceAround("");
-        axios.post(config.baseUrl + '/user/service/search',
-            {around: distance, name: recherche, location: location})
-            .then(response => {
-                setServiceByAllParameter(response.data.message)
-                setSearch(response.data.message)
+    const getRandomInstitut = () => {
+        axios.get(config.baseUrl + '/rand')
+            .then(res => {
+
             })
             .catch(error => {
-                console.log(error)
+
             })
     }
-*/
-    /*
-    const getRate = (event) => {
-        event.preventDefault();
-    }
 
-     */
     const onSelect = (event) => {
         getServiceByName(event.label);
         setRecherche(event.label)
@@ -256,6 +211,8 @@ const AdvancedSearch = () => {
                 setLoading(false)
             })
     }
+
+    console.log(search)
 
     const getServiceByNameDistanceLike = () => {
         setLoading(true)
@@ -306,6 +263,7 @@ const AdvancedSearch = () => {
     const saveCommand = (event) => {
         event.preventDefault();
         setSearch([])
+        console.log(search)
         if (star === null) {
             setStar(0)
         }
@@ -339,6 +297,10 @@ const AdvancedSearch = () => {
         setShowFilter(false);
     }
 
+    const goToInstitut = ()=>{
+
+    }
+
     return (
         <>
             <div id="advanced-search">
@@ -349,7 +311,7 @@ const AdvancedSearch = () => {
 
                 <div className="search">
                     <Select options={allServices} placeholder="Recherchez un service..."
-                            styles={colourStyles} onChange={onSelect}/>
+                            styles={colourStyles} onChange={onSelect} isClearable/>
 
                     <div className="actual-position">
                         <img src={Region} alt=""/>
@@ -377,8 +339,8 @@ const AdvancedSearch = () => {
                     display === "LIST" ?
                         <div className="search-results">
                             {Object.keys(search).map((sear, index) => (
-                                <div key={index} className="result">
-                                    <img src={img} alt=""/>
+                                <Link to={"/institute/" + (search[sear].institution ? search[sear].institution.username : search[sear].username)} key={index} className="result" onClick={goToInstitut(search[sear].username)}>
+                                    <img src={logoLink.link +search[sear].logo} alt={search[sear].username}/>
                                     <div style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
@@ -397,17 +359,27 @@ const AdvancedSearch = () => {
                                         {search[sear].distance_f ?
                                             <p className="address">{search[sear].distance_f} {unit}</p> :
                                             search[sear].rating ?
-                                                <Rating value={search[sear].rating} precision={0.5}/> : ""}
+                                                <Rating value={search[sear].rating} precision={0.25}/> : ""}
                                     </div>
-                                </div>
+                                </Link>
                             ))}
-                            {!loading && search.length === 0 && <div>
-                                <center>
-                                    <br/>
-                                    <img src={require("../../../../assets/images/telescope.png").default}/>
-                                    <p>{search.length !== 0 ? "Aucun resultat trouve" : "Rechercher une institution"}</p>
-                                </center>
-                            </div>}
+                            {!loading && search.length === 0 && randInstitut.map((sear, index) => (
+                                <Link className="result" to={"/institute/" + (sear['username'])}>
+                                    <img src={img} alt=""/>
+                                    <div style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center'
+                                    }}>
+                                        <div style={{display: 'flex', flexDirection: "column"}}>
+                                            <h4 className="name"> {sear['username']}</h4>
+                                            <h4 className="name"> {sear['firstname']}</h4>
+                                            <p className="address">{sear['email']}</p>
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))
+                            }
                             {loading && <div>
                                 <center>
                                     <br/>

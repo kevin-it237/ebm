@@ -13,21 +13,20 @@
         >.menu {
             width: 3rem;
         }
-        >.avatar {
-            width: 4rem;
-            height: 4rem;
-            border-radius: 50%;
-            border: solid 1px $stroke-color;
-            background-color: $primary;
+        >.favorite-shop{
+            display: flex;
+            align-items: center;
         }
-        >.avatar-shop {
-            width: 3.5rem;
-            height: 3.5rem;
-            padding: 1vh;
+        >.like {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            box-shadow: 0px 3px 10px rgba($secondary, .1);
             border-radius: 50%;
-            border: solid 1px $stroke-color;
-            background-color: $primary;
         }
+
         >.link-profile{
             width: 4rem;
             height: 4rem;
@@ -64,7 +63,7 @@
         grid-template-columns: 270px;
         grid-auto-flow: column;
         gap: 10px;
-        //overflow-x: scroll;
+        overflow-x: scroll;
 
         >.service-item {
             cursor: pointer;
@@ -76,6 +75,7 @@
             padding: 5px;
             >.service-title {
                 margin-top: 10px;
+                text-transform: capitalize;
                 position: absolute;
                 right: 20px;
                 top: 50%;
@@ -117,21 +117,6 @@
 .cart-modal-service {
     display: flex;
     flex-direction: column;
-    .like-service{
-        display: flex;
-        justify-content: space-around;
-        height: 5vh;
-        align-items: center;
-    }
-    .like {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 30px;
-        height: 30px;
-        box-shadow: 0px 3px 10px rgba($secondary, .1);
-        border-radius: 50%;
-    }
     .section-title-product {
         font-size: 1.7rem;
         font-weight: bold;
@@ -145,7 +130,7 @@
         color: $secondary;
     }
     .product-image-product{
-        height: 280px;
+        height: 220px;
         width: 210px;
         margin: 1.5vh;
     }

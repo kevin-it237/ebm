@@ -49,7 +49,7 @@ const Reviews = () => {
                             <div className="review-header">
                                 <User />
                                 <h4>{reviews[review].username}</h4>
-                                <Rating name="half-rating" precision={0.5} value={reviews[review].rating}/>
+                                <Rating name="half-rating" readOnly disabled precision={0.5} value={reviews[review].rating}/>
                             </div>
                             <p className="content">{reviews[review].review}</p>
                         </div>

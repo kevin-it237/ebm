@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {Link, useHistory, useParams} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useHistory} from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import InputSearch from "../../../../app/components/inputs/input.search/input.search";
@@ -16,18 +17,18 @@ import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import Badge from '@material-ui/core/Badge';
+import { ReactComponent as Heart } from "../../../../assets/icons/heartClick.svg";
 
 
 const Home = () => {
     const history = useHistory();
-    const [selectProduct, setSelectProduct] = useState([])
+    const nbFavorites = useSelector((state)=>state.product.payload)
+    const nbCart= useSelector((state)=>state.cart.payload)
     const [showDrawerService, setShowDrawerService] = useState(false)
     const [products, setProduct] = useState("");
     const [services, setService] = useState("");
     const [parent_services, setParent_Service] = useState("");
     const [favorites, setFavorites] = useState([]);
-    const [star, setStar] = useState(0);
-    const [Qty, setQty] = useState(0);
 
     const StyleBadge = withStyles((theme)=>({
         badge: {
@@ -45,7 +46,6 @@ const Home = () => {
         getAllProduct();
         getAllParentService();
         getFavorites();
-        getCartQuantity();
     }, []);
 
     const getAllProduct = ()=> {
@@ -56,6 +56,7 @@ const Home = () => {
             notifyFailed("Verifier votre connexion")
         })
     }
+    console.log(products)
 
     const getAllParentService = ()=> {
         axios.get(config.baseUrl + '/parent_service/index')
@@ -75,19 +76,6 @@ const Home = () => {
         })
     }
 
-    const getCartQuantity = ()=> {
-        axios.get(config.baseUrl + '/user/cart/quantity/somme')
-            .then(response => {
-                setQty(response.data.message);
-            }).catch(err => {
-            notifyFailed(err)
-        })
-    }
-
-    const myProfile = ()=>{
-        history.push('/profile')
-    }
-
     const notifyFailed = (err)=>{
         toast.error(err)
     }
@@ -96,12 +84,22 @@ const Home = () => {
         <div id="home">
             <div id="header">
                 <img onClick={openDrawer} className="menu" src={Menu} alt="" />
-                <IconButton aria-label="cart">
-                    <StyleBadge badgeContent={Qty} color="secondary">
-                        <ShoppingCartIcon style={{width: 30, height: 30}} onClick={(e)=>{e.preventDefault();
-                        history.push('/cart')}}/>
-                    </StyleBadge>
-                </IconButton>
+                <div className="favorite-shop">
+                    <IconButton >
+                        <StyleBadge badgeContent={nbFavorites? nbFavorites: 0} color="secondary">
+                            <div onClick={(e)=>{e.preventDefault();
+                                history.push('/favorites')}}>
+                                <Heart style={{fill: '#6B0C72', width: 22, height: 22}}/>
+                            </div>
+                        </StyleBadge>
+                    </IconButton>
+                    <IconButton aria-label="cart">
+                        <StyleBadge badgeContent={nbCart? nbCart: 0} color="secondary">
+                            <ShoppingCartIcon style={{width: 30, height: 30}} onClick={(e)=>{e.preventDefault();
+                            history.push('/cart')}}/>
+                        </StyleBadge>
+                    </IconButton>
+                </div>
             </div>
             <div className="search">
                 <InputSearch onClick={() => history.push('/search')} placeholder="Recherchez une institution..." />
@@ -125,7 +123,6 @@ const Home = () => {
             </div>
                 :
                 <div className="spinner_loader">
-                    {/*<Loader type="Circles" height={70} width={70} color="#6B0C72"/>*/}
                     <LoaderIcon type="cylon" color="#6B0C72"/>
                 </div>}
 
@@ -140,13 +137,13 @@ const Home = () => {
                             <ProductItem id={products[product]['id']}
                                          name={products[product]['name_fr']}
                                          price={products[product]['price']}
-                                         discount={products[product]['discount']}/>
+                                         discount={products[product]['discount']}
+                                         description={products[product]['description']}/>
                         </div>
                     ))}
                 </div>
                 :
                 <div className="spinner_loader">
-                    {/*<Loader type="Circles" height={70} width={70} color="#6B0C72"/>*/}
                     <LoaderIcon type="cylon" color="#6B0C72"/>
                 </div>
             }

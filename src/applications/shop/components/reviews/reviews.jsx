@@ -8,6 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import config from "../../../../config/index";
 import Loader from "react-loader-spinner";
+import LoaderIcon from "react-loader-icon";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -41,7 +42,7 @@ const Reviews = () => {
         if (event.key === 'Enter'){
             axios.post(config.baseUrl+'/institution/review/store/'+select, {review: value, rating: star})
                 .then(response=>{
-                    console.log("err "+response.data.message)
+                    console.log(response.data.message)
                 })
                 .catch(error=>{
                     console.log(error)
@@ -49,7 +50,6 @@ const Reviews = () => {
             axios.get(config.baseUrl+'/institution/review/show/'+select)
                 .then(response=>{
                     setReviews(response.data.message);
-                    console.log("err "+response.data.message)
                 })
                 .catch(error=>{
                     console.log(error)
@@ -81,15 +81,15 @@ const Reviews = () => {
                             <div className="review-header">
                                 <User />
                                 <h4>{reviews[review].username}</h4>
-                                <Rating name="half-rating" precision={0.5} value={reviews[review].rating}/>
+                                <Rating readOnly disabled name="half-rating" precision={0.5} value={reviews[review].rating}/>
                             </div>
                             <p className="content">{reviews[review].review}</p>
                         </div>
                    </div>
                ))}
            </div>
-                : <div className="spinner_load_search">
-                    <Loader type="Circles" height={70} width={70} timeout={5000} color="#6B0C72"/>
+                : <div className="spinner_load_search"  style={{marginTop: 30}}>
+                    <LoaderIcon type="cylon" color="#6B0C72"/>
                 </div>
             }
         </div>
