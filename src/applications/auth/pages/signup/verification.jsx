@@ -27,7 +27,6 @@ const Verification = () => {
         const user = {
             verCode : signupForm1.verCode
         }
-
         setLoading(true)
         axios.post(config.baseUrl+"/verification", {...user})
             .then(res =>{
@@ -38,6 +37,7 @@ const Verification = () => {
                         history.push('/questions/'+role.toLocaleString())
                     }else history.push('/login')
                 }
+                setLoading(false)
             })
             .catch(err=>{
                 if (err.response.data){
@@ -49,9 +49,8 @@ const Verification = () => {
                 }else if (!err.response.data || !err){
                     notifyError("Verifiez votre connexion internet");
                 }
-            }).finally(e=>{
-            setLoading(false)
-        })
+                setLoading(false)
+            })
     }
     const notify = (err) => toast.info(err);
     const notifyError = (err) => toast.error(err);

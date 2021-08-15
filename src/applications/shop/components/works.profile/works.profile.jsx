@@ -24,6 +24,7 @@ const Work = () => {
     const [message, setMessage] = useState("")
     const [loader, setLoader] = useState(false)
     const [selectFile, setSelectFile] = useState("")
+    const [error, setError] = useState(false)
 
     const [crop, setCrop] = useState({aspect: 1, width: 220, height: 220});
     const [croppedImageUrl, setCroppedImageUrl] = useState(null);
@@ -120,6 +121,16 @@ const Work = () => {
             return;
         }
         const formData = new FormData();
+        if (!form.description){
+            setMessage("Entrez une description")
+            setError(true)
+            return;
+        }
+        if (!form.title){
+            setMessage("Entrez un titre")
+            setError(true)
+            return;
+        }
         formData.append("image", croppedImageUrl)
         formData.append("description", form.description)
         formData.append("title", form.title)
@@ -132,14 +143,15 @@ const Work = () => {
             })
             .then(response => {
                 console.log(response)
+                setCroppedImageUrl("")
+                setImage("")
+                setForm("")
                 getDataFile()
             })
             .catch(error => {
                 console.log(error)
             })
-        setCroppedImageUrl("")
-        setImage("")
-        setForm("")
+        setShowModal(false);
     }
 
     const delArtwork = () => {
@@ -165,7 +177,6 @@ const Work = () => {
                 showModal &&
                 <Modal hide={() => {
                     setShowModal(false);
-                    setImage("")
                 }}>
                     <div className="cart-modal-content">
                         <h3>Ajouter l'oeuvre</h3>
@@ -188,9 +199,8 @@ const Work = () => {
                                   onChange={changeDescription}
                                   value={form.description}/>
                         <Button size="sm" onClick={(event) => {
-                            setShowModal(false);
                             saveArtwork(event)
-                        }}>Completer</Button>
+                        }}>Enregistrer</Button>
                     </div>
                 </Modal>
             }
@@ -258,6 +268,32 @@ const Work = () => {
                                     setDel(false)
                                 }}>Confirmer</Button>
                     </div>
+
+                </Modal>
+            }
+            {
+                !loader&&artworks.length===0&&<div style={{
+                    backgroundColor: "#eee",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: 100,
+                    width: "25%"
+                }} className={"artwork"} onClick={e => {
+                    setShowModal(true)
+                }}>
+                    <strong style={{color: "white", fontSize: 34}}>+</strong>
+                </div>
+            }
+            {
+                error && <Modal hide={()=> {
+                    setError(false); setShowModal(true)
+                }}>
+                    <center><h2>{message}</h2></center>
+                    <Button size="sm" style={{backgroundColor: 'red'}}
+                    onClick={()=> {
+                        setError(false); setShowModal(true)
+                    }}>Ok</Button>
 
                 </Modal>
             }

@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import './map.google.scss'
-//import { ReactComponent as Location } from "../../../../assets/icons/location.svg"
 import { Map, GoogleApiWrapper, Marker } from 'google-maps-react';
 
 

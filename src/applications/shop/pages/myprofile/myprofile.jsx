@@ -152,7 +152,7 @@ const MyProfile = () => {
 
     }, []);
 
-    const getUserData=()=>{
+    const getUserData = () => {
         axios.get(config.baseUrl + '/user/show')
             .then(response => {
                 setInfoUser(response.data.message)
@@ -180,6 +180,14 @@ const MyProfile = () => {
                         address: response.data.message.address,
                         phone: response.data.message.phone
                     })
+                    console.log(response.data.message.role)
+                    if (response.data.message.role === 'EXPERT') {
+                        axios.get(config.baseUrl + '/institution/info')
+                            .then(response => {
+                                setImageProfile(response.data.message.logo)
+                                console.log(response.data.message)
+                            })
+                    }
                     setLoader(false)
                 }
             })
@@ -243,19 +251,18 @@ const MyProfile = () => {
             })
     }
 
-    const confirmEdit = (e)=>{
+    const confirmEdit = (e) => {
         e.preventDefault();
         setEditProf(true)
     }
 
-    const confirmEditPass = (e)=>{
-        if (infoForm2.password){
+    const confirmEditPass = (e) => {
+        if (infoForm2.password) {
             e.preventDefault();
             setEditProf(true)
             setPasstrue(true)
         }
     }
-
 
 
     const clickChange = (e) => {
@@ -403,8 +410,7 @@ const MyProfile = () => {
                     }
                     <div className={infoUser.role === 'user' ? "marge" : ""}>
                         <h3 className="name">{infoUser.firstname} {infoUser.lastname}</h3>
-                        {/*<p className="address">Joined {join}</p>*/}
-                        {/*<p>Joined <ReactTimeAgo date={created} locale="en-US" timeStyle="round"/></p>*/}
+                        {<p>Joined <ReactTimeAgo date={created} locale="en-US" timeStyle="round"/></p>}
                     </div>
                 </div>
                 {infoUser.role === 'user' ?
@@ -466,17 +472,23 @@ const MyProfile = () => {
                 </Modal>
             }
             {
-                editProf&&
-                <Modal hide={()=>{setEditProf(false)}}>
+                editProf &&
+                <Modal hide={() => {
+                    setEditProf(false)
+                }}>
                     <div>
                         <center>
                             <h2>Enregistrez vos modifications ?</h2>
                         </center>
                         <div style={{display: "flex", justifyContent: "space-between"}}>
-                            <Button onClick={(e)=> {e.preventDefault();
-                                setEditProf(false); getUserData(); setLoader(true)
+                            <Button onClick={(e) => {
+                                e.preventDefault();
+                                setEditProf(false);
+                                getUserData();
+                                setLoader(true)
                             }}>Annuler</Button>
-                            <Button onClick={passTrue? editProfilePassword : editProfile} style={{background: "green"}}>Oui</Button>
+                            <Button onClick={passTrue ? editProfilePassword : editProfile}
+                                    style={{background: "green"}}>Oui</Button>
                         </div>
                     </div>
 

@@ -22,6 +22,9 @@ import Slider from '@material-ui/core/Slider';
 import {MapGoogle} from "../../../../app/components/map/map.google";
 import LoaderIcon from "react-loader-icon";
 import logoLink from "../../../../config/logo.link";
+import Geocode from "react-geocode";
+import LocationAddress from "../../components/localization/location.address";
+
 
 
 const AdvancedSearch = () => {
@@ -37,19 +40,18 @@ const AdvancedSearch = () => {
     const [display, setDisplay] = useState("LIST");
     const [recherche, setRecherche] = useState("");
     const [star, setStar] = useState(0);
-    const [price, setPrice] = useState(0);
     const [distance, setDistance] = useState(0);
     const [unit, setUnit] = useState('M');
     const [lat, setLat] = useState(0);
+    const [address, setAddress] = useState("");
     const [long, setLong] = useState(0);
     const [allServices, setAllServices] = useState(false); //for all services in database
     const [allsearch, setAllSearch] = useState([]);  //for the select service
     const [allInstitutLocation, setAllInstitutLocation] = useState(""); //for the service with location and name
     const [allInstitut, setAllInstitut] = useState(""); //for the service with location
-    const [serviceByAllParameter, setServiceByAllParameter] = useState([]); //for the service with location, name and around
     const [rateSearch, setRateSearch] = useState([]); //for the filter institution by like
     const [serviceAround, setServiceAround] = useState([]); //for the filter institution by distance
-    const [randInstitut, setRandInstitut] = useState([]); //for the filter institution by distance
+    const [randInstitut, setRandInstitut] = useState([]); //for random institution
     const [search, setSearch] = useState([]); //for the filter institution by distance
     const [loading, setLoading] = useState(false); //for the loader
     const [showFilter, setShowFilter] = useState(false)
@@ -62,6 +64,29 @@ const AdvancedSearch = () => {
     const openFilterMenu = () => {
         setShowFilter(!showFilter)
     }
+
+    const onPosition=(e)=>{
+        e.preventDefault()
+        navigator.geolocation.getCurrentPosition(function (position){
+            Geocode.setApiKey("AIzaSyC2vEJrfaVeGpv_kYngHtWw7VMUM6yWssM");
+            Geocode.setLanguage("fr");
+            Geocode.setRegion("es");
+            Geocode.setLocationType("ROOFTOP");
+            Geocode.enableDebug();
+            Geocode.fromLatLng(position.coords.latitude, position.coords.longitude).then(
+                (response) => {
+                    const address = response.results[0].formatted_address;
+                    setAddress(address)
+                    console.log(address);
+                },
+                (error) => {
+                    console.error(error);
+                }
+            );
+        })
+    }
+    console.log(address)
+
 
     useEffect(() => {
         if ("geolocation" in navigator) {
@@ -82,7 +107,7 @@ const AdvancedSearch = () => {
 
     console.log(search)
 
-    const resultLocation = (lat, long) => {
+    /*const resultLocation = (lat, long) => {
         let location = [lat, long];
         location = location.join(",")
         if (recherche === "") {
@@ -110,6 +135,7 @@ const AdvancedSearch = () => {
                 })
         }
     }
+     */
 
     const getAllservice = () => {
         let tab = []
@@ -180,16 +206,6 @@ const AdvancedSearch = () => {
                     setLoading(false)
                 })
         }
-    }
-
-    const getRandomInstitut = () => {
-        axios.get(config.baseUrl + '/rand')
-            .then(res => {
-
-            })
-            .catch(error => {
-
-            })
     }
 
     const onSelect = (event) => {
@@ -297,10 +313,6 @@ const AdvancedSearch = () => {
         setShowFilter(false);
     }
 
-    const goToInstitut = ()=>{
-
-    }
-
     return (
         <>
             <div id="advanced-search">
@@ -313,9 +325,9 @@ const AdvancedSearch = () => {
                     <Select options={allServices} placeholder="Recherchez un service..."
                             styles={colourStyles} onChange={onSelect} isClearable/>
 
-                    <div className="actual-position">
+                    <div className="actual-position" onClick={onPosition}>
                         <img src={Region} alt=""/>
-                        <p>Ma position actuelle</p>
+                        <p>{address ? address : "Votre posiion"}</p>
                     </div>
                     <div className="filter-box">
                         <div className="filter">
@@ -339,7 +351,7 @@ const AdvancedSearch = () => {
                     display === "LIST" ?
                         <div className="search-results">
                             {Object.keys(search).map((sear, index) => (
-                                <Link to={"/institute/" + (search[sear].institution ? search[sear].institution.username : search[sear].username)} key={index} className="result" onClick={goToInstitut(search[sear].username)}>
+                                <Link to={"/institute/" + (search[sear].institution ? search[sear].institution.username : search[sear].username)} key={index} className="result">
                                     <img src={logoLink.link +search[sear].logo} alt={search[sear].username}/>
                                     <div style={{
                                         display: 'flex',
@@ -389,8 +401,7 @@ const AdvancedSearch = () => {
                         </div>
                         :
                         <div>
-                            <h1>MAP</h1>
-                            <MapGoogle/>
+                            <LocationAddress location={search}/>
                         </div>
 
                 }
@@ -412,7 +423,7 @@ const AdvancedSearch = () => {
                             <div style={{display: 'flex', justifyContent: 'space-between'}}>
                                 <div style={{display: 'flex', alignItems: 'center'}}>
                                     <img src={Map} alt=""/>
-                                    <div className="option" style={{marginLeft: '2vh'}}>Distance</div>
+                                    <div className="option" style={{marginLeft: '2vh'}}>Distance Max.</div>
                                 </div>
                                 <p className="option" style={{color: '#6B0C72'}}>{distance} {unit}</p>
                             </div>
@@ -433,7 +444,7 @@ const AdvancedSearch = () => {
                         }}>
                             <div style={{display: 'flex'}}>
                                 <Rating disabled max={1} size="large"/>
-                                <p className="option" style={{marginLeft: '2vh'}}>Like</p>
+                                <p className="option" style={{marginLeft: '2vh'}}>Like Min.</p>
                             </div>
                             <div>
                                 <Rating size="large" precision={0.5} onChange={(event, newValue) => {

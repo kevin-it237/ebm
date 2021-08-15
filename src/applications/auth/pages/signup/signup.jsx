@@ -93,6 +93,7 @@ const SignUp = () => {
             .then(res =>{
                 console.log(res.data)
                 history.push('/verification/'+user.role.toLowerCase())
+                setLoading(false)
             })
             .catch(err=>{
                 console.log(err.response.data)
@@ -119,12 +120,8 @@ const SignUp = () => {
                 }else if (!err.response.data || !err){
                     notifyFailed("Verifiez votre connexion internet");
                 }
-
-                //console.log(err.response)
-            }).finally(e=>{
-
-            setLoading(false)
-        })
+                setLoading(false)
+            })
     }
 
     const notifyFailed = (err)=>{

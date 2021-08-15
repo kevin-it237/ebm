@@ -75,8 +75,6 @@ const ServicesProfile = () => {
             })
     }
 
-    console.log(services)
-
     const addService = () => {
         setLoading(true)
         axios.post(config.baseUrl+'/institution/service/add', {service_id: identity})

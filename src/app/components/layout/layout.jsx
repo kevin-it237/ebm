@@ -8,7 +8,6 @@ import Document from "../../../assets/icons/documents.svg"
 import UserAccount from "../../../assets/icons/user_account.svg"
 import axios from "axios";
 import config from "../../../config/index";
-import {getToken} from "../../../config/helpers";
 
 const Layout = ({children}) => {
     const history = useHistory();

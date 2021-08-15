@@ -26,6 +26,7 @@ const Login = () => {
 
     const onSubmit = (e) => {
         e.preventDefault();
+        setLoading(true)
         const user = {
             email: loginForm.email,
             password: loginForm.password,
@@ -44,10 +45,10 @@ const Login = () => {
                 response.headers.Authorization = `Bearer ${JSON.stringify(response.data.acces_token)}`;
                 history.push('/home');
             }
+            setLoading(false)
         }).catch(error=>{
             console.log(error.message);
             notify(error.message)
-        }).finally(e=>{
             setLoading(false)
         })
     }
