@@ -227,7 +227,8 @@ const Work = () => {
                     backgroundColor: "#eee",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center"
+                    justifyContent: "center",
+                    height:130,
                 }} className={"artwork"} onClick={e => {
                     setShowModal(true)
                 }}>
@@ -237,15 +238,15 @@ const Work = () => {
                     <div className="artwork" style={{
                         justifyContent: 'space-around',
                         display: "flex",
-                        width: 130,
-                        height: 110,
-                        marginTop: '1vh'
+                        height:130,
+
                     }} onClick={e => {
                         setSelectedArtwork(artwork);
                         setSelectedWork(true)
                     }}>
                         {/*<p>{artwork.title}</p>*/}
-                        <img src={imageLink.link + artwork.image} alt={artwork.owner_type}/>
+                        <div style={{backgroundImage:`url("${imageLink.link + artwork.image}")`,backgroundSize:"cover",backgroundPosition:"center",height:"100%",width:"100%"}} />
+                        {/*<img src={imageLink.link + artwork.image} alt={artwork.owner_type}/>*/}
                     </div>
                 ))}
             </div>
