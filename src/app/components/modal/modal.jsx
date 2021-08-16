@@ -10,7 +10,11 @@ import './modal.scss'
  */
 const Modal = ({hide, children}) => {
     const ref = useRef()
-    useOnClickOutside(ref, () => hide())
+    useOnClickOutside(ref, () => {
+        if(hide){
+            hide()
+        }
+    })
 
     return (
         <div id="modal">

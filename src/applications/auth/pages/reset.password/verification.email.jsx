@@ -20,6 +20,7 @@ const VerificationEmail = () => {
 
     const onSubmit = (e) => {
         e.preventDefault();
+        setLoading(true)
         const user = {
             email: loginForm.email
         }
@@ -27,10 +28,9 @@ const VerificationEmail = () => {
         then(response=>{
             console.log(response)
             history.push('/verification-token');
+            setLoading(false)
         }).catch(error=>{
-            console.log(error);
-            notifyFailed("Email incorret")
-        }).finally(e=>{
+            notifyFailed("Email incorrect")
             setLoading(false)
         })
     }

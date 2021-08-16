@@ -18,6 +18,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import Badge from '@material-ui/core/Badge';
 import { ReactComponent as Heart } from "../../../../assets/icons/heartClick.svg";
+import Slider from "react-slick";
 
 
 const Home = () => {
@@ -29,6 +30,42 @@ const Home = () => {
     const [services, setService] = useState("");
     const [parent_services, setParent_Service] = useState("");
     const [favorites, setFavorites] = useState([]);
+
+    const settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 2,
+        slidesToScroll: 1,
+        initialSlide: 0,
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 3,
+                    infinite: true,
+                    dots: true
+                }
+            },
+            {
+                breakpoint: 600,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 2,
+                    initialSlide: 2
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                    height: 60
+                }
+            }
+        ]
+    };
 
     const StyleBadge = withStyles((theme)=>({
         badge: {
@@ -89,13 +126,13 @@ const Home = () => {
                         <StyleBadge badgeContent={nbFavorites? nbFavorites: 0} color="secondary">
                             <div onClick={(e)=>{e.preventDefault();
                                 history.push('/favorites')}}>
-                                <Heart style={{fill: '#6B0C72', width: 22, height: 22}}/>
+                                <Heart style={{fill: '#6B0C72', width: 18, height: 18}}/>
                             </div>
                         </StyleBadge>
                     </IconButton>
-                    <IconButton aria-label="cart">
+                    <IconButton>
                         <StyleBadge badgeContent={nbCart? nbCart: 0} color="secondary">
-                            <ShoppingCartIcon style={{width: 30, height: 30}} onClick={(e)=>{e.preventDefault();
+                            <ShoppingCartIcon style={{width: 25, height: 25}} onClick={(e)=>{e.preventDefault();
                             history.push('/cart')}}/>
                         </StyleBadge>
                     </IconButton>
@@ -111,7 +148,7 @@ const Home = () => {
                 <span></span>
             </div>
             {parent_services.length !== 0 ?
-            <div className="services-wrapper">
+            <div {...settings} className="services-wrapper">
                 {Object.keys(parent_services).map((parent_service, index)=>(
                     <div key={index} className="service-item service-item--1" onClick={()=>{setShowDrawerService(true); setService(parent_services[parent_service]['name'])}}>
                         <div className="service-title">

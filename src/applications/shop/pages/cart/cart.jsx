@@ -144,7 +144,7 @@ const Cart = () => {
                 </div>
                 }
                 {products.length !== 0 ?
-                    <div className="footer">
+                    <div className="footer" style={{position: "absolute", bottom: 0, width: '100%'}}>
                         <div className="summary">
                             <p>TOTAL</p>
                             <p className="price">{total} XAF</p>
@@ -160,7 +160,7 @@ const Cart = () => {
                     <div className="cart-modal-content">
                         <h3>Valider la Commande</h3>
                         <textarea placeholder="Enregistrer votre commentaire..." name="comment" rows="7"
-                                  onChange={onChange}
+                                  onChange={onChange} style={{fontSize: "small"}}
                                   value={comment}>
 
                         </textarea>

@@ -19,25 +19,24 @@ const VerificationToken = () => {
 
     const onSubmit = (e) => {
         e.preventDefault();
-
         setLoading(true)
         axios.post(config.baseUrl+"/password/verification", {token: token})
             .then(res =>{
                 history.push('/reset-password/'+token)
+                setLoading(false)
             })
             .catch(err=>{
                 console.log(err.response.data)
                 if (err.response.data){
                     const error = err.response.data.errors;
                     if (error){
-                        notifyFailed(error)
+                        notifyFailed("Code Incorrect")
                     }
                 }else if (!err.response.data || !err){
                     notifyFailed("Verifiez votre connexion internet");
                 }
-            }).finally(e=>{
-            setLoading(false)
-        })
+                setLoading(false)
+            })
     }
 
     const notifyFailed = (err)=>{

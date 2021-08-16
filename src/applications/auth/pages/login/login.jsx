@@ -47,8 +47,11 @@ const Login = () => {
             }
             setLoading(false)
         }).catch(error=>{
-            console.log(error.message);
-            notify(error.message)
+            if (error.message){
+                notify("Email ou Mot de passe Incorrect")
+            }else if (!error.message){
+                notify("Erreur de connexion")
+            }
             setLoading(false)
         })
     }

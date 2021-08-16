@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import {Switch, Route, useHistory} from 'react-router-dom';
 import {connect} from 'react-redux'
 import PrivateRoute from './private.route';
 import NormalRoute from './normal.route';
@@ -33,11 +33,14 @@ import Favorites from "../../applications/shop/pages/favorites/favorites";
  * @description this is the main routes for the main application src/app.
  */
 const Routes = () => {
+    const history = useHistory()
 
     if (getToken() !== null){
         axios.defaults.headers['Authorization'] = getToken();
         axios.defaults.headers['Content-Type'] = 'application/json';
-    };
+    }else {
+        history.push('/login')
+    }
     return (
             <Switch>
                 {/* Private routes here */}
