@@ -148,7 +148,7 @@ const Home = () => {
                 <span></span>
             </div>
             {parent_services.length !== 0 ?
-            <div {...settings} className="services-wrapper">
+            <div className="services-wrapper">
                 {Object.keys(parent_services).map((parent_service, index)=>(
                     <div key={index} className="service-item service-item--1" onClick={()=>{setShowDrawerService(true); setService(parent_services[parent_service]['name'])}}>
                         <div className="service-title">

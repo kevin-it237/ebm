@@ -90,14 +90,17 @@
            }
        }
 
-       >.menu {
+       .menu {
            display: flex;
            margin-top: 20px;
+         flex-wrap: nowrap;
            >.menu-item {
                 margin-right: 20px;
                 font-size: 1.2rem;
                 font-weight: 600;
                 padding-bottom: 4px;
+                white-space: nowrap;
+             margin-bottom: 11px;
                 color: $grey-500;
                 &.actived {
                     border-bottom: solid 3px $primary;

@@ -2,8 +2,8 @@ import React, {useEffect, useState, useRef} from 'react';
 import TimeAgo from 'javascript-time-ago'
 import fr from 'javascript-time-ago/locale/en'
 import './myprofile.scss'
-import { useHistory } from 'react-router';
-import { ReactComponent as Back } from "../../../../assets/icons/back.svg"
+import {useHistory} from 'react-router';
+import {ReactComponent as Back} from "../../../../assets/icons/back.svg"
 import Services from "../../components/services.profile/services.profile"
 import Works from "../../components/works.profile/works.profile"
 import img from "../../../../assets/images/mansory.png";
@@ -19,6 +19,9 @@ import Modal from "../../../../app/components/modal/modal";
 import ReactTimeAgo from 'react-time-ago'
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import ExpertDemand from "../../../shop/components/historique/expert.demand";
+import ServiceDemand from "../../../shop/components/historique/service.demand";
+import ProductDemand from "../../../shop/components/historique/product.demand";
 import {TextArea} from "semantic-ui-react";
 
 const MyProfile = () => {
@@ -275,8 +278,8 @@ const MyProfile = () => {
         inputFile.current.click()
     }
 
-    const MENU_ITEMS_USER = ["Information", "Mot de passe", "Historique des Commandes"];
-    const MENU_ITEMS = ["Information", "Mot de passe", "Services", "Oeuvres"];
+    const MENU_ITEMS_USER = ["Information", "Mot de passe", "Historique des Commandes", "Demandes d'expert", "Demandes de service", "Demandes de produit"];
+    const MENU_ITEMS = ["Information", "Mot de passe", "Services", "Oeuvres", "Demandes d'expert", "Demandes de service", "Demandes de produit"];
 
     const changeContent = (contentName) => {
         setContent(contentName);
@@ -368,8 +371,27 @@ const MyProfile = () => {
         </div>);
     } else if (content === "Services") {
         bottomContent = (<Services/>);
-    } else {
+    } else if (content === "Oeuvres") {
         bottomContent = (<Works/>);
+    } else if (content === "Demandes d'expert") {
+        bottomContent = (<div style={{marginTop: -20}}>
+            {[1, 2, 3, 4, 4, 5, 5, 6, 7, 7].map(e => (<ExpertDemand onClick={e => {
+                alert("hi")
+            }} name={"Himalayas Insititute of beauty"} date={"24/07/2021"} state={"EN ATTENTE"} id={e}/>))}
+        </div>);
+    } else if (content === "Demandes de service") {
+        bottomContent = (<div style={{marginTop: -20}}>
+            {[1, 2, 3, 4, 4, 5, 5, 6, 7, 7].map(e => (<ServiceDemand onClick={e => {
+                alert("hi")
+            }} services={"Manicure,Pedicure,Pieds,Jambes"} name={"Himalayas Insititute of beauty"} date={"24/07/2021"}
+                                                                     state={"EN ATTENTE"} id={e}/>))}
+        </div>);
+    } else if (content === "Demandes de produit") {
+        bottomContent = (<div style={{marginTop: -20}}>
+            {[1, 2, 3, 4, 4, 5, 5, 6, 7, 7].map(e => (<ProductDemand onClick={e => {
+                alert("hi")
+            }} amount={"135, 000 XAF"} date={"24/07/2021"} state={"EN ATTENTE"} id={e}/>))}
+        </div>);
     }
 
     return (
@@ -414,21 +436,25 @@ const MyProfile = () => {
                     </div>
                 </div>
                 {infoUser.role === 'user' ?
-                    <div className="menu">
-                        {
-                            MENU_ITEMS_USER.map(item => (
-                                <h2 key={item} onClick={() => changeContent(item)}
-                                    className={`menu-item ${content === item ? "actived" : ""}`}>{item}</h2>
-                            ))
-                        }
+                    <div style={{overflowX:"auto",overflowY:"hidden"}}>
+                        <div className="menu">
+                            {
+                                MENU_ITEMS_USER.map(item => (
+                                    <h2 key={item} onClick={() => changeContent(item)}
+                                        className={`menu-item ${content === item ? "actived" : ""}`}>{item}</h2>
+                                ))
+                            }
+                        </div>
                     </div>
-                    : <div className="menu">
-                        {
-                            MENU_ITEMS.map(item => (
-                                <h2 key={item} onClick={() => changeContent(item)}
-                                    className={`menu-item ${content === item ? "actived" : ""}`}>{item}</h2>
-                            ))
-                        }
+                    : <div style={{overflowX:"auto",overflowY:"hidden"}}>
+                        <div className="menu">
+                            {
+                                MENU_ITEMS.map(item => (
+                                    <h2 key={item} onClick={() => changeContent(item)}
+                                        className={`menu-item ${content === item ? "actived" : ""}`}>{item}</h2>
+                                ))
+                            }
+                        </div>
                     </div>
                 }
                 <div className="bottom-content">
