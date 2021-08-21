@@ -46,15 +46,13 @@ const AdvancedSearch = () => {
     const [address, setAddress] = useState("");
     const [long, setLong] = useState(0);
     const [allServices, setAllServices] = useState(false); //for all services in database
-    const [allsearch, setAllSearch] = useState([]);  //for the select service
-    const [allInstitutLocation, setAllInstitutLocation] = useState(""); //for the service with location and name
-    const [allInstitut, setAllInstitut] = useState(""); //for the service with location
     const [rateSearch, setRateSearch] = useState([]); //for the filter institution by like
     const [serviceAround, setServiceAround] = useState([]); //for the filter institution by distance
     const [randInstitut, setRandInstitut] = useState([]); //for random institution
     const [search, setSearch] = useState([]); //for the filter institution by distance
     const [loading, setLoading] = useState(false); //for the loader
     const [showFilter, setShowFilter] = useState(false)
+    const [loaderRand, setRandLoader] = useState(false)
     const history = useHistory()
 
     const changeView = (view) => {
@@ -85,10 +83,10 @@ const AdvancedSearch = () => {
             );
         })
     }
-    console.log(address)
 
 
     useEffect(() => {
+        setRandLoader(true)
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 setLat(position.coords.latitude)
@@ -97,45 +95,16 @@ const AdvancedSearch = () => {
         }
         axios.get(config.baseUrl + '/rand')
             .then(response => {
-                console.log(response.data.message)
                 setRandInstitut(response.data.message)
+                setRandLoader(false)
             })
             .catch(error => {
                 console.log(error)
+                setRandLoader(false)
             })
     }, [])
 
-    console.log(search)
-
-    /*const resultLocation = (lat, long) => {
-        let location = [lat, long];
-        location = location.join(",")
-        if (recherche === "") {
-            axios.post(config.baseUrl + '/user/service/search', {location: location})
-                .then(response => {
-                    setAllSearch("");
-                    setAllInstitutLocation("");
-                    setRateSearch("");
-                    setAllInstitut(response.data.message)
-                    console.log(response.data.message)
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        } else {
-            axios.post(config.baseUrl + '/user/service/search', {location: location, name: recherche})
-                .then(response => {
-                    setAllSearch("");
-                    setAllInstitut("");
-                    setRateSearch("");
-                    setAllInstitutLocation(response.data.message)
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        }
-    }
-     */
+    console.log(randInstitut)
 
     const getAllservice = () => {
         let tab = []
@@ -155,11 +124,11 @@ const AdvancedSearch = () => {
     }
 
     const getServiceByName = (name) => {
+        setRandInstitut([])
         setSearch([]);
         setLoading(true)
         axios.post(config.baseUrl + '/user/service/search', {name: name})
             .then(response => {
-                console.log(response.data.message);
                 setSearch(response.data.message);
                 setLoading(false)
             })
@@ -278,6 +247,7 @@ const AdvancedSearch = () => {
 
     const saveCommand = (event) => {
         event.preventDefault();
+        setRandInstitut([])
         setSearch([])
         console.log(search)
         if (star === null) {
@@ -366,7 +336,8 @@ const AdvancedSearch = () => {
                                             {search[sear].institution_address ?
                                                 <p className="address">{search[sear].institution_address}</p> :
                                                 search[sear].institution.address ?
-                                                    <p className="address">{search[sear].institution.address}</p> : ""}
+                                                    <p className="address">{search[sear].institution.address}</p> : search[sear].address ?
+                                                    <p className="address">{search[sear].address}</p> : ""}
                                         </div>
                                         {search[sear].distance_f ?
                                             <p className="address">{search[sear].distance_f} {unit}</p> :
@@ -375,9 +346,9 @@ const AdvancedSearch = () => {
                                     </div>
                                 </Link>
                             ))}
-                            {!loading && search.length === 0 && randInstitut.map((sear, index) => (
+                            {!loaderRand && search.length === 0 && randInstitut && randInstitut.map((sear, index) => (
                                 <Link className="result" to={"/institute/" + (sear['username'])}>
-                                    <img src={img} alt=""/>
+                                    <img src={logoLink.link+sear['logo']} alt=""/>
                                     <div style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
@@ -385,14 +356,20 @@ const AdvancedSearch = () => {
                                     }}>
                                         <div style={{display: 'flex', flexDirection: "column"}}>
                                             <h4 className="name"> {sear['username']}</h4>
-                                            <h4 className="name"> {sear['firstname']}</h4>
-                                            <p className="address">{sear['email']}</p>
+                                            <p className="address">{sear['address']}</p>
                                         </div>
                                     </div>
                                 </Link>
                             ))
                             }
-                            {loading && <div>
+                            {!loading && !loaderRand && search.length === 0 && randInstitut.length===0 &&
+                                <center>
+                                    <br/>
+                                    <img src={require("../../../../assets/images/telescope.png").default}/>
+                                    <p>Aucun Resultat</p>
+                                </center>
+                            }
+                            {loading || loaderRand && <div>
                                 <center>
                                     <br/>
                                     <LoaderIcon type={"cylon"} color={"#6B0C72"}/>

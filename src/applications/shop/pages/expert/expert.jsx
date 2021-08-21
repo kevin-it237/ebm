@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import TimeAgo from 'javascript-time-ago'
 import './expert.scss'
 import { useHistory, useParams } from 'react-router-dom';
 import { ReactComponent as Back } from "../../../../assets/icons/back.svg"
@@ -10,32 +11,44 @@ import axios from "axios";
 import config from "../../../../config/index";
 import {rate} from "../../../../config/helpers";
 import StarsRating from "../../components/stars.rating/stars.rating";
+import ReactTimeAgo from "react-time-ago";
+import fr from "javascript-time-ago/locale/en";
 
 const Expert = () => {
     const params = useParams();
     const history = useHistory();
     const select = params.slug;
-
+    TimeAgo.addLocale(fr)
     const [content, setContent] = useState("Revues");
     const [expert, setExpert] = useState([]);
     const [services, setServices] = useState([]);
     const [star, setStar] = useState(0);
     const [total, setTotal] = useState(0);
     const [each, setEach] = useState([]);
-    const [messageOnline, setmessageOnline] = useState("");
+    const [created, setCreated] = useState(0);
 
 
     useEffect(()=>{
         getInfoExpert();
         getStarVote();
         getEachVote();
-        showStatus();
+        getJoinedDate()
     },[]);
 
     const MENU_ITEMS = ["Revues", "Services", "Oeuvres"];
 
     const changeContent = (contentName) => {
         setContent(contentName);
+    }
+
+    const getJoinedDate = () => {
+        axios.get(config.baseUrl + '/user/show')
+            .then(res => {
+                setCreated(res.data.message.created_at)
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
 
     const getInfoExpert = () =>{
@@ -67,16 +80,6 @@ const Expert = () => {
             })
     }
 
-    const showStatus=(status)=>{
-        if (navigator.onLine) {
-            console.log(navigator.onLine)
-            setmessageOnline("Online");
-        }else{
-            console.log(navigator.onLine)
-            setmessageOnline("Vue à 9h");
-        }
-    }
-
     console.log(expert)
 
     const getEachVote = () =>{
@@ -88,6 +91,8 @@ const Expert = () => {
                 console.log(error)
             })
     }
+
+    console.log(each)
 
     let bottomContent = (<Reviews/>);
     if(content === "Revues") {
@@ -111,8 +116,8 @@ const Expert = () => {
                 <div className="owner-infos">
                     <img className="avatar" src={expert.logo} alt={expert.username} />
                     <div>
-                        <h3 className="name">{expert.username}</h3>
-                        <div>status {messageOnline}</div>
+                        <h3 className="name">{expert.username} {expert.firstname}</h3>
+                        {<p>Joined <ReactTimeAgo date={created} locale="en-US" timeStyle="round"/></p>}
                     </div>
                 </div>
 
@@ -120,23 +125,21 @@ const Expert = () => {
                     {expert.description}
                 </p>
 
-                <div className="stats">
-                    <div className="rates">
-                        <h2>{star}</h2>
-                        <p>{total} ratings</p>
-                    </div>
-                    {
-                        each.length !==0?
+                {each.length !==0&&
+                    <div className="stats">
+
+                        <div className="rates">
+                            <h2>{star}</h2>
+                            <p>{total} ratings</p>
+                        </div>
                         <div className="stars-group">
                             {each.map((vote, index)=>(
                                 <StarsRating key={index} showNumberOfVotes={true} showProgresBar={true} stars={index+1} total={total} votes={vote}/>
-                            ))  
+                            ))
                             }
                         </div>
-                        :
-                        <div className="aucun-vote">Aucun vote</div>
-                    }
-                </div>
+                    </div>
+                }
 
                 <div className="menu">
                     {

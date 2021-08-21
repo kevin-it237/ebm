@@ -29,11 +29,11 @@ const Work = () => {
     const [crop, setCrop] = useState({aspect: 1, width: 220, height: 220});
     const [croppedImageUrl, setCroppedImageUrl] = useState(null);
     const [imageRef, setImageRef] = useState(null);
-    const onImageLoad = (image)=>{
+    const onImageLoad = (image) => {
         setImageRef(image)
     }
 
-    const onCropComplet = (crop, pixelCrop)=>{
+    const onCropComplet = (crop, pixelCrop) => {
         if (imageRef && crop.width && crop.height) {
             console.log(getCroppedImg(imageRef, crop))
             const croppedImageUrl = getCroppedImg(imageRef, crop)
@@ -41,7 +41,7 @@ const Work = () => {
         }
     }
 
-    const getCroppedImg=(image, crop)=>{
+    const getCroppedImg = (image, crop) => {
         const canvas = document.createElement("canvas");
         const scaleX = image.naturalWidth / image.width;
         const scaleY = image.naturalHeight / image.height;
@@ -77,10 +77,10 @@ const Work = () => {
             n = bstr.length,
             u8arr = new Uint8Array(n);
 
-        while(n--){
+        while (n--) {
             u8arr[n] = bstr.charCodeAt(n);
         }
-        let croppedImage = new File([u8arr], filename, {type:mime});
+        let croppedImage = new File([u8arr], filename, {type: mime});
         setCroppedImageUrl(croppedImage)
     }
 
@@ -121,12 +121,12 @@ const Work = () => {
             return;
         }
         const formData = new FormData();
-        if (!form.description){
+        if (!form.description) {
             setMessage("Entrez une description")
             setError(true)
             return;
         }
-        if (!form.title){
+        if (!form.title) {
             setMessage("Entrez un titre")
             setError(true)
             return;
@@ -180,24 +180,25 @@ const Work = () => {
                 }}>
                     <div className="cart-modal-content">
                         <h3>Ajouter l'oeuvre</h3>
-                        <p style={{fontSize: 'small'}}>Titre</p>
+                        <p style={{fontSize: 'small', color: '#6B0C72', fontWeight: "bold"}}>Titre</p>
                         <TextArea rows={1} name="title" onChange={changeDescription} value={form.title}
-                                  placeholder="Entrez le titre..."/>
-                        <p style={{fontSize: 'small'}}>Image</p>
+                                  placeholder="Entrez le titre..." style={{fontSize: 'small'}}/>
+                        <p style={{fontSize: 'small', color: '#6B0C72', fontWeight: "bold"}}>Image</p>
                         <input id="inputFile" type="file" accept="image/*" ref={inputFile} onChange={onFile}
                                style={{display: "none"}}/>
                         {image ?
-                            <ReactCrop src={image} crop={crop} onChange={(newCrop) => {setCrop(newCrop)}}
+                            <ReactCrop src={image} crop={crop} onChange={(newCrop) => {
+                                setCrop(newCrop)
+                            }}
                                        minWidth="10" minHeight="10" locked
                                        onImageLoaded={onImageLoad} onComplete={onCropComplet} onClick={onButtonClick}/>
 
                             : <div style={{width: "100%", height: 200, backgroundColor: "#eee"}} src={image}
                                    onClick={onButtonClick}>
                             </div>}
-                        <p style={{fontSize: 'small'}}>Description</p>
-                        <TextArea rows={10} placeholder="Entrez la description..." name="description"
-                                  onChange={changeDescription}
-                                  value={form.description}/>
+                        <p style={{fontSize: 'small', color: '#6B0C72', fontWeight: "bold"}}>Description</p>
+                        <TextArea rows={8} placeholder="Entrez la description..." style={{fontSize: "small"}}
+                                  name="description" onChange={changeDescription} value={form.description}/>
                         <Button size="sm" onClick={(event) => {
                             saveArtwork(event)
                         }}>Enregistrer</Button>
@@ -228,24 +229,26 @@ const Work = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    height:130,
+                    height: 130,
                 }} className={"artwork"} onClick={e => {
                     setShowModal(true)
                 }}>
                     <strong style={{color: "white", fontSize: 34}}>+</strong>
                 </div>
                 {artworks.map(artwork => (
-                    <div className="artwork" style={{
-                        justifyContent: 'space-around',
-                        display: "flex",
-                        height:130,
-
-                    }} onClick={e => {
-                        setSelectedArtwork(artwork);
-                        setSelectedWork(true)
-                    }}>
+                    <div className="artwork" style={{justifyContent: 'space-around', display: "flex", height: 130,}}
+                         onClick={e => {
+                             setSelectedArtwork(artwork);
+                             setSelectedWork(true)
+                         }}>
                         {/*<p>{artwork.title}</p>*/}
-                        <div style={{backgroundImage:`url("${imageLink.link + artwork.image}")`,backgroundSize:"cover",backgroundPosition:"center",height:"100%",width:"100%"}} />
+                        <div style={{
+                            backgroundImage: `url("${imageLink.link + artwork.image}")`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            height: "100%",
+                            width: "100%"
+                        }}/>
                         {/*<img src={imageLink.link + artwork.image} alt={artwork.owner_type}/>*/}
                     </div>
                 ))}
@@ -255,31 +258,26 @@ const Work = () => {
                 <LoaderIcon type="cylon" color="#6B0C72"/>
             </div>}
             {
-                del && <Modal hide={() => setSelectedWork(null)}>
+                del && <Modal hide={() => setDel(false)}>
                     <center><h2>Voulez vous vraiment supprimer ?</h2></center>
                     <div style={{display: "flex", justifyContent: "space-between", marginTop: 20}}>
                         <Button size="sm" onClick={() => {
                             setSelectedWork(null);
                             setDel(false)
                         }}>Annuler</Button>
-                        <Button size="sm" style={{backgroundColor: 'red'}}
-                                onClick={() => {
-                                    delArtwork();
-                                    setSelectedWork(null);
-                                    setDel(false)
-                                }}>Confirmer</Button>
+                        <Button size="sm" style={{backgroundColor: 'red', marginLeft: 5}} onClick={() => {
+                            delArtwork();
+                            setSelectedWork(null);
+                            setDel(false)
+                        }}>Confirmer</Button>
                     </div>
 
                 </Modal>
             }
             {
-                !loader&&artworks.length===0&&<div style={{
-                    backgroundColor: "#eee",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: 100,
-                    width: "25%"
+                !loader && artworks.length === 0 && <div style={{
+                    backgroundColor: "#eee", display: "flex", alignItems: "center", justifyContent: "center",
+                    height: 100, width: "25%"
                 }} className={"artwork"} onClick={e => {
                     setShowModal(true)
                 }}>
@@ -287,14 +285,16 @@ const Work = () => {
                 </div>
             }
             {
-                error && <Modal hide={()=> {
-                    setError(false); setShowModal(true)
+                error && <Modal hide={() => {
+                    setError(false);
+                    setShowModal(true)
                 }}>
                     <center><h2>{message}</h2></center>
                     <Button size="sm" style={{backgroundColor: 'red'}}
-                    onClick={()=> {
-                        setError(false); setShowModal(true)
-                    }}>Ok</Button>
+                            onClick={() => {
+                                setError(false);
+                                setShowModal(true)
+                            }}>Ok</Button>
 
                 </Modal>
             }

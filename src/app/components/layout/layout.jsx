@@ -8,28 +8,22 @@ import Document from "../../../assets/icons/documents.svg"
 import UserAccount from "../../../assets/icons/user_account.svg"
 import axios from "axios";
 import config from "../../../config/index";
+import {useDispatch, useSelector} from "react-redux";
+import Modal from "../modal/modal";
+import Button from "../buttons/button/button";
+import LoaderIcon from "react-loader-icon";
 
 const Layout = ({children}) => {
+    const user = useSelector(state=>state.user.payload)
+    const dispatch = useDispatch();
     const history = useHistory();
     const [drawerOpen,setDrawerOpen]=useState(false);
-    const [user,setUser]=useState([]);
+    const [log,setLogout]=useState(false);
+    const [loader,setLoader]=useState(false);
     window.setDrawerOpen =  setDrawerOpen;
 
     useEffect(()=>{
-        getUser();
     }, []);
-
-    const getUser=()=>{
-        axios.get(config.baseUrl+'/user/show')
-            .then(response=>{
-                setUser(response.data.message)
-            })
-            .catch(error=>{
-                console.log(error)
-            })
-    }
-
-    console.log(user)
 
     const onLock=(event)=>{
         event.preventDefault();
@@ -37,17 +31,31 @@ const Layout = ({children}) => {
     }
 
     const logout=()=>{
+        setLogout(false)
+        setLoader(true)
+        setDrawerOpen(false)
         axios.get(config.baseUrl+'/user/logout')
             .then(response=>{
                 window.localStorage.removeItem('token');
-                setUser([]);
-                setDrawerOpen(false)
+                dispatch({
+                    type: 'INFO_USER',
+                    payload: ""
+                })
+                setLoader(false)
                 history.push('/login')
             })
             .catch(error=>{
                 console.log(error)
+                setLoader(false)
             })
     }
+
+    const handleModal = (e)=>{
+        e.preventDefault()
+        setDrawerOpen(false)
+        setLogout(true)
+    }
+
     return (
         <>
             <div id="layout">
@@ -84,9 +92,24 @@ const Layout = ({children}) => {
                         </div>
                         <div style={{flexGrow:1,display:'flex',flexDirection:'column',justifyContent:"center"}}>
                             <h2 style={{fontSize:10,marginBottom:5}} id={"nav-bar-username"}>{user.firstname} {user.lastname} ({user.role})</h2>
-                            <strong onClick={logout}>Logout</strong>
+                            <strong onClick={handleModal}>Logout</strong>
                         </div>
                     </div>
+                    {
+                        log&&<Modal hide={()=>setLogout(false)}>
+                            <center><h2 style={{fontSize: "medium", marginTop: 10}}>Se deconnecter ?</h2></center>
+                            <br/>
+                            <div style={{display: "flex", justifyContent: "space-between"}}>
+                                <Button onClick={(e)=> {e.preventDefault();
+                                    setLogout(false)
+                                }}>Annuler</Button>
+                                <Button style={{background: 'green', marginLeft: 10}} onClick={logout}>Oui</Button>
+                            </div>
+                        </Modal>
+                    }
+                    {
+                        !log&&loader&&<LoaderIcon type="cylon" color="#6B0C72"/>
+                    }
 
                 </div>
                 <div id="content">

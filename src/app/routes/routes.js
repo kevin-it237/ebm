@@ -28,6 +28,7 @@ import VerificationEmail from "../../applications/auth/pages/reset.password/veri
 import ResetPassword from "../../applications/auth/pages/reset.password/reset.password";
 import VerificationToken from "../../applications/auth/pages/reset.password/verification.token";
 import Favorites from "../../applications/shop/pages/favorites/favorites";
+import OrderProduct from "../../applications/shop/pages/order/order.product";
 
 /**
  * @description this is the main routes for the main application src/app.
@@ -71,6 +72,7 @@ const Routes = () => {
                     <Route exact={true} component={Conversation} path={'/conversation'} />
                     <Route exact={true} component={RateExpert} path={'/rate-expert'} />
                     <Route exact={true} component={Favorites} path={'/favorites'}/>
+                    <Route exact={true} component={OrderProduct} path={'/order/product/:slug'}/>
 
                     <Layout>
                         <Route exact={true} component={Home} path={'/home'} />

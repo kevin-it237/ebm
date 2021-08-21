@@ -1,8 +1,8 @@
 import React from 'react';
 export default function ({name,state,id,date,onClick=()=>{}}) {
-    return <div onClick={onClick} style={{borderBottom:"1px solid #eee",paddingTop:10,paddingBottom:10,display:"flex",flexDirection:"row",justifyContent:"space-between"}}>
+    return <div style={{borderBottom:"1px solid #eee",paddingTop:10,paddingBottom:10,display:"flex",flexDirection:"row",justifyContent:"space-between"}}>
         <div  style={{flexGrow:1,flexDirection:"column",display:"column"}}>
-            <h1 style={{color:"#6B0C72",fontSize:14}}>{name}</h1>
+            <h1 style={{color:"#6B0C72",fontSize:14, textTransform: "capitalize"}}>{name}</h1>
             <p><strong></strong></p>
             <p style={{opacity:0.8}}>{date}</p>
         </div>

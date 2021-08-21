@@ -144,7 +144,7 @@ const Cart = () => {
                 </div>
                 }
                 {products.length !== 0 ?
-                    <div className="footer" style={{position: "absolute", bottom: 0, width: '100%'}}>
+                    <div className="footer" style={{position: "fixed", bottom: 0, width: '100%'}}>
                         <div className="summary">
                             <p>TOTAL</p>
                             <p className="price">{total} XAF</p>

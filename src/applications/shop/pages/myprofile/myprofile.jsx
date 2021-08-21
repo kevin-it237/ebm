@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import TimeAgo from 'javascript-time-ago'
 import fr from 'javascript-time-ago/locale/en'
 import './myprofile.scss'
@@ -12,7 +12,6 @@ import {ReactComponent as Eye} from "../../../../assets/icons/eye.svg";
 import Button from "../../../../app/components/buttons/button/button";
 import config from "../../../../config/index";
 import axios from "axios";
-import Slider from '@material-ui/core/Slider'
 import LoaderIcon from "react-loader-icon";
 import logoLink from "../../../../config/logo.link";
 import Modal from "../../../../app/components/modal/modal";
@@ -22,9 +21,44 @@ import 'react-image-crop/dist/ReactCrop.css';
 import ExpertDemand from "../../../shop/components/historique/expert.demand";
 import ServiceDemand from "../../../shop/components/historique/service.demand";
 import ProductDemand from "../../../shop/components/historique/product.demand";
-import {TextArea} from "semantic-ui-react";
+import Select from "react-select";
+import Slider from "react-slick";
+import {confirmationPass, verifiedEmail, verifiedPassword, verifiedPhone} from "../../../../config/helpers";
 
 const MyProfile = () => {
+
+    const stateExpert = [
+        {
+            value: 0,
+            label: "EN ATTENTE"
+        },
+        {
+            value: 1,
+            label: "ANNULER"
+        }
+    ]
+
+    const stateService = [
+        {
+            value: 0,
+            label: "ACCEPTER"
+        },
+        {
+            value: 1,
+            label: "COMPLETER"
+        },
+        {
+            value: 3,
+            label: "REJETER"
+        }
+    ]
+
+    const settings = {
+        dots: true,
+        speed: 500,
+        slidesToShow: 4,
+        slidesToScroll: 3,
+    };
 
     TimeAgo.addLocale(fr)
     const timeAgo = new TimeAgo('fr-CA')
@@ -38,14 +72,27 @@ const MyProfile = () => {
     const [emailError, setEmail] = useState("");
     const [passwordError, setErrorPassword] = useState("");
     const [confirmationError, setConfirmation] = useState("");
-    const [selectFile, setSelectFile] = useState("");
-    const [image, setImage] = useState("");
+    const [phoneError, setPhone] = useState("");
+    const [selectFile, setSelectFile] = useState("");//get selecte image
+    const [image, setImage] = useState("");//store url selected image
     const [created, setCreated] = useState(0);
-    const [join, setJoined] = useState("");
+    const [comment, setComment] = useState("");
+    const [message, setMessage] = useState(false);
+    const [loaderProf, setLoaderProf] = useState("");
     const [imageProfile, setImageProfile] = useState("");
     const [loader, setLoader] = useState(false);
     const [editProf, setEditProf] = useState(false);
     const [passTrue, setPasstrue] = useState(false);
+    const [expertOrder, setExpertOrder] = useState([]);//get expert order
+    const [cart, setCart] = useState(false);//get expert order
+    const [orderExpertState, setOrderExpertState] = useState("");//get expert order
+    const [orderExpertId, setOrderExpertId] = useState(null);//get order id
+    const [loaderState, setloaderState] = useState(false);//loader for state
+    const [order, setOrder] = useState(1);//load order to show
+    const [activ, setActiv] = useState(false);//load order to show
+
+    const [serviceOrder, setServiceOrder] = useState([]);//loader for state
+    const [productOrder, setProductOrder] = useState([]);//loader for state
 
     const [crop, setCrop] = useState({aspect: 1, width: 150, height: 150});
     const [changePhotoProfile, setChangeProfilPhoto] = useState(false);
@@ -119,7 +166,7 @@ const MyProfile = () => {
         setImage(url)
     }
 
-    const savePhotoProfile = () => {
+    const savePhotoProfile = useCallback(() => {
         setChangeProfilPhoto(false)
         setLoader(true)
         const formData = new FormData();
@@ -145,15 +192,55 @@ const MyProfile = () => {
                 console.log(error)
             })
         setSelectFile("")
-    }
+    }, [croppedImageUrl])
 
 
     useEffect(() => {
         getUserData()
         getJoinedDate();
+        getOrderExpert();
         setLoader(true)
 
     }, []);
+
+    const onSelect = (event) => {
+        setOrderExpertState(event.label)
+    }
+
+    const changeOrderExpertState = (e) => {
+        e.preventDefault();
+        setCart(false)
+        setloaderState(true)
+        let url;
+        if (content === "Demandes d'expert") {
+            url = '/institution/expert/changestate'
+        } else if (content === "Commandes de service") {
+            url = '/user/service/order/changestate'
+        } else {
+            url = '/user/product/order/changestate'
+        }
+        axios.post(config.baseUrl + url, {
+            order_id: orderExpertId,
+            state: orderExpertState,
+            comment: comment
+        })
+            .then(res => {
+                if (content === "Demandes d'expert") {
+                    getOrderExpert()
+                } else if (content === "Commandes de service") {
+                    console.log(res.data.message)
+                    getOrderService()
+                } else {
+                    console.log(res.data.message)
+                    getOrderProduct()
+                }
+                setloaderState(false)
+            })
+            .catch(err => {
+                console.log(err)
+                setloaderState(false)
+            })
+    }
 
     const getUserData = () => {
         axios.get(config.baseUrl + '/user/show')
@@ -183,16 +270,17 @@ const MyProfile = () => {
                         address: response.data.message.address,
                         phone: response.data.message.phone
                     })
-                    console.log(response.data.message.role)
                     if (response.data.message.role === 'EXPERT') {
                         axios.get(config.baseUrl + '/institution/info')
                             .then(response => {
                                 setImageProfile(response.data.message.logo)
-                                console.log(response.data.message)
                             })
                     }
                     setLoader(false)
                 }
+                getOrderService()
+                getOrderProduct()
+                getOrderExpert()
             })
             .catch(error => {
                 console.log(error)
@@ -203,9 +291,6 @@ const MyProfile = () => {
         axios.get(config.baseUrl + '/user/show')
             .then(res => {
                 setCreated(res.data.message.created_at)
-                const time = timeAgo.format(Date.now() - Date.parse(res.data.message.created_at));
-                setJoined(time)
-                console.log(time)
             })
             .catch(err => {
                 console.log(err)
@@ -214,6 +299,8 @@ const MyProfile = () => {
 
     const editProfile = (event) => {
         event.preventDefault();
+        setEditProf(false)
+        setLoaderProf(true)
         let user = {
             firstname: infoForm.name,
             lastname: infoForm.surname,
@@ -224,17 +311,25 @@ const MyProfile = () => {
             user['institution_phone'] = infoForm.phone;
             axios.put(config.baseUrl + '/institution/update', {...user})
                 .then(response => {
+                    setLoaderProf(false)
+                    setMessage("Modification Enregistrée")
                 })
                 .catch(error => {
                     console.log(error)
+                    setLoaderProf(false)
+                    setMessage("Erreur d'enregistrement")
                 })
         } else {
             user['address'] = infoForm.address;
             user['phone'] = infoForm.phone;
             axios.put(config.baseUrl + '/user/update', {...user})
                 .then(response => {
+                    setLoaderProf(false)
+                    setMessage("Modification Enregistrée")
                 })
                 .catch(error => {
+                    setLoaderProf(false)
+                    setMessage("Erreur d'enregistrement")
                     console.log(error)
                 })
         }
@@ -242,15 +337,21 @@ const MyProfile = () => {
 
     const editProfilePassword = (event) => {
         event.preventDefault();
+        setEditProf(false)
+        setLoaderProf(true)
         const user = {
             password: infoForm2.password,
             confirmation: infoForm2.confirmation
         }
         axios.put(config.baseUrl + '/user/password/edit', {...user})
             .then(response => {
+                setLoaderProf(false)
+                setMessage("Modification Enregistrée")
             })
             .catch(error => {
                 console.log(error)
+                setLoaderProf(false)
+                setMessage("Erreur d'enregistrement")
             })
     }
 
@@ -267,7 +368,6 @@ const MyProfile = () => {
         }
     }
 
-
     const clickChange = (e) => {
         e.preventDefault();
         setChangeProfilPhoto(true)
@@ -278,8 +378,68 @@ const MyProfile = () => {
         inputFile.current.click()
     }
 
-    const MENU_ITEMS_USER = ["Information", "Mot de passe", "Historique des Commandes", "Demandes d'expert", "Demandes de service", "Demandes de produit"];
-    const MENU_ITEMS = ["Information", "Mot de passe", "Services", "Oeuvres", "Demandes d'expert", "Demandes de service", "Demandes de produit"];
+    const getOrderExpert = () => {
+        axios.get(config.baseUrl + '/institution/expert/order/index')
+            .then(res => {
+                setExpertOrder(res.data.message)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+    const getOrderService = () => {
+        axios.get(config.baseUrl + '/user/service/order/index')
+            .then(res => {
+                setServiceOrder(res.data.message)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+    const getOrderProduct = () => {
+        axios.get(config.baseUrl + '/user/product/order/index')
+            .then(res => {
+                setProductOrder(res.data.message)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
+    const onBlur = (e) => {
+        if (e.target.name === 'email') {
+            const email = e.target.value;
+            if (!verifiedEmail(email)) {
+                setEmail("Doit etre un email valide")
+            } else {
+                setEmail("")
+            }
+        } else if (e.target.name === 'password') {
+            const password = e.target.value;
+            if (!verifiedPassword(password)) {
+                setErrorPassword("Doit contenir au moins 6 caractéres")
+            } else {
+                setErrorPassword("")
+            }
+        } else if (e.target.name === 'confirmation') {
+            const confirmation = e.target.value;
+            const password = infoForm2.password;
+            if (!confirmationPass(password, confirmation)) {
+                setConfirmation("Doit correspondre au mot de passe");
+            } else {
+                setConfirmation("")
+            }
+        } else if (e.target.name === 'phone' || e.target.name === 'institution_phone') {
+            const phone = e.target.value;
+            setPhone(verifiedPhone(phone))
+        }
+    }
+
+    console.log(serviceOrder)
+
+    const MENU_ITEMS_USER = ["Information", "Mot de passe", "Commandes de service", "Commandes de produit"];
+    const MENU_ITEMS_EXPERT = ["Information", "Mot de passe", "Services", "Oeuvres", "Demandes d'expert", "Commandes de produit"];
+    const MENU_ITEMS = ["Information", "Mot de passe", "Services", "Oeuvres", "Demandes d'expert", "Commandes de service", "Commandes de produit"];
 
     const changeContent = (contentName) => {
         setContent(contentName);
@@ -294,18 +454,15 @@ const MyProfile = () => {
         setInfoForm2({...infoForm2, [e.target.name]: e.target.value});
     }
 
-    const onSubmit = () => {
-
-    }
-
-    const onBlur = (e) => {
-
+    const commentChange = (e) => {
+        e.preventDefault();
+        setComment(e.target.value)
     }
 
     let bottomContent;
     if (content === "Information") {
         bottomContent = (<div className={"signup-container"} style={{width: "100%"}}>
-            {infoForm ? <form onSubmit={onSubmit} className="auth-container">
+            {infoForm ? <form className="auth-container">
                     {Object.keys(infoForm).map((input, index) => (
                         <div key={index} className="auth-container__input-container">
                             <input
@@ -319,6 +476,7 @@ const MyProfile = () => {
                                 className={`auth-container__input`}
                             />
                             {<p className="errorMessage">{input === 'email' ? <div>{emailError}</div> : ""}</p>}
+                            {<p className="errorMessage">{input === 'phone' ? <div>{phoneError}</div> : ""}</p>}
 
                         </div>
                     ))}
@@ -336,7 +494,7 @@ const MyProfile = () => {
         </div>);
     } else if (content === "Mot de passe") {
         bottomContent = (<div className={"signup-container"} style={{width: "100%"}}>
-            <form onSubmit={onSubmit} className="auth-container">
+            <form className="auth-container">
                 {Object.keys(infoForm2).map((input, index) => (
                     <div key={index} className="auth-container__input-container">
                         <input
@@ -350,7 +508,6 @@ const MyProfile = () => {
                             required
                             className={`auth-container__input ${(input === 'password' || input === 'confirmation') ? 'password' : ''}`}
                         />{<p className="errorMessage">{input === 'password' ? <div>{passwordError}</div> : ""}</p>}
-                        {<p className="errorMessage">{input === 'email' ? <div>{emailError}</div> : ""}</p>}
                         {<p className="errorMessage">{input === 'confirmation' ?
                             <div>{confirmationError}</div> : ""}</p>}
                         {input === 'password' ? showPassword ? <Uneye onClick={() => setPassword(!showPassword)}/> :
@@ -374,24 +531,77 @@ const MyProfile = () => {
     } else if (content === "Oeuvres") {
         bottomContent = (<Works/>);
     } else if (content === "Demandes d'expert") {
-        bottomContent = (<div style={{marginTop: -20}}>
-            {[1, 2, 3, 4, 4, 5, 5, 6, 7, 7].map(e => (<ExpertDemand onClick={e => {
-                alert("hi")
-            }} name={"Himalayas Insititute of beauty"} date={"24/07/2021"} state={"EN ATTENTE"} id={e}/>))}
-        </div>);
-    } else if (content === "Demandes de service") {
-        bottomContent = (<div style={{marginTop: -20}}>
-            {[1, 2, 3, 4, 4, 5, 5, 6, 7, 7].map(e => (<ServiceDemand onClick={e => {
-                alert("hi")
-            }} services={"Manicure,Pedicure,Pieds,Jambes"} name={"Himalayas Insititute of beauty"} date={"24/07/2021"}
-                                                                     state={"EN ATTENTE"} id={e}/>))}
-        </div>);
-    } else if (content === "Demandes de produit") {
-        bottomContent = (<div style={{marginTop: -20}}>
-            {[1, 2, 3, 4, 4, 5, 5, 6, 7, 7].map(e => (<ProductDemand onClick={e => {
-                alert("hi")
-            }} amount={"135, 000 XAF"} date={"24/07/2021"} state={"EN ATTENTE"} id={e}/>))}
-        </div>);
+        {
+            expertOrder.length !== 0 ?
+                bottomContent = (<div style={{marginTop: -10}}>
+                    {Object.keys(expertOrder).map((e, index) => (
+                        <div key={index} onClick={(event) => {
+                            event.preventDefault();
+                            setCart(true);
+                            setOrderExpertId(expertOrder[e].id);
+                            setComment(expertOrder[e].comment)
+                        }}
+                             className={(infoUser.role === 'EXPERT' && expertOrder[e].state === 'ANNULER') || (infoUser.role === 'INSTITUTION' && expertOrder[e].state === 'COMPLETER')
+                             || (infoUser.role === 'INSTITUTION' && expertOrder[e].state === 'REJETER') ? "disable" : ""}>
+                            <ExpertDemand name={expertOrder[e].name} date={expertOrder[e].date}
+                                          state={expertOrder[e].state} id={index + 1}/>
+                        </div>))}
+                </div>)
+                : bottomContent = (
+                    <div><br/>
+                        <center>
+                            <img src={require("../../../../assets/images/telescope.png").default}/>
+                            <p>{infoUser.role === 'INSTITUTION' ? "Aucune demande d'expert éffectuée" : "Aucune demande d'expert reçue"}</p>
+                        </center>
+                    </div>)
+        }
+    } else if (content === "Commandes de service") {
+        serviceOrder.length ?
+            bottomContent = (<div>
+                {Object.keys(serviceOrder).map((e, index) => (
+                    <div key={index} onClick={(event) => {
+                        event.preventDefault();
+                        setCart(true);
+                        setOrderExpertId(serviceOrder[e].id);
+                        setComment(serviceOrder[e].comment)
+                    }}
+                         className={(infoUser.role === 'user' && serviceOrder[e].state === 'COMPLETER') || (infoUser.role === 'INSTITUTION' && serviceOrder[e].state === 'ANNULER') ? "disable" : ""}>
+                        <ServiceDemand services={serviceOrder[e].service} name={serviceOrder[e].name}
+                                       date={serviceOrder[e].date}
+                                       state={serviceOrder[e].state} id={index + 1}/></div>
+                ))}
+            </div>) :
+            bottomContent = (
+                <div><br/>
+                    <center>
+                        <img src={require("../../../../assets/images/telescope.png").default}/>
+                        <p>{infoUser.role === 'INSTITUTION' ? "Aucune demande de service reçue" : infoUser.role === 'EXPERT' ? "Aucune demande de service" : "Aucune demande de service éffectuée"}</p>
+                    </center>
+                </div>)
+    } else if (content === "Commandes de produit") {
+        {
+            productOrder.length !== 0 ?
+                bottomContent = (<div>
+                    {Object.keys(productOrder).map((e, index) => (
+                        <div key={index} onClick={event => {
+                            event.preventDefault();
+                            history.push('/order/product/' + productOrder[e].id)
+                            /*setCart(true); setOrderExpertId(productOrder[e].id); setComment(productOrder[e].comment)*/
+                        }}
+                             className={((infoUser.role === 'EXPERT' || infoUser.role === 'INSTITUTION' || infoUser.role === 'user') && productOrder[e].state === 'COMPLETER') ? "disable" : ""}>
+                            <ProductDemand amount={productOrder[e].price} date={productOrder[e].date}
+                                           state={productOrder[e].state} id={index + 1}/>
+                        </div>))}
+                </div>)
+                :
+                bottomContent = (<div>
+                    <br/>
+                    <center>
+                        <img src={require("../../../../assets/images/telescope.png").default}/>
+                        <p>Aucune commande de produits éffectuées</p>
+                    </center>
+                </div>)
+        }
     }
 
     return (
@@ -432,30 +642,44 @@ const MyProfile = () => {
                     }
                     <div className={infoUser.role === 'user' ? "marge" : ""}>
                         <h3 className="name">{infoUser.firstname} {infoUser.lastname}</h3>
-                        {<p>Joined <ReactTimeAgo date={created} locale="en-US" timeStyle="round"/></p>}
+                        {<p>Joined <ReactTimeAgo date={created} locale="fr-FR" timeStyle="round"/></p>}
                     </div>
                 </div>
-                {infoUser.role === 'user' ?
-                    <div style={{overflowX:"auto",overflowY:"hidden"}}>
-                        <div className="menu">
-                            {
-                                MENU_ITEMS_USER.map(item => (
-                                    <h2 key={item} onClick={() => changeContent(item)}
-                                        className={`menu-item ${content === item ? "actived" : ""}`}>{item}</h2>
-                                ))
-                            }
-                        </div>
-                    </div>
-                    : <div style={{overflowX:"auto",overflowY:"hidden"}}>
-                        <div className="menu">
-                            {
-                                MENU_ITEMS.map(item => (
-                                    <h2 key={item} onClick={() => changeContent(item)}
-                                        className={`menu-item ${content === item ? "actived" : ""}`}>{item}</h2>
-                                ))
-                            }
-                        </div>
-                    </div>
+                {infoUser.role === 'user' &&
+                <Slider {...settings} className='menu'>
+                    {
+                        MENU_ITEMS_USER.map(item => (
+                            <div>
+                                <h2 key={item} onClick={() => changeContent(item)} className={`menu ${content === item ? "actived" : ""}`}>{item}</h2>
+                                {content === item && <span></span>}
+                            </div>
+                        ))
+                    }
+                </Slider>
+                }
+                {infoUser.role === 'EXPERT' &&
+                <Slider {...settings} className='menu'>
+                    {
+                        MENU_ITEMS_EXPERT.map(item => (
+                            <div>
+                                <h2 key={item} onClick={() => changeContent(item)} className={`menu ${content === item ? "actived" : ""}`}>{item}</h2>
+                                {content === item && <span></span>}
+                            </div>
+                        ))
+                    }
+                </Slider>
+                }
+                {infoUser.role === 'INSTITUTION' &&
+                <Slider {...settings} className='menu'>
+                    {
+                        MENU_ITEMS.map(item => (
+                            <div>
+                                <h2 key={item} onClick={() => changeContent(item)} className={`menu ${content === item ? "actived" : ""}`}>{item}</h2>
+                                {content === item && <span className="span-bottom"></span>}
+                            </div>
+                        ))
+                    }
+                </Slider>
                 }
                 <div className="bottom-content">
                     {bottomContent}
@@ -502,22 +726,123 @@ const MyProfile = () => {
                 <Modal hide={() => {
                     setEditProf(false)
                 }}>
+                    <center><h2 style={{fontSize: 'small', marginTop: 10}}>Enregistrez vos modifications ?</h2></center>
+                    <br/>
+                    <div style={{display: "flex", justifyContent: "space-between"}}>
+                        <Button onClick={(e) => {
+                            e.preventDefault();
+                            setEditProf(false);
+                            getUserData();
+                            setLoader(true)
+                        }}>Annuler</Button>
+                        <Button onClick={passTrue ? editProfilePassword : editProfile}
+                                style={{background: "green", marginLeft: 10}}>Oui</Button>
+                    </div>
+                </Modal>
+            }
+            {
+                loaderProf &&
+                <Modal>
+                    <LoaderIcon type="cylon" color="#6B0C72"/>
+                </Modal>
+            }
+            {
+                !loaderProf && message &&
+                <Modal hide={() => setMessage(false)}>
+                    <center><h2 style={{fontSize: "small"}}>{message}</h2></center>
+                </Modal>
+            }
+            {
+                cart &&
+                <Modal hide={() => {
+                    setCart(false)
+                }}>
                     <div>
-                        <center>
-                            <h2>Enregistrez vos modifications ?</h2>
-                        </center>
-                        <div style={{display: "flex", justifyContent: "space-between"}}>
-                            <Button onClick={(e) => {
-                                e.preventDefault();
-                                setEditProf(false);
-                                getUserData();
-                                setLoader(true)
-                            }}>Annuler</Button>
-                            <Button onClick={passTrue ? editProfilePassword : editProfile}
-                                    style={{background: "green"}}>Oui</Button>
-                        </div>
+                        <h1 style={{fontSize: 'medium', color: '#6B0C72', marginTop: -6, marginBottom: 5}}>Modifier la
+                            commande</h1>
+                        <br/>
+                        {infoUser.role === 'INSTITUTION' &&
+                        <Select
+                            options={content === "Demandes d'expert" ? stateExpert : content === "Commandes de service" ? stateService : stateExpert}
+                            placeholder="Changer l'etat..." onChange={onSelect}/>
+                        }
+                        {(infoUser.role === 'INSTITUTION' && content === "Commandes de produit") || (infoUser.role === 'INSTITUTION' && content === "Demandes d'expert") &&
+                        <textarea onChange={commentChange} value={comment} rows="10"
+                                  placeholder="Entrez un commentaire ..."
+                                  style={{
+                                      padding: 10,
+                                      fontSize: "small",
+                                      width: '100%',
+                                      border: "none",
+                                      marginTop: 5,
+                                      marginBottom: 5
+                                  }}/>}
+                        {
+                            (infoUser.role === 'INSTITUTION' && content === "Commandes de service") &&
+                            <h2 style={{
+                                fontSize: "small",
+                                wordWrap: "break-word",
+                                marginTop: 10,
+                                marginBottom: 10
+                            }}>{comment}</h2>
+                        }
+                        {
+                            infoUser.role === 'user' &&
+                            <div>
+                                <Select
+                                    options={stateExpert} placeholder="Changer l'etat..." onChange={onSelect}/>
+                                <textarea onChange={commentChange} value={comment} rows="10"
+                                          placeholder="Entrez un commentaire ..."
+                                          style={{
+                                              padding: 10,
+                                              fontSize: "small",
+                                              width: '100%',
+                                              border: "none",
+                                              marginTop: 5,
+                                              marginBottom: 5
+                                          }}/>
+                            </div>
+                        }
+                        {
+                            infoUser.role === 'EXPERT' &&
+                            <Select
+                                options={content === "Demandes d'expert" ? stateService : stateExpert}
+                                placeholder="Changer l'etat..." onChange={onSelect}/>
+                        }
+                        <br/>
+                        {
+                            infoUser.role === 'EXPERT' && content === "Commandes de produit" ?
+                                <textarea onChange={commentChange} value={comment} rows="10"
+                                          placeholder="Entrez un commentaire ..."
+                                          style={{
+                                              padding: 10,
+                                              fontSize: "small",
+                                              width: '100%',
+                                              border: "none",
+                                              marginTop: 5,
+                                              marginBottom: 5
+                                          }}/>
+                                : content === "Demandes d'expert" ? <h2 style={{
+                                    fontSize: "small",
+                                    wordWrap: "break-word",
+                                    marginTop: 10,
+                                    marginBottom: 10
+                                }}>{comment}</h2> : ""
+                        }
+                        <br/>
+                        <Button onClick={changeOrderExpertState}>Enregistrer</Button>
                     </div>
 
+                </Modal>
+            }
+            {//loader pour sauvegarder l'etat de la demande
+                loaderState &&
+                <Modal hide={() => {
+                    setCart(false)
+                }}>
+                    <div className="spinner_load_search">
+                        <LoaderIcon type="cylon" color="#6B0C72"/>
+                    </div>
                 </Modal>
             }
             {loader && <div className="spinner_load_search">

@@ -9,6 +9,7 @@ import Modal from "../../../../app/components/modal/modal";
 import config from "../../../../config";
 import {useParams} from "react-router-dom";
 import LoaderIcon from "react-loader-icon";
+import img from "../../../../assets/images/ebm.svg";
 
 const Services = (props) => {
 
@@ -16,6 +17,7 @@ const Services = (props) => {
     const select = param.slug;
     const [services, setServices] = useState([]);
     const [loader, setLoader] = useState(false);
+    const [loaderServ, setLoaderServ] = useState(false);
     const [message, setMassage] = useState(false);
     const [selectService, setselectService] = useState([]);
     const [services_order, setService_Order] = useState([]);
@@ -41,20 +43,20 @@ const Services = (props) => {
     ))
 
     const getServiceInstitut = () => {
+        setLoaderServ(true)
         axios.get(config.baseUrl + "/institution/service/show/" + select)
             .then(response => {
                 console.log(response.data)
                 if (response.data.message) {
                     setselectService(response.data.message);
+                    setLoaderServ(false)
                 }
             })
             .catch(error => {
                 console.log(error)
+                setLoaderServ(false)
             })
     }
-
-    console.log(selectService)
-
 
     const selectServiceItem = Object.keys(selectService).map((service, index) => (
         {
@@ -76,7 +78,7 @@ const Services = (props) => {
                     if (response.data.message === 'vous avez déjà souscrit à ce service') {
                         setMassage("vous avez déjà souscrit à ce service")
                     } else {
-                        setMassage("Commande Effectuée")
+                        setMassage("Commande Enregistrée")
                     }
                 })
                 .catch(error => {
@@ -89,7 +91,11 @@ const Services = (props) => {
                 .then(response => {
                     console.log(response)
                     setLoader(false)
-                    setMassage("Commande Effectuée")
+                    if (response.data.message === 'Vous avez deja commander cet expert') {
+                        setMassage("vous avez déjà demander cet Expert.")
+                    }else {
+                        setMassage("Commande Enregistrée")
+                    }
                 })
                 .catch(error => {
                     console.log(error)
@@ -115,33 +121,43 @@ const Services = (props) => {
 
     return (
         <div className="services">
-            {services.length !== 0 ?
-                <div>
-                    {
-                        Object.keys(services).map((service, i) => (
-                            <div key={i} className={`service-group ${activeServiceIndex === i ? 'actived' : ''}`}>
-                                <div className="title-wrapper" onClick={(event) => {
-                                    onClick(event);
-                                    toggleService(i)
-                                }}>
-                                    <FilledArrow/>
-                                    <h3 className="title">{service}</h3>
-                                </div>
-                                {activeServiceIndex === i && (services[service]).map(item => (
-                                    <div key={i} className="items">
-                                        {
-                                            <p>{item.name_fr}</p>
-                                        }
-                                    </div>
-                                ))}
-
-
+            {!loaderServ&&services.length !== 0 &&
+            <div>
+                {
+                    Object.keys(services).map((service, i) => (
+                        <div key={i} className={`service-group ${activeServiceIndex === i ? 'actived' : ''}`}>
+                            <div className="title-wrapper" onClick={(event) => {
+                                onClick(event);
+                                toggleService(i)
+                            }}>
+                                <FilledArrow/>
+                                <h3 className="title">{service}</h3>
                             </div>
-                        ))
-                    }</div>
-                : <div className="spinner_load_search">
+                            {activeServiceIndex === i && (services[service]).map(item => (
+                                <div key={i} className="items">
+                                    {
+                                        <p>{item.name_fr}</p>
+                                    }
+                                </div>
+                            ))}
+
+
+                        </div>
+                    ))
+                }
+            </div>
+            }
+            {
+                loaderServ&&services.length===0&&<div className="spinner_load_search">
                     <LoaderIcon type={"cylon"} color={"#6B0C72"}/>
                 </div>
+            }
+            {
+                !loaderServ&&services.length===0&&<center>
+                    <br/>
+                    <img src={require("../../../../assets/images/telescope.png").default}/>
+                    <p>Aucun Services</p>
+                </center>
             }
 
             {services.length !== 0 ?
@@ -154,10 +170,12 @@ const Services = (props) => {
 
             {
                 showModal &&
-                <Modal hide={() => setShowModal(false)}>
-                    <div className="cart-modal-content">
+                <Modal hide={() => {
+                    setShowModal(false); setComment("")
+                }}>
+                    <div className="cart-modal-content" style={{marginTop: -5}}>
                         {role === 'institut' ?
-                            <h3>Choisir un(les) service(s)</h3> : <h3>Demander cet expert</h3>
+                            <h3>Choisir un service</h3> : <h3>Demander cet expert</h3>
                         }
 
                         {role === 'institut' ?
@@ -169,15 +187,10 @@ const Services = (props) => {
                             role === 'institut' ?
                                 <h3 className="cart-modal-content">Commentaire</h3> : ""
                         }
-
-                        <textarea placeholder="Enregistrer votre commentaire..." name="comment" rows="7"
+                        <textarea placeholder="Enregistrer votre commentaire ..." name="comment" rows="7"
                                   onChange={onChange}
-                                  value={comment}/>
-                        <Button size="sm" onClick={() => {
-                            saveCommand();
-                            setModal(true)
-                            setShowModal(false)
-                        }}>
+                                  value={comment} style={{fontSize: "small", marginTop: 5}}/>
+                        <Button size="sm" onClick={() => {saveCommand();setModal(true); setShowModal(false)}}>
                             {role === 'institut' ?
                                 <h3>Commander un service(s)</h3> : <h3>Commander cet expert</h3>
                             }
@@ -193,15 +206,12 @@ const Services = (props) => {
                     </center>
                 </Modal>
             }
-            {/*
-                modal && !loader && !showModal &&
-                <Modal hide={() => setShowModal(false)}>
-                    <br/>
-                    <center>
-                        <div>{message}</div>
+            {
+                !loader &&message&& <Modal hide={()=>setMassage(false)}>
+                    <center><h2 style={{fontSize: 'small', marginTop: 15}}>{message}</h2>
                     </center>
                 </Modal>
-            */}
+            }
         </div>
     )
 

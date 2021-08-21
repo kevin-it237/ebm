@@ -37,12 +37,14 @@ export const confirmationPass = (password, confirm)=>{
 }
 
 export const verifiedPhone = (phone) =>{
+    if (phone.length < 9){
+        return 'Doit contenir au moins 9 chiffres'
+    }
+    phone = parseInt(phone);
     if (typeof phone === "number"){
-        if (phone.length <9){
-            return false
-        }else return true;
+        return ""
     }else {
-        return false
+        return "Doit etre un numero"
     }
 
 }

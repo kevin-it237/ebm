@@ -176,12 +176,8 @@ const SignUp = () => {
                 setConfirmation("")
             }
         }else if (e.target.name === 'phone' || e.target.name === 'institution_phone'){
-            const phone = parseInt(e.target.value);
-            if (!verifiedPhone(phone)){
-                setPhone("Doit etre un numéro valide");
-            }else {
-                setPhone("")
-            }
+            const phone = e.target.value;
+            setPhone(verifiedPhone(phone))
         }
     }
 
@@ -259,9 +255,9 @@ const SignUp = () => {
                             </div>
                             {role.role === "EXPERT" ?
                                 <div className="auth-container__input-container">
-                                    <textarea placeholder='Description ...' name="description" rows="7" 
+                                    <textarea placeholder='Votre Description ...' name="description" rows="7"
                                         onChange={onChangeDescription} autoComplete={"off"} required style={{color: 'gray', opacity: '0.8'}}
-                                        className={`auth-container__input`}
+                                        className={`auth-container__input`} style={{fontSize: "medium", opacity: 0.8, padding: 12, border: "none"}}
 
                                     />
                                 </div>
@@ -301,15 +297,17 @@ const SignUp = () => {
                                 </div>
                             ))}
                             <div className="auth-container__input-container">
-                                <textarea placeholder='Description ...' name="description" rows="7" 
+                                <textarea placeholder='Entrez la Description...' name="description" rows="7"
                                     onChange={onChangeDescription} autoComplete={"off"} required
-                                    className={`auth-container__input`}
+                                    className={`auth-container__input`} style={{fontSize: "medium", opacity: 0.8, padding: 12, border: "none"}}
 
                                 />
                             </div>
                             <ToastContainer/>
+
                             <div className="circles">
                                 <span></span>
+                                {role.role==='INSTITUTION' ? <span></span> : ""}
                                 <span className="selected"></span>
                             </div>
                             <Button

@@ -45,9 +45,6 @@ const Chat = () => {
         setShowImage(true)
     }
 
-
-    console.log(file)
-
     const getMessage=()=>{
         axios.get(config.baseUrl+'/chat/show')
         .then(response=>{
@@ -114,8 +111,8 @@ const Chat = () => {
             <div className="keyboard-wrapper">
                 <div className="image-picker">
                     <label htmlFor="file"><Camera /></label>
-                    <input className="inputFile" id="file" type="file" src={image} onChange={onChangeFile}
-                           accept="image/*"/>
+                    {/*<input className="inputFile" id="file" type="file" src={image} onChange={onChangeFile}
+                           accept="image/*"/>*/}
                 </div>
                 <input className="input-text" type="text" placeholder="Entrez votre message ..." name="send"
                     rows="10" onChange={onChange} value={send} onKeyPress={onKeyPress}/>

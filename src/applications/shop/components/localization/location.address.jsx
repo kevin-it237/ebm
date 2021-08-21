@@ -1,9 +1,6 @@
-import React, {useCallback, useState, useMemo, useEffect} from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
 import {GoogleMap, InfoWindow, useJsApiLoader, Marker, LoadScript} from '@react-google-maps/api';
 import Geocode from "react-geocode";
-
-//const google = window.google;
-//const google = window.google = window.google ? window.google : {}
 
 const containerStyle = {
     width: '100%',

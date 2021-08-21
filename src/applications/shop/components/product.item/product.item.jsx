@@ -61,7 +61,6 @@ const ProductItem = (props) => {
             .catch(error=>{
                 notify(error)
             })
-        console.log(dispatch)
     }
 
     const getProductLike=()=>{
@@ -73,25 +72,24 @@ const ProductItem = (props) => {
                 notify(error)
             })
     }
-    console.log(isLike)
 
     const goToCart = (event) => {
         event.preventDefault();
         setSelectProduct(null);
         setSelect(false)
         const token = getToken();
-        if (token === null){
-            history.push("/login");
-            return
-        }
+        dispatch({
+                type: 'ADD_TO_CART',
+                loader: true
+            });
         axios.post(config.baseUrl+"/user/cart/product/register", {id: props.id})
             .then((response)=>{
                 axios.get(config.baseUrl + '/user/cart/number')
                     .then(response => {
-                        console.log(response.data.message)
                         dispatch({
                                 type: 'ADD_TO_CART',
-                                payload: response.data.message
+                                payload: response.data.message,
+                                loader: false
                             }
                         );
                     }).catch(err => {
@@ -100,6 +98,10 @@ const ProductItem = (props) => {
             })
             .catch((error)=>{
                 notify(error)
+                dispatch({
+                    type: 'ADD_TO_CART',
+                    loader: true
+                });
             })
     }
 
@@ -125,7 +127,7 @@ const ProductItem = (props) => {
             <ToastContainer/>
             <div className="product-item__infos" >
                 <div className="head">
-                    <p className="discount">{props.discount}% OFF</p>
+                    {props.discount !==0 ?<p className="discount">{props.discount}% OFF</p>: <p className="discount-null"></p>}
                     <div className="like" onClick={(e)=> {e.preventDefault(); setIsLike(!isLike); saveLike();}}>
                         <Heart style={{fill : (isLike ? "#6B0C72" : 'gray')}}/>
                     </div>
@@ -137,7 +139,7 @@ const ProductItem = (props) => {
                     <h4 className="name">{props.name}</h4>
                     <p className="price">{props.price} XAF</p>
                     <div className="stars">
-                        <Rating readOnly size="small" precision={0.25} value={getStar}/>
+                        <Rating readOnly disabled size="small" precision={0.25} value={getStar}/>
                     </div>
                 </div>
             </div>

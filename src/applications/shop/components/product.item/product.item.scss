@@ -21,6 +21,14 @@
                 border-radius: 5px;
                 font-weight: 600;
             }
+            >.discount-null {
+                font-size: 1.2rem;
+                color: $primary;
+                background-color: rgba(white, .1);
+                padding: 5px 8px;
+                border-radius: 5px;
+                font-weight: 600;
+            }
             >.like {
                 display: flex;
                 align-items: center;

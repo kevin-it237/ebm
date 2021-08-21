@@ -31,7 +31,6 @@ const App = () => {
         })
         axios.get(config.baseUrl + '/user/cart/number')
             .then(response => {
-                console.log(response.data.message)
                 dispatch({
                         type: 'ADD_TO_CART',
                         payload: response.data.message
@@ -39,6 +38,15 @@ const App = () => {
                 );
             }).catch(err => {
         })
+        axios.get(config.baseUrl + '/user/show')
+            .then(res=>{
+                dispatch({
+                    type: 'USER_INFO',
+                    payload: res.data.message
+                })
+            })
+            .catch(err=>{
+            })
 
     }, [])
 

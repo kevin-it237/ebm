@@ -11,35 +11,46 @@ import Button from "../../../../app/components/buttons/button/button";
 
 const Work = () => {
     const [artworks, setArtwork] = useState([]);
-    const [time, setTime] = useState(0);
+    const [loader, setLoader] = useState(false);
     const [selectArtwork, setSelectedArtwork] = useState([]);
     const [selectedWork, setSelectedWork] = useState(null);
 
 
     useEffect(()=>{
+        setLoader(true)
         axios.get(config.baseUrl+'/institution/artwork/show')
             .then(response=>{
                 setArtwork(response.data.message)
-                console.log(response)
+                setLoader(false)
             })
             .catch(error=>{
                 console.log(error)
+                setLoader(false)
             })
     }, []);
 
     return (
         <div>
-            {artworks.length !==0?
-            <div className="works">
-                { artworks.map(artwork=>(
+            {!loader&&artworks.length !== 0 && <div className="works">
+                {artworks.map(artwork => (
                     <div className="artwork" style={{display: "flex", width: 110, height: 110, marginTop: '1vh', justifyContent: 'space-around'}}>
-                        {/*<p>{artwork.title}</p>*/}
-                        <img src={imageLink.link+artwork.image} alt={artwork.owner_type} onClick={e=>{setSelectedArtwork(artwork); setSelectedWork(true)}}/>
+                        <img src={imageLink.link + artwork.image} alt={artwork.owner_type} onClick={e => {
+                            setSelectedArtwork(artwork);
+                            setSelectedWork(true)
+                        }}/>
                     </div>
                 ))}
-            </div>: <div className="spinner_load_search" style={{marginTop: 30}}>
+            </div>
+            }
+            {loader&&artworks.length===0&&
                     <LoaderIcon type="cylon" color="#6B0C72"/>
-                </div>
+            }
+            {!loader&&artworks.length===0&&
+                    <center>
+                        <br/>
+                        <img src={require("../../../../assets/images/telescope.png").default}/>
+                        <p>Aucune Oeuvres</p>
+                    </center>
             }
             {
                 selectedWork &&

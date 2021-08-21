@@ -38,7 +38,10 @@ const Login = () => {
         then(response=>{
             if(response.data.message === "Votre compte est en cours de vérification"){
                 notifyInfo("Votre compte est en cours de vérification")
-            }else {
+            }else if (response.data.message === "Verifiez votre compte"){
+                history.push('/verification/'+user.role.toLowerCase())
+            }
+            else {
                 console.log(response.data.acces_token)
                 const token = `Bearer ${response.data.acces_token}`;
                 setToken(token);

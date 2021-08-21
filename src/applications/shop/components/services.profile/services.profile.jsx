@@ -185,12 +185,12 @@ const ServicesProfile = () => {
             }
             {
                 del &&
-                <Modal hide={() => {setShowModal(false); setData(false)}}>
-                    <center><h2>Voulez vous vraiment supprimer ?</h2></center>
-                    <div style={{display: "flex", justifyContent: "space-between", marginTop: 20}}>
+                <Modal hide={() => setDel(false)}>
+                    <center><h2 style={{fontSize: "small", marginTop: 15}}>Voulez vous vraiment supprimer ?</h2></center>
+                    <div style={{display: "flex", justifyContent: "space-between", marginTop: 10}}>
                         <Button size="sm" onClick={() => {setDel(false)
                         }}>Annuler</Button>
-                        <Button size="sm" style={{backgroundColor: 'red'}}
+                        <Button size="sm" style={{backgroundColor: 'red', marginLeft: 10}}
                                 onClick={() => {deleteService(); setDel(false)}}>Confirmer</Button>
                     </div>
                 </Modal>

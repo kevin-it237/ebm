@@ -17,14 +17,19 @@ import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import Badge from '@material-ui/core/Badge';
+import Modal from "../../../../app/components/modal/modal";
 import { ReactComponent as Heart } from "../../../../assets/icons/heartClick.svg";
 import Slider from "react-slick";
+import Service from "./service.item";
 
 
 const Home = () => {
     const history = useHistory();
-    const nbFavorites = useSelector((state)=>state.product.payload)
-    const nbCart= useSelector((state)=>state.cart.payload)
+    const user = useSelector((state) => state.user.payload)
+
+    const nbFavorites = useSelector((state) => state.product.payload)
+    const nbCart = useSelector((state) => state.cart.payload)
+    const addCart = useSelector((state) => state.cart.loader)
     const [showDrawerService, setShowDrawerService] = useState(false)
     const [products, setProduct] = useState("");
     const [services, setService] = useState("");
@@ -33,59 +38,31 @@ const Home = () => {
 
     const settings = {
         dots: true,
-        infinite: true,
         speed: 500,
-        slidesToShow: 2,
+        slidesToShow: 1.5,
         slidesToScroll: 1,
         initialSlide: 0,
-        responsive: [
-            {
-                breakpoint: 1024,
-                settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 3,
-                    infinite: true,
-                    dots: true
-                }
-            },
-            {
-                breakpoint: 600,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 2,
-                    initialSlide: 2
-                }
-            },
-            {
-                breakpoint: 480,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1,
-                    height: 60
-                }
-            }
-        ]
     };
 
-    const StyleBadge = withStyles((theme)=>({
+    const StyleBadge = withStyles((theme) => ({
         badge: {
             fontSize: 11,
         },
     }))(Badge)
 
     const openDrawer = () => {
-        if(window.setDrawerOpen){
+        if (window.setDrawerOpen) {
             window.setDrawerOpen(true)
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         getAllProduct();
         getAllParentService();
         getFavorites();
     }, []);
 
-    const getAllProduct = ()=> {
+    const getAllProduct = () => {
         axios.get(config.baseUrl + '/product/index')
             .then(response => {
                 setProduct(Object.values(response.data.message));
@@ -93,9 +70,9 @@ const Home = () => {
             notifyFailed("Verifier votre connexion")
         })
     }
-    console.log(products)
+    console.log(parent_services)
 
-    const getAllParentService = ()=> {
+    const getAllParentService = () => {
         axios.get(config.baseUrl + '/parent_service/index')
             .then(response => {
                 setParent_Service(Object.values(response.data.message));
@@ -104,7 +81,7 @@ const Home = () => {
         })
     }
 
-    const getFavorites = ()=> {
+    const getFavorites = () => {
         axios.get(config.baseUrl + '/user/favorites')
             .then(response => {
                 setFavorites(response.data.message);
@@ -113,33 +90,38 @@ const Home = () => {
         })
     }
 
-    const notifyFailed = (err)=>{
+    const notifyFailed = (err) => {
         toast.error(err)
     }
 
     return (
         <div id="home">
             <div id="header">
-                <img onClick={openDrawer} className="menu" src={Menu} alt="" />
+                <img onClick={openDrawer} className="menu" src={Menu} alt=""/>
                 <div className="favorite-shop">
-                    <IconButton >
-                        <StyleBadge badgeContent={nbFavorites? nbFavorites: 0} color="secondary">
-                            <div onClick={(e)=>{e.preventDefault();
-                                history.push('/favorites')}}>
+                    <IconButton>
+                        <StyleBadge badgeContent={nbFavorites ? nbFavorites : 0} color="secondary">
+                            <div onClick={(e) => {
+                                e.preventDefault();
+                                history.push('/favorites')
+                            }}>
                                 <Heart style={{fill: '#6B0C72', width: 18, height: 18}}/>
                             </div>
                         </StyleBadge>
                     </IconButton>
                     <IconButton>
-                        <StyleBadge badgeContent={nbCart? nbCart: 0} color="secondary">
-                            <ShoppingCartIcon style={{width: 25, height: 25}} onClick={(e)=>{e.preventDefault();
-                            history.push('/cart')}}/>
+                        <StyleBadge badgeContent={nbCart ? nbCart : 0} color="secondary">
+                            <ShoppingCartIcon style={{width: 25, height: 25}} onClick={(e) => {
+                                e.preventDefault();
+                                history.push('/cart')
+                            }}/>
                         </StyleBadge>
                     </IconButton>
                 </div>
             </div>
             <div className="search">
-                <InputSearch onClick={() => history.push('/search')} placeholder="Recherchez une institution..." />
+                <InputSearch onClick={() => history.push('/search')}
+                             placeholder={user.role === 'INSTITUTION' ? "Recherchez un expert..." : "Recherchez une institution..."}/>
             </div>
 
             <ToastContainer/>
@@ -148,16 +130,14 @@ const Home = () => {
                 <span></span>
             </div>
             {parent_services.length !== 0 ?
-            <div className="services-wrapper">
-                {Object.keys(parent_services).map((parent_service, index)=>(
-                    <div key={index} className="service-item service-item--1" onClick={()=>{setShowDrawerService(true); setService(parent_services[parent_service]['name'])}}>
-                        <div className="service-title">
-                            <h2>{parent_services[parent_service]['name']}</h2>
-                            <span></span>
+                <Slider {...settings} className="services-wrapper">
+                    {Object.keys(parent_services).map((parent_service, index) => (
+                        <div key={index} onClick={() => {
+                            setShowDrawerService(true); setService(parent_services[parent_service]['name'])}}>
+                            <Service name={parent_services[parent_service].name}/>
                         </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </Slider>
                 :
                 <div className="spinner_loader">
                     <LoaderIcon type="cylon" color="#6B0C72"/>
@@ -169,7 +149,7 @@ const Home = () => {
             </div>
             {products.length !== 0 ?
                 <div className="products-wrapper">
-                    {Object.keys(products).map((product, index)=>(
+                    {Object.keys(products).map((product, index) => (
                         <div key={index}>
                             <ProductItem id={products[product]['id']}
                                          name={products[product]['name_fr']}
@@ -184,9 +164,14 @@ const Home = () => {
                     <LoaderIcon type="cylon" color="#6B0C72"/>
                 </div>
             }
+            {
+                addCart && <Modal>
+                    <LoaderIcon type="cylon" color="#6B0C72"/>
+                </Modal>
+            }
 
-            {showDrawerService&&<HomeDrawerContent onClose={() => setShowDrawerService(false) }
-                                            name={services} />}
+            {showDrawerService && <HomeDrawerContent onClose={() => setShowDrawerService(false)}
+                                                     name={services}/>}
         </div>
     )
 

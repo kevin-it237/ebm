@@ -3,6 +3,7 @@
 #institute {
     height: 100%;
     overflow-y: auto;
+  overflow-x: hidden;
    >.header {
         height: 170px;
         background: $primary;
@@ -91,28 +92,37 @@
        }
 
        .menu {
-           display: flex;
-           margin-top: 20px;
+         display: flex;
+         margin-top: 20px;
          flex-wrap: nowrap;
-           >.menu-item {
-                margin-right: 20px;
-                font-size: 1.2rem;
-                font-weight: 600;
-                padding-bottom: 4px;
-                white-space: nowrap;
-             margin-bottom: 11px;
-                color: $grey-500;
-                &.actived {
-                    border-bottom: solid 3px $primary;
-                    color: $primary;
-                }
-           }
+
+         &.actived{
+           color: $primary;
+         }
        }
+
        >.bottom-content {
-           margin-top: 15px;
+           margin-top: 5vh;
        }
    }
   .marge{
     margin-top: 5vh;
   }
+}
+
+.errorMessage{
+  font-size: x-small;
+  color: red;
+}
+.span-bottom {
+  display: block;
+  position: relative;
+  height: 4px;
+  width: 30px;
+  background-color: $primary;
+}
+
+.disable{
+  pointer-events: none;
+  opacity: 0.5;
 }

@@ -5,11 +5,10 @@ const initialState = {
 
 export default function cartReducer(state = initialState, action){
     let nextState;
-    if (action.type === 'ADD_TO_CART'){
+    if (action.type === 'USER_INFO'){
         nextState = {
             ...state,
             payload: action.payload,
-            loader: action.loader
         }
     }
     console.log(nextState)

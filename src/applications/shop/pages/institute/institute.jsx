@@ -58,7 +58,7 @@ const Institute = (props) => {
             .catch(error=>{
                 console.log(error)
             })
-        axios.get(config.baseUrl+'/user/profile/photo')
+        axios.get(config.baseUrl+'/user/profile/photo/'+select)
             .then(res=>{
                 console.log(res.data.message)
                 setImageProfile(res.data.message)
@@ -129,15 +129,12 @@ const Institute = (props) => {
                         <p>{total} ratings</p>
                     </div>
                     {
-                        each.length !==0?
                         <div className="stars-group">
                             {each.map((vote, index)=>(
                                 <StarsRating showNumberOfVotes={true} showProgresBar={true} stars={index+1} total={total} votes={vote}/>
                             ))  
                             }
                         </div>
-                        :
-                        <div className="aucun-vote">Aucun vote</div>
                     }
                 </div>
 
