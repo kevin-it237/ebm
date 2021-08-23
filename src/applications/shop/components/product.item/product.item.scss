@@ -63,7 +63,7 @@
             >.price {
                 grid-area: a2;
                 color: $primary;
-                font-size: 1.3rem;
+                font-size: 1.2rem;
                 font-weight: 600;
                 color: $primary;
                 margin-top: 8px;
@@ -73,8 +73,8 @@
                 display: flex;
                 gap: 2px;
                 svg {
-                    width: 10px;
-                    height: 10px;
+                    width: 1.7vh;
+                    height: 1.7vh;
                 }
             }
             >.description-product {

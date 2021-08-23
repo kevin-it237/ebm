@@ -2,7 +2,7 @@
 
 #service{
   height: 18vh;
-  width: 31vh;
+  width: 38vh;
   background-color: rgba($primary, 0.1);
   border-radius: 2vh;
   margin: 0.5vh;
@@ -12,7 +12,7 @@
     margin-top: -20vh;
     text-transform: capitalize;
     position: relative;
-    top: 35%;
+    top: 50px;
     font-size: 1.8rem;
     font-weight: bold;
     color: $primary;
@@ -27,7 +27,7 @@
   >span {
     display: block;
     z-index: auto;
-    margin-top: 6.5vh;
+    margin-top: 8vh;
     position: relative;
     height: 4px;
     width: 20%;

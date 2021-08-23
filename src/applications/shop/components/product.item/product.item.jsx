@@ -11,6 +11,7 @@ import cart from "../../../../assets/icons/cart.svg"
 import { ReactComponent as Heart } from "../../../../assets/icons/heartClick.svg";
 import { useHistory } from 'react-router-dom';
 import Modal from "../../../../app/components/modal/modal";
+import Charge from "../../../../app/components/charge/charge";
 import img from "../../../../assets/images/mansory.png";
 import Rating from "@material-ui/lab/Rating";
 import Button from "../../../../app/components/buttons/button/button";
@@ -44,6 +45,10 @@ const ProductItem = (props) => {
     }
 
     const saveLike=()=>{
+        dispatch({
+            type: 'ADD_TO_FAVORITE',
+            loader: true
+        });
         axios.post(config.baseUrl+'/user/like/store',
             {like: !isLike, product_id: props.id})
             .then(response=>{
@@ -51,7 +56,8 @@ const ProductItem = (props) => {
                     .then(response => {
                         dispatch({
                                 type: 'ADD_TO_FAVORITE',
-                                payload: response.data.message.length
+                                payload: response.data.message.length,
+                                loader: false
                             }
                         );
                     }).catch(err => {
@@ -77,7 +83,6 @@ const ProductItem = (props) => {
         event.preventDefault();
         setSelectProduct(null);
         setSelect(false)
-        const token = getToken();
         dispatch({
                 type: 'ADD_TO_CART',
                 loader: true
@@ -89,7 +94,8 @@ const ProductItem = (props) => {
                         dispatch({
                                 type: 'ADD_TO_CART',
                                 payload: response.data.message,
-                                loader: false
+                                loader: false,
+                                message: "Ajout au panier effectué"
                             }
                         );
                     }).catch(err => {
@@ -98,10 +104,10 @@ const ProductItem = (props) => {
             })
             .catch((error)=>{
                 notify(error)
-                dispatch({
+                /*dispatch({
                     type: 'ADD_TO_CART',
                     loader: true
-                });
+                });*/
             })
     }
 
@@ -173,9 +179,9 @@ const ProductItem = (props) => {
             }
             {
                 !selectProduct && loading &&
-                <Modal>
+                <Charge>
                     <LoaderIcon type="cylon" color="#6B0C72"/>
-                </Modal>
+                </Charge>
             }
 
         </div>

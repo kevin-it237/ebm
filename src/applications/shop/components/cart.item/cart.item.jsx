@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {useDispatch} from "react-redux";
 import './cart.item.scss'
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
@@ -7,6 +8,7 @@ import axios from "axios";
 import config from "../../../../config/index";
 
 const ProductItem = (props, state) => {
+    const dispatch = useDispatch();
     const [count, setCount] = useState(props.quantity);
     const {update,index,products}=props;
 
@@ -17,6 +19,16 @@ const ProductItem = (props, state) => {
             setCount(newCount);
             axios.post(config.baseUrl+'/user/cart/changequantity/'+props.id, {quantity: newCount})
                 .then(response=>{
+                    axios.get(config.baseUrl + '/user/cart/number')
+                        .then(response => {
+                            dispatch({
+                                    type: 'ADD_TO_CART',
+                                    payload: response.data.message,
+                                }
+                            );
+                        }).catch(err => {
+                        notifyFailed(err)
+                    })
                 })
                 .catch(error=>{
                     notifyFailed(error);
@@ -27,6 +39,16 @@ const ProductItem = (props, state) => {
             setCount(newCount);
             axios.post(config.baseUrl+'/user/cart/changequantity/'+props.id, {quantity: newCount})
                 .then(response=>{
+                    axios.get(config.baseUrl + '/user/cart/number')
+                        .then(response => {
+                            dispatch({
+                                    type: 'ADD_TO_CART',
+                                    payload: response.data.message,
+                                }
+                            );
+                        }).catch(err => {
+                        notifyFailed(err)
+                    })
                 })
                 .catch(error=>{
                     notifyFailed(error);

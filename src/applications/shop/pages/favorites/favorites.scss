@@ -2,6 +2,8 @@
 
 #search {
   height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
   .search {
     padding: 20px;
     height: 110px;

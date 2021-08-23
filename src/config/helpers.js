@@ -37,8 +37,8 @@ export const confirmationPass = (password, confirm)=>{
 }
 
 export const verifiedPhone = (phone) =>{
-    if (phone.length < 9){
-        return 'Doit contenir au moins 9 chiffres'
+    if (phone.length !== 9){
+        return 'Doit contenir 9 chiffres'
     }
     phone = parseInt(phone);
     if (typeof phone === "number"){

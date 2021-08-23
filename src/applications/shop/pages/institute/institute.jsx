@@ -68,7 +68,7 @@ const Institute = (props) => {
             })
     }
 
-    console.log(services)
+    console.log(imageProfile)
     const getStarVote = () =>{
         axios.get(config.baseUrl+'/institution/rate/show/'+select)
             .then(response=>{

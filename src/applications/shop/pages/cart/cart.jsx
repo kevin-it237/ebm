@@ -12,6 +12,7 @@ import axios from "axios";
 import config from "../../../../config/index";
 import LoaderIcon from "react-loader-icon";
 import img from "../../../../assets/images/ebm.svg";
+import Charge from "../../../../app/components/charge/charge";
 
 const Cart = () => {
     const history = useHistory()
@@ -19,7 +20,9 @@ const Cart = () => {
     const [showModal, setShowModal] = useState(false);
     const [products, setProduct] = useState("");
     const [loading, setLoading] = useState(false);
+    const [regist, setRegist] = useState(false);
     const [comment, setComment] = useState("");
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
         getProduct();
@@ -41,29 +44,30 @@ const Cart = () => {
     let total = 0;
     if (products.length !== 0) {
         for (let i = 0; i < products.length; i++) {
-            total += products[i]["quantity"] * products[i]["price"] - (products[i]["quantity"] * products[i]["price"] * products[i]["discount"])/100;
+            total += products[i]["quantity"] * products[i]["price"] - (products[i]["quantity"] * products[i]["price"] * products[i]["discount"]) / 100;
         }
     }
 
     const saveCommand = () => {
-        setLoading(true)
+        setRegist(true)
         axios.post(config.baseUrl + '/user/commande/register', {comment: comment})
             .then(response => {
                 setComment("");
                 setProduct("");
                 dispatch({
-                        type: 'ADD_TO_CART',
-                        payload: 0
-                    });
-                setLoading(false)
+                    type: 'ADD_TO_CART',
+                    payload: 0
+                });
+                setMessage("Commande Enregistrée")
+                setRegist(false)
             })
             .catch(error => {
                 console.log(error)
-                setLoading(false)
+                setRegist(false)
             })
     }
 
-    const getCartNumber = ()=>{
+    const getCartNumber = () => {
         axios.get(config.baseUrl + '/user/cart/number')
             .then(response => {
                 console.log(response.data.message)
@@ -76,9 +80,9 @@ const Cart = () => {
         })
     }
 
-    const Undelete = (id)=>{
-        axios.get(config.baseUrl +'/user/cart/product/delete/'+id)
-            .then(res=>{
+    const Undelete = (id) => {
+        axios.get(config.baseUrl + '/user/cart/product/delete/' + id)
+            .then(res => {
                 axios.get(config.baseUrl + '/user/cart/quantity')
                     .then(response => {
                         setProduct(response.data.message)
@@ -87,7 +91,7 @@ const Cart = () => {
                     .catch(error => {
                     })
             })
-            .catch(error=>{
+            .catch(error => {
                 console.log(error)
             })
     }
@@ -108,7 +112,9 @@ const Cart = () => {
                 <div className="cart-items" style={{padding: 0, paddingTop: 20, paddingBottom: 20}}>
                     {Object.keys(products).map((product, index) => (
                         <SwipeToDelete
-                            onDelete={(e) => { Undelete(products[product]['id'])}} // required
+                            onDelete={(e) => {
+                                Undelete(products[product]['id'])
+                            }} // required
                             height={91} // required
                             // optional
                             transitionDuration={250} // default
@@ -125,14 +131,19 @@ const Cart = () => {
                                       quantity={products[product]['quantity']}
                                       discount={products[product]['discount']} update={setProduct} index={index}/>
 
-                    </SwipeToDelete>
+                        </SwipeToDelete>
                     ))}
                 </div>
                 }
-                {loading && products.length !== 0 &&
-                    <Modal className="spinner_load">
-                        <LoaderIcon type="cylon" color="#6B0C72"/>
-                    </Modal>
+                {loading && products.length === 0 &&
+                <Charge className="spinner_load">
+                    <LoaderIcon type="cylon" color="#6B0C72"/>
+                </Charge>
+                }
+                {regist &&
+                <Charge>
+                    <LoaderIcon type="cylon" color="#6B0C72"/>
+                </Charge>
                 }
                 {!loading && products.length === 0 &&
                 <div style={{marginTop: 50}}>
@@ -169,6 +180,15 @@ const Cart = () => {
                             setShowModal(false)
                         }}>Completer</Button>
                     </div>
+                </Modal>
+            }
+            {
+                !loading && message &&
+                <Modal hide={() => setMessage("")}>
+                    <br/>
+                    <center>
+                        <p>{message}</p>
+                    </center>
                 </Modal>
             }
         </>

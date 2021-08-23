@@ -34,27 +34,28 @@ const MyProfile = () => {
         },
         {
             value: 1,
-            label: "ANNULER"
+            label: "ANNULÉ"
         }
     ]
 
     const stateService = [
         {
             value: 0,
-            label: "ACCEPTER"
+            label: "ACCEPTÉ"
         },
         {
             value: 1,
-            label: "COMPLETER"
+            label: "COMPLETÉ"
         },
         {
             value: 3,
-            label: "REJETER"
+            label: "REJETÉ"
         }
     ]
 
     const settings = {
         dots: true,
+        infinite: false,
         speed: 500,
         slidesToShow: 4,
         slidesToScroll: 3,
@@ -79,6 +80,7 @@ const MyProfile = () => {
     const [comment, setComment] = useState("");
     const [message, setMessage] = useState(false);
     const [loaderProf, setLoaderProf] = useState("");
+    const [error, setError] = useState(false);
     const [imageProfile, setImageProfile] = useState("");
     const [loader, setLoader] = useState(false);
     const [editProf, setEditProf] = useState(false);
@@ -92,7 +94,10 @@ const MyProfile = () => {
     const [activ, setActiv] = useState(false);//load order to show
 
     const [serviceOrder, setServiceOrder] = useState([]);//loader for state
+    const [serviceLoader, setServiceLoader] = useState(false);//loader for state
     const [productOrder, setProductOrder] = useState([]);//loader for state
+    const [productLoader, setProductLoader] = useState(false);//loader for state
+    const [expertLoader, setExpertLoader] = useState(false);//loader for state
 
     const [crop, setCrop] = useState({aspect: 1, width: 150, height: 150});
     const [changePhotoProfile, setChangeProfilPhoto] = useState(false);
@@ -165,8 +170,7 @@ const MyProfile = () => {
         const url = URL.createObjectURL(blob)
         setImage(url)
     }
-
-    const savePhotoProfile = useCallback(() => {
+    const savePhotoProfile = () => {
         setChangeProfilPhoto(false)
         setLoader(true)
         const formData = new FormData();
@@ -180,6 +184,7 @@ const MyProfile = () => {
             .then(res => {
                 axios.get(config.baseUrl + '/user/profile/photo')
                     .then(res => {
+                        console.log(res.data.message)
                         setImageProfile(res.data.message)
                         setLoader(false)
                     })
@@ -192,7 +197,7 @@ const MyProfile = () => {
                 console.log(error)
             })
         setSelectFile("")
-    }, [croppedImageUrl])
+    }
 
 
     useEffect(() => {
@@ -357,14 +362,19 @@ const MyProfile = () => {
 
     const confirmEdit = (e) => {
         e.preventDefault();
-        setEditProf(true)
+        if (!emailError&&!phoneError){
+            setEditProf(true)
+        }
     }
 
+
     const confirmEditPass = (e) => {
+        e.preventDefault();
         if (infoForm2.password) {
-            e.preventDefault();
-            setEditProf(true)
-            setPasstrue(true)
+            if (!passwordError && !confirmationError){
+                //setEditProf(true)
+                setPasstrue(true)
+            }
         }
     }
 
@@ -379,30 +389,39 @@ const MyProfile = () => {
     }
 
     const getOrderExpert = () => {
+        setExpertLoader(true)
         axios.get(config.baseUrl + '/institution/expert/order/index')
             .then(res => {
                 setExpertOrder(res.data.message)
+                setExpertLoader(false)
             })
             .catch(err => {
                 console.log(err)
+                setExpertLoader(false)
             })
     }
     const getOrderService = () => {
+        setServiceLoader(true)
         axios.get(config.baseUrl + '/user/service/order/index')
             .then(res => {
                 setServiceOrder(res.data.message)
+                setServiceLoader(false)
             })
             .catch(err => {
                 console.log(err)
+                setServiceLoader(false)
             })
     }
     const getOrderProduct = () => {
+        setProductLoader(true)
         axios.get(config.baseUrl + '/user/product/order/index')
             .then(res => {
                 setProductOrder(res.data.message)
+                setProductLoader(false)
             })
             .catch(err => {
                 console.log(err)
+                setProductLoader(false)
             })
     }
 
@@ -411,31 +430,52 @@ const MyProfile = () => {
             const email = e.target.value;
             if (!verifiedEmail(email)) {
                 setEmail("Doit etre un email valide")
+                setError(true)
             } else {
                 setEmail("")
+                setError(false)
             }
         } else if (e.target.name === 'password') {
             const password = e.target.value;
             if (!verifiedPassword(password)) {
+                setError(true)
                 setErrorPassword("Doit contenir au moins 6 caractéres")
             } else {
                 setErrorPassword("")
+                setError(false)
             }
-        } else if (e.target.name === 'confirmation') {
+        } else if (e.target.name === 'confirmation' && infoForm2.password) {
             const confirmation = e.target.value;
             const password = infoForm2.password;
             if (!confirmationPass(password, confirmation)) {
+                setError(true)
                 setConfirmation("Doit correspondre au mot de passe");
             } else {
+                setError(false)
                 setConfirmation("")
             }
-        } else if (e.target.name === 'phone' || e.target.name === 'institution_phone') {
+        }else if (e.target.name === 'password' && infoForm2.confirmation){
+            const confirmation = e.target.value;
+            const password = infoForm2.confirmation;
+            console.log(password)
+            if (!confirmationPass(password, confirmation)) {
+                setError(true)
+                setConfirmation("Doit correspondre au mot de passe de confirmation");
+            } else {
+                setError(false)
+                setConfirmation("")
+            }
+        }
+        else if (e.target.name === 'phone' || e.target.name === 'institution_phone') {
             const phone = e.target.value;
             setPhone(verifiedPhone(phone))
+            if (verifiedPhone(phone) === "Doit contenir 9 chiffres" || verifiedPhone(phone) === "Doit etre un numero"){
+                setError(true)
+            }else {
+                setError(false)
+            }
         }
     }
-
-    console.log(serviceOrder)
 
     const MENU_ITEMS_USER = ["Information", "Mot de passe", "Commandes de service", "Commandes de produit"];
     const MENU_ITEMS_EXPERT = ["Information", "Mot de passe", "Services", "Oeuvres", "Demandes d'expert", "Commandes de produit"];
@@ -446,11 +486,21 @@ const MyProfile = () => {
     }
     // Change form input values.
     const onChange = (e) => {
+        e.preventDefault()
+        if (e.target.name === 'phone' || e.target.name === 'institution_phone'){
+            setPhone(verifiedPhone(e.target.value))
+            if (verifiedPhone(e.target.value) === "Doit contenir 9 chiffres" || verifiedPhone(e.target.value) === "Doit etre un numero"){
+                setError(true)
+            }else {
+                setError(false)
+            }
+        }
         setInfoForm({...infoForm, [e.target.name]: e.target.value});
     }
 
     // Change form input values.
     const onChange2 = (e) => {
+        e.preventDefault()
         setInfoForm2({...infoForm2, [e.target.name]: e.target.value});
     }
 
@@ -484,6 +534,8 @@ const MyProfile = () => {
                     <Button onClick={confirmEdit}
                             variant="primary"
                             type="submit"
+                            loading={loaderProf}
+                            disabled={error}
                             size="lg">Editer
                     </Button>
                 </form> :
@@ -518,6 +570,8 @@ const MyProfile = () => {
                     onClick={confirmEditPass}
                     variant="primary"
                     type="submit"
+                    loading={loader}
+                    disabled={error}
                     size="lg">Editer
                 </Button>
 
@@ -532,32 +586,35 @@ const MyProfile = () => {
         bottomContent = (<Works/>);
     } else if (content === "Demandes d'expert") {
         {
-            expertOrder.length !== 0 ?
-                bottomContent = (<div style={{marginTop: -10}}>
-                    {Object.keys(expertOrder).map((e, index) => (
-                        <div key={index} onClick={(event) => {
-                            event.preventDefault();
-                            setCart(true);
-                            setOrderExpertId(expertOrder[e].id);
-                            setComment(expertOrder[e].comment)
-                        }}
-                             className={(infoUser.role === 'EXPERT' && expertOrder[e].state === 'ANNULER') || (infoUser.role === 'INSTITUTION' && expertOrder[e].state === 'COMPLETER')
-                             || (infoUser.role === 'INSTITUTION' && expertOrder[e].state === 'REJETER') ? "disable" : ""}>
-                            <ExpertDemand name={expertOrder[e].name} date={expertOrder[e].date}
-                                          state={expertOrder[e].state} id={index + 1}/>
-                        </div>))}
-                </div>)
-                : bottomContent = (
+            bottomContent = (expertOrder.length!==0&&!expertLoader&&<div style={{marginTop: -10}}>
+                {Object.keys(expertOrder).map((e, index) => (
+                    <div key={index} onClick={(event) => {
+                        event.preventDefault();
+                        setCart(true);
+                        setOrderExpertId(expertOrder[e].id);
+                        setComment(expertOrder[e].comment)
+                    }}
+                         className={(infoUser.role === 'EXPERT' && expertOrder[e].state === 'ANNULÉ') || (infoUser.role === 'INSTITUTION' && expertOrder[e].state === 'COMPLETÉ')
+                         || (infoUser.role === 'INSTITUTION' && expertOrder[e].state === 'REJETÉ') ? "disable" : ""}>
+                        <ExpertDemand name={expertOrder[e].name} date={expertOrder[e].date}
+                                      state={expertOrder[e].state} id={index + 1}/>
+                    </div>))}
+            </div>)|| (
+                expertOrder.length===0&&!expertLoader&&
                     <div><br/>
                         <center>
                             <img src={require("../../../../assets/images/telescope.png").default}/>
                             <p>{infoUser.role === 'INSTITUTION' ? "Aucune demande d'expert éffectuée" : "Aucune demande d'expert reçue"}</p>
                         </center>
-                    </div>)
+                    </div>)||(
+                        expertOrder.length===0&&expertLoader&&
+                        <div>
+                            <LoaderIcon type="cylon" color="#6B0C72"/>
+                        </div>
+            )
         }
     } else if (content === "Commandes de service") {
-        serviceOrder.length ?
-            bottomContent = (<div>
+            bottomContent = (!serviceLoader&&serviceOrder.length!==0&&<div>
                 {Object.keys(serviceOrder).map((e, index) => (
                     <div key={index} onClick={(event) => {
                         event.preventDefault();
@@ -565,42 +622,53 @@ const MyProfile = () => {
                         setOrderExpertId(serviceOrder[e].id);
                         setComment(serviceOrder[e].comment)
                     }}
-                         className={(infoUser.role === 'user' && serviceOrder[e].state === 'COMPLETER') || (infoUser.role === 'INSTITUTION' && serviceOrder[e].state === 'ANNULER') ? "disable" : ""}>
+                         className={(infoUser.role === 'user' && serviceOrder[e].state === 'COMPLETÉ') || (infoUser.role === 'INSTITUTION' && serviceOrder[e].state === 'ANNULÉ') ? "disable" : ""}>
                         <ServiceDemand services={serviceOrder[e].service} name={serviceOrder[e].name}
                                        date={serviceOrder[e].date}
                                        state={serviceOrder[e].state} id={index + 1}/></div>
                 ))}
-            </div>) :
-            bottomContent = (
-                <div><br/>
+            </div>) || (!serviceLoader&&serviceOrder.length===0&&
+                <div>
+                    <br/>
                     <center>
                         <img src={require("../../../../assets/images/telescope.png").default}/>
                         <p>{infoUser.role === 'INSTITUTION' ? "Aucune demande de service reçue" : infoUser.role === 'EXPERT' ? "Aucune demande de service" : "Aucune demande de service éffectuée"}</p>
                     </center>
-                </div>)
+                </div>) || (serviceLoader&&serviceOrder.length===0&&
+                <div>
+                    <LoaderIcon type="cylon" color="#6B0C72"/>
+                </div>
+            )
     } else if (content === "Commandes de produit") {
         {
-            productOrder.length !== 0 ?
-                bottomContent = (<div>
+            bottomContent = (
+                !productLoader&&productOrder.length !==0&&
+                <div>
                     {Object.keys(productOrder).map((e, index) => (
                         <div key={index} onClick={event => {
                             event.preventDefault();
                             history.push('/order/product/' + productOrder[e].id)
                             /*setCart(true); setOrderExpertId(productOrder[e].id); setComment(productOrder[e].comment)*/
                         }}
-                             className={((infoUser.role === 'EXPERT' || infoUser.role === 'INSTITUTION' || infoUser.role === 'user') && productOrder[e].state === 'COMPLETER') ? "disable" : ""}>
+                             className={((infoUser.role === 'EXPERT' || infoUser.role === 'INSTITUTION' || infoUser.role === 'user') && productOrder[e].state === 'COMPLETÉ') ? "disable" : ""}>
                             <ProductDemand amount={productOrder[e].price} date={productOrder[e].date}
                                            state={productOrder[e].state} id={index + 1}/>
                         </div>))}
-                </div>)
-                :
-                bottomContent = (<div>
-                    <br/>
-                    <center>
-                        <img src={require("../../../../assets/images/telescope.png").default}/>
-                        <p>Aucune commande de produits éffectuées</p>
-                    </center>
-                </div>)
+                </div>
+            )||
+            (productLoader&&productOrder.length === 0&&
+            <div>
+                <LoaderIcon type="cylon" color="#6B0C72"/>
+            </div>)||
+                (!productLoader&&productOrder.length===0&&
+                    <div>
+                        <br/>
+                        <center>
+                            <img src={require("../../../../assets/images/telescope.png").default}/>
+                            <p>Aucune commande de produits éffectuées</p>
+                        </center>
+                    </div>
+                    )
         }
     }
 
@@ -642,7 +710,8 @@ const MyProfile = () => {
                     }
                     <div className={infoUser.role === 'user' ? "marge" : ""}>
                         <h3 className="name">{infoUser.firstname} {infoUser.lastname}</h3>
-                        {<p>Joined <ReactTimeAgo date={created} locale="fr-FR" timeStyle="round"/></p>}
+                        {/*<p>Joined <ReactTimeAgo date={created} locale="fr-FR" timeStyle="round"/></p>*/}
+                        {<p>Compte crée le {created.split(" ")[0]}</p>}
                     </div>
                 </div>
                 {infoUser.role === 'user' &&
@@ -651,7 +720,7 @@ const MyProfile = () => {
                         MENU_ITEMS_USER.map(item => (
                             <div>
                                 <h2 key={item} onClick={() => changeContent(item)} className={`menu ${content === item ? "actived" : ""}`}>{item}</h2>
-                                {content === item && <span></span>}
+                                {content === item && <span className="span-bottom"></span>}
                             </div>
                         ))
                     }
@@ -663,7 +732,7 @@ const MyProfile = () => {
                         MENU_ITEMS_EXPERT.map(item => (
                             <div>
                                 <h2 key={item} onClick={() => changeContent(item)} className={`menu ${content === item ? "actived" : ""}`}>{item}</h2>
-                                {content === item && <span></span>}
+                                {content === item && <span className="span-bottom"></span>}
                             </div>
                         ))
                     }
@@ -712,7 +781,7 @@ const MyProfile = () => {
                             <Button size="sm" onClick={(event) => {
                                 onButtonClick(event)
                             }}>Editer</Button>
-                            {selectFile && <Button size="sm" style={{background: "green"}} onClick={(event) => {
+                            {selectFile && <Button size="sm" style={{background: "green", marginLeft: 5}} onClick={(event) => {
                                 event.preventDefault();
                                 savePhotoProfile()
                             }}>Ok</Button>}
@@ -740,12 +809,12 @@ const MyProfile = () => {
                     </div>
                 </Modal>
             }
-            {
+            {/*
                 loaderProf &&
                 <Modal>
                     <LoaderIcon type="cylon" color="#6B0C72"/>
                 </Modal>
-            }
+            */}
             {
                 !loaderProf && message &&
                 <Modal hide={() => setMessage(false)}>
@@ -814,14 +883,8 @@ const MyProfile = () => {
                             infoUser.role === 'EXPERT' && content === "Commandes de produit" ?
                                 <textarea onChange={commentChange} value={comment} rows="10"
                                           placeholder="Entrez un commentaire ..."
-                                          style={{
-                                              padding: 10,
-                                              fontSize: "small",
-                                              width: '100%',
-                                              border: "none",
-                                              marginTop: 5,
-                                              marginBottom: 5
-                                          }}/>
+                                          style={{padding: 10, fontSize: "small", width: '100%', border: "none",
+                                              marginTop: 5, marginBottom: 5}}/>
                                 : content === "Demandes d'expert" ? <h2 style={{
                                     fontSize: "small",
                                     wordWrap: "break-word",
@@ -830,7 +893,8 @@ const MyProfile = () => {
                                 }}>{comment}</h2> : ""
                         }
                         <br/>
-                        <Button onClick={changeOrderExpertState}>Enregistrer</Button>
+                        <Button
+                            onClick={changeOrderExpertState}>Enregistrer</Button>
                     </div>
 
                 </Modal>

@@ -154,6 +154,8 @@ const Work = () => {
         setShowModal(false);
     }
 
+    console.log(croppedImageUrl)
+
     const delArtwork = () => {
         axios.post(config.baseUrl + '/institution/artwork/delete', {id: selectArtwork.id})
             .then(res => {
@@ -230,13 +232,15 @@ const Work = () => {
                     alignItems: "center",
                     justifyContent: "center",
                     height: 130,
+                    marginRight: 5,
+                    marginBottom: 5
                 }} className={"artwork"} onClick={e => {
                     setShowModal(true)
                 }}>
                     <strong style={{color: "white", fontSize: 34}}>+</strong>
                 </div>
                 {artworks.map(artwork => (
-                    <div className="artwork" style={{justifyContent: 'space-around', display: "flex", height: 130,}}
+                    <div className="artwork" style={{justifyContent: 'space-around', display: "flex", height: 130, marginRight: 5}}
                          onClick={e => {
                              setSelectedArtwork(artwork);
                              setSelectedWork(true)

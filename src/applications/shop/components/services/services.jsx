@@ -191,9 +191,7 @@ const Services = (props) => {
                                   onChange={onChange}
                                   value={comment} style={{fontSize: "small", marginTop: 5}}/>
                         <Button size="sm" onClick={() => {saveCommand();setModal(true); setShowModal(false)}}>
-                            {role === 'institut' ?
-                                <h3>Commander un service(s)</h3> : <h3>Commander cet expert</h3>
-                            }
+                            <h3>Commander</h3>
                         </Button>
                     </div>
                 </Modal>

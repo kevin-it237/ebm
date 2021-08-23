@@ -36,7 +36,12 @@ const Chat = () => {
         if (name && review && star){
             axios.post(config.baseUrl+'/expert/review/store/'+name, {review: review, rating: star})
                 .then(res =>{
-                    console.log(res.data.message);
+                    if (res.data.message === 'Cet expert n\'existe pas'){
+                        setMessage("Cet expert n'existe pas")
+                        setError(true)
+                    }else {
+                        history.push('/home')
+                    }
                     setLoading(false)
                     setReview("");
                     setStar(0);
@@ -44,6 +49,9 @@ const Chat = () => {
                 }).catch(err=>{
                 setMessage("Erreur lors de l'enregistrement");
                 setLoading(false)
+                setReview("");
+                setStar(0);
+                setName("");
             })
         }else{
             setError(true)
@@ -76,12 +84,15 @@ const Chat = () => {
 
                 <div className="box rating-box">
                     <h5>Votre Note</h5>
-                    <Rating name="half-rating" precision={0.5} size="large" onChange={(event, newValue) => {
+                    <Rating name="half-rating" precision={0.25} size="large" onChange={(event, newValue) => {
                         setStar(newValue)}} value={star}/>
                 </div>
             </div>
            {
-               loading&&<LoaderIcon type={"cylon"} color={"#6B0C72"}/>
+               loading&&
+               <Modal hide={() => setLoading(false)}>
+                   <LoaderIcon type={"cylon"} color={"#6B0C72"}/>
+               </Modal>
            }
            {
                error&&<Modal hide={() => setError(false)}>

@@ -9,7 +9,8 @@ export default function cartReducer(state = initialState, action){
         nextState = {
             ...state,
             payload: action.payload,
-            loader: action.loader
+            loader: action.loader,
+            message: action.message
         }
     }
     console.log(nextState)

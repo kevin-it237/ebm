@@ -31,6 +31,10 @@ const Reviews = () => {
 
     useEffect(() => {
         setLoader(true)
+        getReviews()
+    }, [])
+
+    const getReviews=()=>{
         axios.get(config.baseUrl + '/institution/review/show/' + select)
             .then(response => {
                 setReviews(response.data.message);
@@ -40,35 +44,27 @@ const Reviews = () => {
                 console.log(error)
                 setLoader(false)
             })
-    }, [])
+    }
+
+    const storeReviews=(value)=>{
+        axios.post(config.baseUrl + '/institution/review/store/' + select, {review: value, rating: star})
+            .then(response => {
+                console.log(response.data.message)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
 
     console.log(reviews)
 
     const onKeyPress = (event) => {
         const value = event.target.value;
-        setLoader(true)
         if (event.key === 'Enter') {
-            axios.post(config.baseUrl + '/institution/review/store/' + select, {review: value, rating: star})
-                .then(response => {
-                    console.log(response.data.message)
-                    setLoader(false)
-                })
-                .catch(error => {
-                    console.log(error)
-                    setLoader(false)
-                })
-            axios.get(config.baseUrl + '/institution/review/show/' + select)
-                .then(response => {
-                    setReviews(response.data.message);
-                    setLoader(false)
-                })
-                .catch(error => {
-                    console.log(error)
-                    setLoader(false)
-                })
-            setLoader(false)
+            storeReviews(value)
             event.target.value = "";
             setStar(0);
+            getReviews()
         }
     }
 
@@ -76,11 +72,12 @@ const Reviews = () => {
         event.preventDefault();
     }
 
+    console.log(reviews)
     return (
         <div className="reviews">
             <div className="reviews-header">
                 <User/>
-                <Rating name="half-rating" precision={0.5} size="large" onChange={(event, newValue) => {
+                <Rating name="half-rating" precision={0.25} size="large" onChange={(event, newValue) => {
                     setStar(newValue)
                 }} value={star}/>
                 <InputSearch name="query" onClick={onClick}
@@ -94,7 +91,7 @@ const Reviews = () => {
                             <div className="review-header">
                                 <User/>
                                 <h4>{reviews[review].username}</h4>
-                                <Rating readOnly disabled name="half-rating" precision={0.5}
+                                <Rating readOnly disabled name="half-rating" precision={0.25}
                                         value={reviews[review].rating}/>
                             </div>
                             <p className="content">{reviews[review].review}</p>

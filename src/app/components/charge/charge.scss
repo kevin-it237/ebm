@@ -1,0 +1,34 @@
+@import '../../../assets/styles/global.scss';
+
+#charge {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 20;
+  overflow: auto;
+  background-color: rgba($secondary, 0.1);
+  animation: appear .1s ease-in;
+  @keyframes appear {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+  .charge--container {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    .charge--content {
+      position: relative;
+      width: 30rem;
+      padding: 25px;
+      border-radius: 15px;
+      background-color: rgba(white, 0.1);
+      @media screen and (max-width: 768px) {
+        width: 28rem;
+      }
+    }
+  }
+}

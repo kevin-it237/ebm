@@ -10,6 +10,7 @@ import axios from "axios";
 import LoaderIcon from "react-loader-icon";
 import Product from "./product.item";
 import Slider from "react-slick";
+import Charge from "../../../../app/components/charge/charge";
 
 const OrderProduct=()=> {
     const history = useHistory();
@@ -20,7 +21,8 @@ const OrderProduct=()=> {
         dots: true,
         speed: 500,
         slidesToShow: 3,
-        slidesToScroll: 3
+        slidesToScroll: 3,
+        infinite: false
     };
 
     const [order, setOrder] = useState();
@@ -51,15 +53,25 @@ const OrderProduct=()=> {
                 console.log(err)
                 setLoader(false)
             })
-
     }
+
+    console.log(order)
 
     const deleteCart = (e) => {
         e.preventDefault()
+        let state;
         setDelCart(false)
         setLoader(true)
-        axios.get(config.baseUrl + '/user/product/delete/'+id)
+        if (order[0].state === 'EN ATTENTE'){
+            state = "ANNULÉ"
+        }else {
+            state = "EN ATTENTE"
+        }
+        console.log(state)
+        axios.post(config.baseUrl + '/user/product/order/nocomment/changestate/',
+            {order_id: id, state: state})
             .then(res => {
+                console.log(res.data.message)
                 history.goBack()
                 setLoader(false)
             })
@@ -67,6 +79,8 @@ const OrderProduct=()=> {
                 setLoader(false)
             })
     }
+
+    console.log(product)
 
     return (
         <>
@@ -100,24 +114,24 @@ const OrderProduct=()=> {
                 <span></span>
 
                 <div className="footer" style={{position: "fixed", bottom: 0, width: '100%', paddingLeft: '60%'}}>
-                    <Button size="sm" style={{backgroundColor: '#d95702', fontSize: 10}} onClick={
+                    <Button size="sm" style={{backgroundColor: '#d95702', fontSize: 'small'}} onClick={
                         (e) => {
                             e.preventDefault();
                             setDelCart(true)
                         }
                     }>
-                        ANNULER LA COMMANDE</Button>
+                        {order[0].state === "EN ATTENTE" ? "ANNULÉ" : "EN ATTENTE"}</Button>
                 </div>
             </div>
             }
             {
-                loader && order && <Modal hide={() => setLoader(false)}>
+                loader && !order && <Charge>
                     <LoaderIcon type="cylon" color="#6B0C72"/>
-                </Modal>
+                </Charge>
             }
             {
                 delCart && <Modal hide={() => setDelCart(false)}>
-                    <center><h2 style={{fontSize: "small", marginTop: -8}}>Annuler la Commande ?</h2></center>
+                    <center><h2 style={{fontSize: "small", marginTop: -8}}>Annulez la Commande ?</h2></center>
                     <br/>
                     <div style={{display: "flex"}}>
                         <Button onClick={(e) => {

@@ -13,6 +13,7 @@ import {rate} from "../../../../config/helpers";
 import StarsRating from "../../components/stars.rating/stars.rating";
 import ReactTimeAgo from "react-time-ago";
 import fr from "javascript-time-ago/locale/en";
+import logoLink from "../../../../config/logo.link";
 
 const Expert = () => {
     const params = useParams();
@@ -114,7 +115,7 @@ const Expert = () => {
 
             <div className="institute-content">
                 <div className="owner-infos">
-                    <img className="avatar" src={expert.logo} alt={expert.username} />
+                    <img className="avatar" src={logoLink.link +expert.logo} alt={expert.username} />
                     <div>
                         <h3 className="name">{expert.username} {expert.firstname}</h3>
                         {<p>Joined <ReactTimeAgo date={created} locale="en-US" timeStyle="round"/></p>}

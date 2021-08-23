@@ -1,6 +1,7 @@
 import React, {useCallback, useState, useEffect} from 'react';
 import {GoogleMap, InfoWindow, useJsApiLoader, Marker, LoadScript} from '@react-google-maps/api';
 import Geocode from "react-geocode";
+import img from "../../../../assets/images/mansory.png";
 
 const containerStyle = {
     width: '100%',
@@ -12,26 +13,28 @@ const LocationAddress=(props)=> {
     const [location, setLocation] = useState([])
     const [coords, setCoords] = useState({lat: null, lng: null})
     const [notCoord, setNotCoord] = useState(false)
+    const [disable, setDisable] = useState(false)
     const [address, setAddress] = useState("")
     const [multiAddress, setMultiAddress] = useState([])
 
     const locationProps = props.location;
 
     let tab = []
-    let post = []
     useEffect(() => {
-        console.log(multiAddress)
+        console.log(locationProps)
         if (locationProps.length !== 0) {
             setNotCoord(false)
             Object.keys(props.location).map(location => (
                 tab.push(props.location[location].location)
             ))
-            console.log(tab)
-            setLocation(tab)
-            {location.map((loc, index) => (
-                getMultiAdress(parseFloat(location[index].split(",")[0]), parseFloat(location[index].split(",")[1]))
+            if (tab.length!==0){
+                setLocation(tab)
+                setDisable(true)
+                {location.map((loc, index) => (
+                    getMultiAdress(parseFloat(location[index].split(",")[0]), parseFloat(location[index].split(",")[1]))
+                ))}
+            }
 
-            ))}
         } else {
             setNotCoord(true)
             navigator.geolocation.getCurrentPosition(function (position) {
@@ -99,6 +102,7 @@ const LocationAddress=(props)=> {
         setMap(map)
     }, [])
     return (
+        disable&&
         <LoadScript googleMapsApiKey={key}>
             {!notCoord &&
             <GoogleMap onLoad={onLoad}
@@ -138,6 +142,14 @@ const LocationAddress=(props)=> {
                 </GoogleMap>
             }
         </LoadScript>
+    )||(!disable&&
+        <div>
+            <br/>
+            <center>
+                <img src={require("../../../../assets/images/telescope.png").default}/>
+                <p>Pas de donnée de localisation</p>
+            </center>
+        </div>
     )
 }
 

@@ -6,34 +6,36 @@ import axios from "axios";
 import config from "../../../../config";
 import {useParams} from "react-router-dom";
 import LoaderIcon from "react-loader-icon";
+import img from "../../../../assets/images/ebm.svg";
 
 
 export const Localization = (props) => {
 
     const param = useParams()
     const select = param.slug
-    const [location, setLocation] = useState(0);
     const [lat, setLat] = useState(0);
     const [long, setLong] = useState(0)
     const [local, setLocal] = useState(false);
+    const [message, setMessage] = useState(null);
 
     useEffect(() => {
-        setLocal(true)
         axios.get(config.baseUrl + "/institution/show/" + select)
             .then(response => {
-                setLat(response.data.message.location.split(",")[0]);
-                setLong(response.data.message.location.split(",")[1]);
-                setLocal(false)
+                if (response.data.message.location){
+                    setLocal(true)
+                    setLat(response.data.message.location.split(",")[0]);
+                    setLong(response.data.message.location.split(",")[1]);
+                }else {
+                    setMessage("Pas de Localisation")
+                    setLocal(false)
+                }
             })
             .catch(error => {
-                setLocal(false)
+                console.log(error)
             })
-    });
+    }, []);
 
-
-    console.log(location)
-
-    console.log(location)
+    console.log(message)
     const mapStyles = {
         width: '100%',
         height: '100%'
@@ -45,23 +47,25 @@ export const Localization = (props) => {
     }
     return (
         <div className="localization">
-            {lat && long ?
-                <Map
-                    google={props.google} zoom={17} style={mapStyles} onClick={onclick}
-                    initialCenter={
-                        {
-                            lat: lat,
-                            lng: long
-                        }
-                    }
-                >
+            {local&&
+                <Map google={props.google} zoom={17} style={mapStyles} onClick={onclick}
+                    initialCenter={{lat: lat, lng: long}}>
                     <Marker onClick={onclick}/>
-                </Map> : ""}
+                </Map>
+            }
 
-            {local &&
-            <div className="spinner_load_search">
-                <LoaderIcon type="cylon" color="#6B0C72"/>
-            </div>
+            {!message&&
+                <div className="spinner_load_search">
+                    <LoaderIcon type="cylon" color="#6B0C72"/>
+                </div>
+            }
+            {message&&
+                <center>
+                    <br/>
+                    <img src={require("../../../../assets/images/telescope.png").default}/>
+                    <p>{message}</p>
+                </center>
+
             }
         </div>
     )

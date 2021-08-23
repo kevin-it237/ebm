@@ -114,7 +114,7 @@ const Login = () => {
                 ))}
                 <div className="registation-final__step">
                     <select name="roleSet" onChange={onChangeRole} required style={{color: 'gray', opacity: '0.8'}}>
-                        <option value="" disabled selected>Choisir un Role</option>
+                        <option value="" disabled selected>Quelle est votre role ?</option>
                         <option value="USER">Normal</option>
                         <option value="INSTITUTION">Institution</option>
                         <option value="EXPERT">Expert</option>

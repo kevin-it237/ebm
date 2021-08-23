@@ -24,6 +24,8 @@ import LoaderIcon from "react-loader-icon";
 import logoLink from "../../../../config/logo.link";
 import Geocode from "react-geocode";
 import LocationAddress from "../../components/localization/location.address";
+import {confirmAlert} from "react-confirm-alert";
+import 'react-confirm-alert/src/react-confirm-alert.css'
 
 
 
@@ -53,6 +55,7 @@ const AdvancedSearch = () => {
     const [loading, setLoading] = useState(false); //for the loader
     const [showFilter, setShowFilter] = useState(false)
     const [loaderRand, setRandLoader] = useState(false)
+    const [location, setLocation] = useState(null)
     const history = useHistory()
 
     const changeView = (view) => {
@@ -63,8 +66,37 @@ const AdvancedSearch = () => {
         setShowFilter(!showFilter)
     }
 
+    const options = {
+        title: 'Position',
+        message: 'Activez votre localisation ?',
+        buttons: [
+            {
+                label: 'Oui',
+                onClick: () => {
+                    navigator.geolocation.getCurrentPosition(function(position){
+                        setLocation(position.coords)
+                    })
+                }
+            },
+            {
+                label: 'Non'
+            }
+        ],
+        closeOnEscape: true,
+        closeOnClickOutside: true,
+        willUnmount: () => {},
+        afterClose: () => {},
+        onClickOutside: () => {},
+        onKeypressEscape: () => {},
+        overlayClassName: "advanced.search.scss"
+    };
+
     const onPosition=(e)=>{
         e.preventDefault()
+        if ("geolocation" in navigator) {
+            confirmAlert(options)
+        } else {
+        }
         navigator.geolocation.getCurrentPosition(function (position){
             Geocode.setApiKey("AIzaSyC2vEJrfaVeGpv_kYngHtWw7VMUM6yWssM");
             Geocode.setLanguage("fr");
@@ -84,6 +116,7 @@ const AdvancedSearch = () => {
         })
     }
 
+    console.log(location)
 
     useEffect(() => {
         setRandLoader(true)

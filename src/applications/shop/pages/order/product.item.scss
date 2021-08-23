@@ -2,7 +2,6 @@
 
 #order-form{
   height: 20vh;
-  width: 15vh;
   margin: 1vh;
 
   >.order-image{
@@ -21,10 +20,10 @@
     background-color: rgba($primary, 0.4);
     padding: 5px 5px;
     width: 5vh;
-    margin-left: 4vh;
+    margin-left: 6vh;
     border-radius: 1vh;
     position: relative;
-    margin-top: -18vh;
+    margin-top: -20vh;
 
 
     >.order-quantity{

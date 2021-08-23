@@ -18,6 +18,7 @@ const Layout = ({children}) => {
     const dispatch = useDispatch();
     const history = useHistory();
     const [drawerOpen,setDrawerOpen]=useState(false);
+    const [content, setContent] = useState("Home");
     const [log,setLogout]=useState(false);
     const [loader,setLoader]=useState(false);
     window.setDrawerOpen =  setDrawerOpen;
@@ -55,6 +56,14 @@ const Layout = ({children}) => {
         setDrawerOpen(false)
         setLogout(true)
     }
+
+    const changeContent = (contentName) => {
+        setContent(contentName);
+    }
+
+    const MENU_ITEMS = ["Home", "Chat", "Search", "Document", "UserAccount"];
+
+    console.log(content)
 
     return (
         <>
@@ -97,7 +106,7 @@ const Layout = ({children}) => {
                     </div>
                     {
                         log&&<Modal hide={()=>setLogout(false)}>
-                            <center><h2 style={{fontSize: "medium", marginTop: 10}}>Se deconnecter ?</h2></center>
+                            <center><h2 style={{fontSize: "small", marginTop: 10}}>Voulez vous vraiment vous déconnecter ?</h2></center>
                             <br/>
                             <div style={{display: "flex", justifyContent: "space-between"}}>
                                 <Button onClick={(e)=> {e.preventDefault();
@@ -116,12 +125,32 @@ const Layout = ({children}) => {
                     {children}
                 </div>
                 <div id="footer">
-                    <NavLink to="/home"><img src={Home} alt="" /></NavLink>
-                    <NavLink to="/conversation"><img src={Chat} alt="" /></NavLink>
-                    <NavLink to="/advanced-search"><img src={Search} alt="" /></NavLink>
-                    <NavLink to="/products"><img src={Document} alt="" /></NavLink>
-                    <NavLink to="/profile"><img src={UserAccount} alt="" /></NavLink>
+                {
+                    MENU_ITEMS.map(item=>(
+                        <div>
+                            {item==='Home'&&<NavLink to="/home" onClick={() => changeContent(item)}>
+                                <img src={Home} alt=""/>
+                                {content===item && <span className="span-footer-bottom"></span>}
+                            </NavLink>}
+                            {item==='Chat'&&<NavLink to="/conversation" onClick={() => changeContent(item)}><img src={Chat} alt=""/>
+                                {content===item && <span className="span-footer-bottom"></span>}
+                            </NavLink>}
+                            {item==='Search'&&<NavLink to="/advanced-search" onClick={() => changeContent(item)}><img src={Search} alt=""/></NavLink>}
+                            {item==='Document'&&<NavLink to="/products"><img src={Document} alt=""/>
+                                {content===item && <span className="span-footer-bottom"></span>}
+                            </NavLink>}
+                            {item==='UserAccount'&&<NavLink to="/profile"><img src={UserAccount} alt=""/>
+                                {content===item && <span className="span-footer-bottom"></span>}
+                            </NavLink>}
+                        </div>
+                    ))
+                }
                 </div>
+                {/*{item ==="Home"&&<NavLink to="/home"><img src={item} alt="" /></NavLink>}
+                    <NavLink to="/conversation"><img src={Conversation} alt=""/></NavLink>
+                        <NavLink to="/advanced-search"><img src={Search} alt="" /></NavLink>
+                        <NavLink to="/products"><img src={Products} alt="" /></NavLink>
+                        <NavLink to="/profile"><img src={Profile} alt="" /></NavLink>*/}
             </div>
         </>
     )

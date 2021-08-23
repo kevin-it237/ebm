@@ -87,3 +87,12 @@
         }
     }
 }
+
+.span-footer-bottom {
+    display: block;
+    position: relative;
+    height: 4px;
+    margin-top: 0.5vh;
+    width: 22px;
+    background-color: $primary;
+}
