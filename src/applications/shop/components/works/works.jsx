@@ -9,7 +9,7 @@ import Modal from "../../../../app/components/modal/modal";
 import {TextArea} from "semantic-ui-react";
 import Button from "../../../../app/components/buttons/button/button";
 
-const Work = () => {
+const Work = ({name}) => {
     const [artworks, setArtwork] = useState([]);
     const [loader, setLoader] = useState(false);
     const [selectArtwork, setSelectedArtwork] = useState([]);
@@ -18,8 +18,9 @@ const Work = () => {
 
     useEffect(()=>{
         setLoader(true)
-        axios.get(config.baseUrl+'/institution/artwork/show')
+        axios.get(config.baseUrl+'/institution/artwork/user/show/'+name)
             .then(response=>{
+                console.log(response.data.message)
                 setArtwork(response.data.message)
                 setLoader(false)
             })

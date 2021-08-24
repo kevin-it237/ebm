@@ -1,6 +1,7 @@
 import index from "./index";
 
 export const setToken = (token)=>{
+    window.token=token;
     return window.localStorage.setItem('token', token);
 }
 

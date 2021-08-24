@@ -49,26 +49,21 @@ const Institute = (props) => {
                 console.log(error)
             })
 
-        console.log(institut)
         axios.get(config.baseUrl+"/institution/show/service/"+select)
             .then(response=>{
                 setServices(response.data.message)
-                console.log(response)
             })
             .catch(error=>{
                 console.log(error)
             })
         axios.get(config.baseUrl+'/user/profile/photo/'+select)
             .then(res=>{
-                console.log(res.data.message)
                 setImageProfile(res.data.message)
             })
             .catch(error=>{
                 console.log(error)
             })
     }
-
-    console.log(imageProfile)
     const getStarVote = () =>{
         axios.get(config.baseUrl+'/institution/rate/show/'+select)
             .then(response=>{
@@ -98,7 +93,7 @@ const Institute = (props) => {
     } else if(content === "Localisation") {
         bottomContent = (<Localization localization={institut.location} address={institut.address}/>);
     } else {
-        bottomContent = (<Works />);
+        bottomContent = (<Works name={select}/>);
     }
 
     return (

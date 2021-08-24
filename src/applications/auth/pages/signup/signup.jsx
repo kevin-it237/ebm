@@ -86,20 +86,15 @@ const SignUp = () => {
             };
         }
 
-        console.log(user)
-
         setLoading(true)
         axios.post(config.baseUrl+"/register", user)
             .then(res =>{
-                console.log(res.data)
                 history.push('/verification/'+user.role.toLowerCase())
                 setLoading(false)
             })
             .catch(err=>{
-                console.log(err.response.data)
                 if (err.response.data){
                     const error = err.response.data.errors;
-                    console.log(error)
                     if (error.username){
                         notifyFailed(error.username[0])
                     }else if(error.firstname){

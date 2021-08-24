@@ -10,10 +10,11 @@ import axios from "axios";
 import config from "../../../../config/index";
 import dateFormat from 'dateformat';
 import chatLink from '../../../../config/chat.link'
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 const Chat = () => {
     const history = useHistory();
+    const dispatch = useDispatch()
     const user = useSelector(state=>state.user.payload)
 
     console.log(user)
@@ -31,6 +32,10 @@ const Chat = () => {
 
     useEffect(() => {
         getMessage();
+        dispatch({
+            type: 'ADD_TO_PATH',
+            payload: history.location.pathname
+        })
     }, [])
 
     const onChange = (event)=>{

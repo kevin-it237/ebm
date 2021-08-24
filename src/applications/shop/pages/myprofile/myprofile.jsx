@@ -24,6 +24,7 @@ import ProductDemand from "../../../shop/components/historique/product.demand";
 import Select from "react-select";
 import Slider from "react-slick";
 import {confirmationPass, verifiedEmail, verifiedPassword, verifiedPhone} from "../../../../config/helpers";
+import {useDispatch} from "react-redux";
 
 const MyProfile = () => {
 
@@ -64,6 +65,7 @@ const MyProfile = () => {
     TimeAgo.addLocale(fr)
     const timeAgo = new TimeAgo('fr-CA')
     const history = useHistory()
+    const dispatch = useDispatch()
     const inputFile = useRef(null);
     const [showPassword, setPassword] = useState(false);
     const [content, setContent] = useState("Information");
@@ -90,8 +92,6 @@ const MyProfile = () => {
     const [orderExpertState, setOrderExpertState] = useState("");//get expert order
     const [orderExpertId, setOrderExpertId] = useState(null);//get order id
     const [loaderState, setloaderState] = useState(false);//loader for state
-    const [order, setOrder] = useState(1);//load order to show
-    const [activ, setActiv] = useState(false);//load order to show
 
     const [serviceOrder, setServiceOrder] = useState([]);//loader for state
     const [serviceLoader, setServiceLoader] = useState(false);//loader for state
@@ -205,6 +205,10 @@ const MyProfile = () => {
         getJoinedDate();
         getOrderExpert();
         setLoader(true)
+        dispatch({
+            type: 'ADD_TO_PATH',
+            payload: history.location.pathname
+        })
 
     }, []);
 
@@ -511,7 +515,7 @@ const MyProfile = () => {
 
     let bottomContent;
     if (content === "Information") {
-        bottomContent = (<div className={"signup-container"} style={{width: "100%"}}>
+        bottomContent = (<div className={"info-user"} style={{width: "100%"}}>
             {infoForm ? <form className="auth-container">
                     {Object.keys(infoForm).map((input, index) => (
                         <div key={index} className="auth-container__input-container">
@@ -545,7 +549,7 @@ const MyProfile = () => {
             }
         </div>);
     } else if (content === "Mot de passe") {
-        bottomContent = (<div className={"signup-container"} style={{width: "100%"}}>
+        bottomContent = (<div className={"info-user-1"} style={{width: "100%"}}>
             <form className="auth-container">
                 {Object.keys(infoForm2).map((input, index) => (
                     <div key={index} className="auth-container__input-container">
@@ -711,7 +715,7 @@ const MyProfile = () => {
                     <div className={infoUser.role === 'user' ? "marge" : ""}>
                         <h3 className="name">{infoUser.firstname} {infoUser.lastname}</h3>
                         {/*<p>Joined <ReactTimeAgo date={created} locale="fr-FR" timeStyle="round"/></p>*/}
-                        {<p>Compte crée le {created.split(" ")[0]}</p>}
+                        {created&&<p>Compte crée le {created.split(" ")[0]}</p>}
                     </div>
                 </div>
                 {infoUser.role === 'user' &&

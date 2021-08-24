@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux'
-import { Link } from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import InputSearch from "../../../../app/components/inputs/input.search/input.search";
 import './search.scss' 
 import img from "../../../../assets/images/ebm.svg"
@@ -9,8 +9,10 @@ import axios from "axios";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import logoLink from "../../../../config/logo.link";
 import LoaderIcon from "react-loader-icon";
+import {ReactComponent as Back} from "../../../../assets/icons/back.svg";
 const Search = () => {
 
+    const history = useHistory();
     const [allSearch, setAllSearch] = useState("");
     const [loading,setLoading] =useState(false);
     const [name, setName] = useState("");
@@ -51,7 +53,10 @@ const Search = () => {
     return (
         <div id="search">
             <div className="search">
-                <h2>{user.role !== 'INSTITUTION' ? 'Institutions': 'Experts'}</h2>
+                <div className="header-title">
+                    <Back onClick={() => history.goBack()}/>
+                    <h2>{user.role !== 'INSTITUTION' ? 'Institutions': 'Experts'}</h2>
+                </div>
                 <InputSearch placeholder={"Recherchez "+ (user.role==='INSTITUTION' ? "un expert..." : "une institution...")} onFocus value={name} onChange={(event)=>{setName(event.target.value);
                 searchFilter(event.target.value)}} name="name"/>
             </div>

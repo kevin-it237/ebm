@@ -4,6 +4,7 @@ import 'semantic-ui-css/semantic.min.css'
 import axios from "axios";
 import config from "../config";
 import {useDispatch} from "react-redux";
+import {getToken} from "../config/helpers";
 
 
 const App = () => {
@@ -15,6 +16,10 @@ const App = () => {
      */
 
     useEffect(() => {
+        let token = getToken();
+        if(token){
+            window.token=token;
+        }
         if(hasMountedBefore){ return }
         // Init current logged user
         setHasMountedBefore(true);

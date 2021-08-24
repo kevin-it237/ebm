@@ -26,13 +26,20 @@ import Geocode from "react-geocode";
 import LocationAddress from "../../components/localization/location.address";
 import {confirmAlert} from "react-confirm-alert";
 import 'react-confirm-alert/src/react-confirm-alert.css'
+import {useDispatch} from "react-redux";
 
 
 
 const AdvancedSearch = () => {
 
+    const dispatch = useDispatch()
+    const history = useHistory()
     useEffect(() => {
         getAllservice();
+        dispatch({
+            type: 'ADD_TO_PATH',
+            payload: history.location.pathname
+        })
     }, []);
 
     const colourStyles = {
@@ -56,7 +63,6 @@ const AdvancedSearch = () => {
     const [showFilter, setShowFilter] = useState(false)
     const [loaderRand, setRandLoader] = useState(false)
     const [location, setLocation] = useState(null)
-    const history = useHistory()
 
     const changeView = (view) => {
         setDisplay(view)

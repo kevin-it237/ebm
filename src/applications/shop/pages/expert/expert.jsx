@@ -101,7 +101,7 @@ const Expert = () => {
     } else if(content === "Services") {
         bottomContent = (<Services services={services} role="expert" expert={select}/>);
     } else {
-        bottomContent = (<Works />);
+        bottomContent = (<Works name={select}/>);
     }
 
     return (

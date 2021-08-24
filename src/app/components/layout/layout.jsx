@@ -1,19 +1,25 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import {NavLink, useHistory} from 'react-router-dom'
 import './layout.scss'
-import Home from "../../../assets/icons/home.svg"
+import Home from "../../../assets/icons/homes.svg"
+import HomeColor from "../../../assets/icons/homesColor.svg"
+import ChatColor from "../../../assets/icons/chat_50px.png"
 import Chat from "../../../assets/icons/chat.svg"
 import Search from "../../../assets/icons/search.svg"
 import Document from "../../../assets/icons/documents.svg"
-import UserAccount from "../../../assets/icons/user_account.svg"
+import DocumentColor from "../../../assets/icons/product_documents_50px.png"
+import UserAccount from "../../../assets/icons/userSvg.svg"
+import UserAccountColor from "../../../assets/icons/userSvgColor.svg"
 import axios from "axios";
 import config from "../../../config/index";
 import {useDispatch, useSelector} from "react-redux";
 import Modal from "../modal/modal";
 import Button from "../buttons/button/button";
 import LoaderIcon from "react-loader-icon";
+import {getToken, getUser, setToken} from "../../../config/helpers";
 
 const Layout = ({children}) => {
+    const path = useSelector(state=>state.path.payload)
     const user = useSelector(state=>state.user.payload)
     const dispatch = useDispatch();
     const history = useHistory();
@@ -23,14 +29,10 @@ const Layout = ({children}) => {
     const [loader,setLoader]=useState(false);
     window.setDrawerOpen =  setDrawerOpen;
 
-    useEffect(()=>{
-    }, []);
-
     const onLock=(event)=>{
         event.preventDefault();
         setDrawerOpen(false);
     }
-
     const logout=()=>{
         setLogout(false)
         setLoader(true)
@@ -38,6 +40,8 @@ const Layout = ({children}) => {
         axios.get(config.baseUrl+'/user/logout')
             .then(response=>{
                 window.localStorage.removeItem('token');
+                setToken(null)
+                axios.defaults.headers['Authorization']=null;
                 dispatch({
                     type: 'INFO_USER',
                     payload: ""
@@ -59,11 +63,13 @@ const Layout = ({children}) => {
 
     const changeContent = (contentName) => {
         setContent(contentName);
+        dispatch({
+            type: 'ADD_TO_PATH',
+            payload: contentName
+        })
     }
 
     const MENU_ITEMS = ["Home", "Chat", "Search", "Document", "UserAccount"];
-
-    console.log(content)
 
     return (
         <>
@@ -129,18 +135,18 @@ const Layout = ({children}) => {
                     MENU_ITEMS.map(item=>(
                         <div>
                             {item==='Home'&&<NavLink to="/home" onClick={() => changeContent(item)}>
-                                <img src={Home} alt=""/>
-                                {content===item && <span className="span-footer-bottom"></span>}
+                                {path==='/home' ? <img src={HomeColor} alt=""/> : <img src={Home} alt=""/>}
                             </NavLink>}
-                            {item==='Chat'&&<NavLink to="/conversation" onClick={() => changeContent(item)}><img src={Chat} alt=""/>
-                                {content===item && <span className="span-footer-bottom"></span>}
+                            {item==='Chat'&&<NavLink to="/conversation" onClick={() => changeContent(item)}>
+                                {path==='/conversation' ? <img src={ChatColor} width="22" height="22" alt=""/> : <img src={Chat} alt=""/>}
                             </NavLink>}
-                            {item==='Search'&&<NavLink to="/advanced-search" onClick={() => changeContent(item)}><img src={Search} alt=""/></NavLink>}
-                            {item==='Document'&&<NavLink to="/products"><img src={Document} alt=""/>
-                                {content===item && <span className="span-footer-bottom"></span>}
+                            {item==='Search'&&<NavLink to="/advanced-search" onClick={() => changeContent(item)}>
+                                <img src={Search} alt=""/></NavLink>}
+                            {item==='Document'&&<NavLink to="/products" onClick={() => changeContent(item)}>
+                                {path==='/products' ? <img src={DocumentColor} width="22" height="22" alt=""/> : <img src={Document} alt=""/>}
                             </NavLink>}
-                            {item==='UserAccount'&&<NavLink to="/profile"><img src={UserAccount} alt=""/>
-                                {content===item && <span className="span-footer-bottom"></span>}
+                            {item==='UserAccount'&&<NavLink to="/profile" onClick={() => changeContent(item)}>
+                                {path==='/profile' ? <img src={UserAccountColor} alt=""/> : <img src={UserAccount} alt=""/>}
                             </NavLink>}
                         </div>
                     ))

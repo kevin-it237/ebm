@@ -11,6 +11,5 @@ export default function cartReducer(state = initialState, action){
             payload: action.payload,
         }
     }
-    console.log(nextState)
     return nextState||state;
 }

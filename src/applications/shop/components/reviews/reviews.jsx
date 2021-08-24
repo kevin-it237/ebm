@@ -56,8 +56,6 @@ const Reviews = () => {
             })
     }
 
-    console.log(reviews)
-
     const onKeyPress = (event) => {
         const value = event.target.value;
         if (event.key === 'Enter') {
@@ -71,8 +69,6 @@ const Reviews = () => {
     const onClick = (event) => {
         event.preventDefault();
     }
-
-    console.log(reviews)
     return (
         <div className="reviews">
             <div className="reviews-header">

@@ -19,6 +19,20 @@
         input {
             border-radius: 8px !important;
         }
+        >.header-title {
+            display: flex;
+            align-items: center;
+            padding: 10px 0px 10px 0px;
+            >h2 {
+                color: $white;
+                font-size: 1.6rem;
+                padding-left: 10px;
+            }
+            svg {
+                width: 22px;
+                path { fill: $white; }
+            }
+        }
     }
 
     .section-title {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory} from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import InputSearch from "../../../../app/components/inputs/input.search/input.search";
@@ -26,6 +26,7 @@ import Service from "./service.item";
 
 const Home = () => {
     const history = useHistory();
+    const dispatch = useDispatch()
     const user = useSelector((state) => state.user.payload)
 
     const nbFavorites = useSelector((state) => state.product.payload)
@@ -62,9 +63,12 @@ const Home = () => {
         getAllProduct();
         getAllParentService();
         getFavorites();
+        dispatch({
+            type: 'ADD_TO_PATH',
+            payload: history.location.pathname
+        })
     }, []);
 
-    console.log(addCart)
     const getAllProduct = () => {
         axios.get(config.baseUrl + '/product/index')
             .then(response => {
@@ -98,7 +102,6 @@ const Home = () => {
 
     return (
         <>
-        {user&&
             <div id="home">
                 <div id="header">
                     <img onClick={openDrawer} className="menu" src={Menu} alt=""/>
@@ -184,12 +187,6 @@ const Home = () => {
                 {showDrawerService && <HomeDrawerContent onClose={() => setShowDrawerService(false)}
                                                          name={services}/>}
             </div>
-        }
-            {
-                !user&&<div>
-                    <LoaderIcon type="cylon" color="#6B0C72"/>
-                </div>
-            }
         </>
     )
 

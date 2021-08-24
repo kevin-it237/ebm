@@ -34,10 +34,14 @@ import OrderProduct from "../../applications/shop/pages/order/order.product";
  * @description this is the main routes for the main application src/app.
  */
 const Routes = () => {
+    window.axios = axios;
     const history = useHistory()
-
-    if (getToken() !== null){
-        axios.defaults.headers['Authorization'] = getToken();
+    if(getToken()!==null && window.token){
+        window.token=getToken();
+    }
+    if (window.token){
+        console.log(window.token+" is the token");
+        axios.defaults.headers['Authorization'] = window.token;
         axios.defaults.headers['Content-Type'] = 'application/json';
     }else {
         history.push('/login')
@@ -62,14 +66,14 @@ const Routes = () => {
                     <Route component={VerificationEmail} path={'/verification-email'} />
                     <Route component={VerificationToken} path={'/verification-token'} />
                     <Route exact={true} component={Cart} path={'/cart'} />
-                    <Route exact={true} component={Search} path={'/search'} />
-                    <Route exact={true} component={ProductSearch} path={'/products'} />
+                    {<Route exact={true} component={Search} path={'/search'}/>}
+                    {/*<Route exact={true} component={ProductSearch} path={'/products'}/>*/}
                     <Route exact={true} component={Institute} path={'/institute'} />
-                    <Route exact={true} component={MyProfile} path={'/profile'} />
+                    {/*<Route exact={true} component={MyProfile} path={'/profile'}/>*/}
                     <Route path={'/institute/:slug'} component={Institute} />
                     <Route exact={true} component={Expert} path={'/expert'} />
                     <Route path={'/expert/:slug'} component={Expert} />
-                    <Route exact={true} component={Conversation} path={'/conversation'} />
+                    {<Route exact={true} component={Conversation} path={'/conversation'}/>}
                     <Route exact={true} component={RateExpert} path={'/rate-expert'} />
                     <Route exact={true} component={Favorites} path={'/favorites'}/>
                     <Route exact={true} component={OrderProduct} path={'/order/product/:slug'}/>

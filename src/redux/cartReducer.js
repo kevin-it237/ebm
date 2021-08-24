@@ -13,6 +13,5 @@ export default function cartReducer(state = initialState, action){
             message: action.message
         }
     }
-    console.log(nextState)
     return nextState||state;
 }

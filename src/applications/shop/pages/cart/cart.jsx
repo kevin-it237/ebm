@@ -83,6 +83,7 @@ const Cart = () => {
     const Undelete = (id) => {
         axios.get(config.baseUrl + '/user/cart/product/delete/' + id)
             .then(res => {
+                getProduct()
                 axios.get(config.baseUrl + '/user/cart/quantity')
                     .then(response => {
                         setProduct(response.data.message)
@@ -111,10 +112,8 @@ const Cart = () => {
                 {!loading && products.length !== 0 &&
                 <div className="cart-items" style={{padding: 0, paddingTop: 20, paddingBottom: 20}}>
                     {Object.keys(products).map((product, index) => (
-                        <SwipeToDelete
-                            onDelete={(e) => {
-                                Undelete(products[product]['id'])
-                            }} // required
+                        <SwipeToDelete key={index}
+                            onDelete={() => Undelete(products[product]['id'])} // required
                             height={91} // required
                             // optional
                             transitionDuration={250} // default

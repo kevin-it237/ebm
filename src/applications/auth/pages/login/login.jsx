@@ -11,11 +11,13 @@ import './login.scss'
 import config from "../../../../config/index";
 import { ToastContainer, toast } from 'material-react-toastify';
 import 'material-react-toastify/dist/ReactToastify.css';
-import {setToken, verifiedEmail, verifiedPassword} from "../../../../config/helpers";
+import {setToken, setUser, verifiedEmail, verifiedPassword} from "../../../../config/helpers";
+import {useDispatch} from "react-redux";
 
 
 const Login = () => {
     const history = useHistory();
+    const dispatch = useDispatch();
 
     const [showPassword, setPassword] = useState(false);
     const [loginForm, setLoginForm] = useState({email: "", password: ""});
@@ -33,7 +35,6 @@ const Login = () => {
             role: role.role
         }
 
-        console.log(user)
         axios.post(config.baseUrl+"/login", {...user}).
         then(response=>{
             if(response.data.message === "Votre compte est en cours de vérification"){
@@ -42,10 +43,13 @@ const Login = () => {
                 history.push('/verification/'+user.role.toLowerCase())
             }
             else {
-                console.log(response.data.acces_token)
                 const token = `Bearer ${response.data.acces_token}`;
                 setToken(token);
-                response.headers.Authorization = `Bearer ${JSON.stringify(response.data.acces_token)}`;
+                window.axios = axios;
+                axios.defaults.headers['Authorization'] = window.token;
+                getUser()
+                getFavorites()
+                getCart()
                 history.push('/home');
             }
             setLoading(false)
@@ -56,6 +60,45 @@ const Login = () => {
                 notify("Erreur de connexion")
             }
             setLoading(false)
+        })
+    }
+
+    const getUser = () => {
+        axios.get(config.baseUrl + '/user/show')
+            .then(res=>{
+                dispatch({
+                    type: 'USER_INFO',
+                    payload: res.data.message
+                })
+            })
+            .catch(err=>{
+            })
+    }
+
+    const getFavorites = () => {
+        axios.get(config.baseUrl + '/user/favorites/product')
+            .then(response => {
+                dispatch({
+                        type: 'ADD_TO_FAVORITE',
+                        payload: response.data.message.length,
+                        loader: false
+                    }
+                );
+            }).catch(err => {
+            notify(err)
+        })
+    }
+
+    const getCart = () => {
+        axios.get(config.baseUrl + '/user/cart/number')
+            .then(response => {
+                dispatch({
+                        type: 'ADD_TO_CART',
+                        payload: response.data.message,
+                    }
+                );
+            }).catch(err => {
+            notify(err)
         })
     }
 

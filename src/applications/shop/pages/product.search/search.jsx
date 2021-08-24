@@ -10,16 +10,22 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import ProductItem from "../../components/product.item/product.item";
 import LoaderIcon from "react-loader-icon";
 import SwipeToDelete from 'react-swipe-to-delete-component';
+import {useDispatch} from "react-redux";
 
 const Search = () => {
 
     const history = useHistory();
+    const dispatch = useDispatch()
     const [allSearch, setAllSearch] = useState([]);
     const [name, setName] = useState("");
     const [loading, setLoading] = useState(false);
 
     useEffect(()=>{
         searchFilter(name);
+        dispatch({
+            type: 'ADD_TO_PATH',
+            payload: history.location.pathname
+        })
     }, [name]);
 
     const searchFilter = useCallback((name)=>{
