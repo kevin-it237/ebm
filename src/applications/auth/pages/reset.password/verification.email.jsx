@@ -55,8 +55,11 @@ const VerificationEmail = () => {
 
     return (
         <div className="login-container">
-            <div className="logo-box">
+            <div className={"login-container-overlay _show-on-large"}/>
+            <div className="logo-box _show-on-small">
                 <img src={ebmLogo} alt="" />
+            </div>
+            <div className="logo-box _show-on-large">
             </div>
             <div className="big-logo__box">
                 <img src={ebmLogoBig} alt="" />

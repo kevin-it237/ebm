@@ -106,7 +106,7 @@ const Login = () => {
     const notify = (err) => toast.error(err);
     const notifyInfo = (err) => toast.info(err);
 
-    // Change form input values. 
+    // Change form input values.
     const onChange = (e) => setLoginForm({...loginForm,  [e.target.name]: e.target.value })
 
     const onChangeRole = (e) => setRole({...role,  role: e.target.value })
@@ -131,9 +131,13 @@ const Login = () => {
 
     return (
         <div className="login-container">
+            <div className={"login-container-overlay _show-on-large"}/>
             <ToastContainer position="top-center" autoClose="5000" pauseOnHover/>
-            <div className="logo-box">
+            <div className="logo-box _show-on-small">
                 <img src={ebmLogo} alt="" />
+            </div>
+            <div className="logo-box _show-on-large">
+
             </div>
             <div className="big-logo__box">
                 <img src={ebmLogoBig} alt="" />
@@ -169,8 +173,8 @@ const Login = () => {
                     <Link to="/verification-email" style={{color: '#e80011'}}>Mot de Passe Oublié ?</Link>
                 </div>
 
-                <Button 
-                    variant="primary" 
+                <Button
+                    variant="primary"
                     type="submit"
                     loading={loading}
                     disabled={loading}

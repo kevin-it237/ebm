@@ -54,7 +54,11 @@ const SignUp = () => {
                 password_confirmation: signupForm1.confirmation,
                 address: Form2.address,
                 phone: Form2.phone,
+<<<<<<< HEAD
                 roles: role.role,
+=======
+                role: role.role,
+>>>>>>> c61581961b5ba5bcda3f9f59c21269d50dcb96d3
                 institution_phone: Form3.institution_phone,
                 institution_address: Form3.institution_address,
                 description: description.description
@@ -127,19 +131,19 @@ const SignUp = () => {
         toast.error(err)
     }
 
-    // Change form input values. 
+    // Change form input values.
     const onChange = (e) => {
         setForm1({...signupForm1,  [e.target.name]: e.target.value });
     }
 
     const onChangeForm = (e) => {
         setForm2({...Form2,  [e.target.name]: e.target.value });
-    }     
-    
+    }
+
     const onChangeForm3 = (e) => {
         setForm3({...Form3,  [e.target.name]: e.target.value });
-    }       
-    
+    }
+
     const onChangeDescription = (e) => {
         setDescription({...description,  [e.target.name]: e.target.value });
     }
@@ -179,8 +183,12 @@ const SignUp = () => {
 
     return (
         <div className="signup-container">
-            <div className="logo-box">
+
+            <div className={"login-container-overlay _show-on-large"}/>
+            <div className="logo-box _show-on-small">
                 <img src={ebmLogo} alt="" />
+            </div>
+            <div className="logo-box _show-on-large">
             </div>
             <div className="big-logo__box">
                 <img src={ebmLogoBig} alt="" />
@@ -213,9 +221,9 @@ const SignUp = () => {
                         </div>
 
                         <Button
-                            variant="primary" 
-                            type="submit" 
-                            size="lg">Créer Mon Compte
+                            variant="primary"
+                            type="submit"
+                            size="lg">Suivant
                         </Button>
 
                         <div className="auth-container__line-element">
@@ -223,7 +231,7 @@ const SignUp = () => {
                         </div>
                     </form>
                 ): formStep === 2 ?(
-                    <div className="signup-container">
+                    <div>
                         <form onSubmit={role.role === "INSTITUTION" ? onSubmit : onHandleSubmit} className="auth-container">
                             {Object.keys(Form2).map((input, index) => (
                                 <div key={index} className="auth-container__input-container">

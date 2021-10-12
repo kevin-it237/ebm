@@ -64,6 +64,7 @@ const Verification = () => {
 
     return (
         <div className="signup-container">
+            <div className={"login-container-overlay _show-on-large"}/>
             <ToastContainer position="top-center"/>
             <div className="logo-box">
                 <img src={ebmLogo} alt="" />
