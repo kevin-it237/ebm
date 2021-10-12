@@ -40,9 +40,12 @@ const Search = () => {
                     setLoading(false)
                 });
         }else {
-            setAllSearch("");
+            setAllSearch([]);
+            setName("")
         }
     }, [name]);
+
+    console.log(allSearch)
 
     return (
         <div id="search" className="product-search">
@@ -63,7 +66,7 @@ const Search = () => {
 
                         <div key={index}>
                             <ProductItem price={allSearch[item]['price']} discount={allSearch[item]['discount']}
-                                         name={allSearch[item]['name_fr']} id={allSearch[item]['id']}/>
+                                         name={allSearch[item]['name_fr']} id={allSearch[item]['id']} image={allSearch[item]['image']}/>
                         </div>
 
                     ))}

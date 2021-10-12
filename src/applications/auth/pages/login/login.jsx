@@ -11,7 +11,7 @@ import './login.scss'
 import config from "../../../../config/index";
 import { ToastContainer, toast } from 'material-react-toastify';
 import 'material-react-toastify/dist/ReactToastify.css';
-import {setToken, setUser, verifiedEmail, verifiedPassword} from "../../../../config/helpers";
+import {setToken, verifiedEmail, verifiedPassword} from "../../../../config/helpers";
 import {useDispatch} from "react-redux";
 
 
@@ -32,15 +32,15 @@ const Login = () => {
         const user = {
             email: loginForm.email,
             password: loginForm.password,
-            role: role.role
+            roles: role.role
         }
 
-        axios.post(config.baseUrl+"/login", {...user}).
-        then(response=>{
+        axios.post(config.baseUrl+"/login", {...user})
+        .then(response=>{
             if(response.data.message === "Votre compte est en cours de vérification"){
                 notifyInfo("Votre compte est en cours de vérification")
             }else if (response.data.message === "Verifiez votre compte"){
-                history.push('/verification/'+user.role.toLowerCase())
+                history.push('/verification/'+user.roles.toLowerCase())
             }
             else {
                 const token = `Bearer ${response.data.acces_token}`;
@@ -54,8 +54,9 @@ const Login = () => {
             }
             setLoading(false)
         }).catch(error=>{
+            console.log(error.message)
             if (error.message){
-                notify("Email ou Mot de passe Incorrect")
+                notify("Email, Mot de passe ou Role Incorrect")
             }else if (!error.message){
                 notify("Erreur de connexion")
             }
@@ -165,7 +166,7 @@ const Login = () => {
                 </div>
 
                 <div className="forgot-password__box">
-                    <Link to="/verification-email">Mot de Passe Oublié ?</Link>
+                    <Link to="/verification-email" style={{color: '#e80011'}}>Mot de Passe Oublié ?</Link>
                 </div>
 
                 <Button 

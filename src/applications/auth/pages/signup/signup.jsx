@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from "axios";
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
@@ -49,12 +49,12 @@ const SignUp = () => {
                 username: signupForm1.username,
                 firstname: signupForm1.firstname,
                 lastname: signupForm1.lastname,
-                email: signupForm1.email,
+                email: signupForm1.email.toLowerCase(),
                 password: signupForm1.password,
                 password_confirmation: signupForm1.confirmation,
                 address: Form2.address,
                 phone: Form2.phone,
-                role: role.role, 
+                roles: role.role,
                 institution_phone: Form3.institution_phone,
                 institution_address: Form3.institution_address,
                 description: description.description
@@ -64,12 +64,12 @@ const SignUp = () => {
                 username: signupForm1.username,
                 firstname: signupForm1.firstname,
                 lastname: signupForm1.lastname,
-                email: signupForm1.email,
+                email: signupForm1.email.toLowerCase(),
                 password: signupForm1.password,
                 password_confirmation: signupForm1.confirmation,
                 address: Form2.address,
                 phone: Form2.phone,
-                role: role.role,
+                roles: role.role,
                 description: description.description
             };
         }else{
@@ -77,22 +77,26 @@ const SignUp = () => {
                 username: signupForm1.username,
                 firstname: signupForm1.firstname,
                 lastname: signupForm1.lastname,
-                email: signupForm1.email,
+                email: signupForm1.email.toLowerCase(),
                 password: signupForm1.password,
                 password_confirmation: signupForm1.confirmation,
                 address: Form2.address,
                 phone: Form2.phone,
-                role: role.role.toLowerCase(),
+                roles: role.role.toLowerCase(),
             };
         }
+
+        console.log(user)
 
         setLoading(true)
         axios.post(config.baseUrl+"/register", user)
             .then(res =>{
-                history.push('/verification/'+user.role.toLowerCase())
+                console.log(res.data.message)
+                history.push('/verification/'+user.roles.toLowerCase())
                 setLoading(false)
             })
             .catch(err=>{
+                console.log(err)
                 if (err.response.data){
                     const error = err.response.data.errors;
                     if (error.username){
@@ -121,9 +125,6 @@ const SignUp = () => {
 
     const notifyFailed = (err)=>{
         toast.error(err)
-    }
-    const nextStep = () => {
-        setFormStep(2)
     }
 
     // Change form input values. 
@@ -268,7 +269,7 @@ const SignUp = () => {
                                 onSubmit
                                 loading={loading}
                                 disabled={loading}
-                                size="lg">{role.role === "INSTITUTION" ? "information institution": "completez inscription"}
+                                size="lg">{role.role === "INSTITUTION" ? "Information sur l'Institution": "Completez l'Inscription"}
                             </Button>
                         </form>
                     </div>
@@ -311,7 +312,7 @@ const SignUp = () => {
                                 onSubmit
                                 loading={loading}
                                 disabled={loading}
-                                size="lg">{"completez inscription"}
+                                size="lg">{"Completez l'Inscription"}
                             </Button>
                         </form>
                     </div>

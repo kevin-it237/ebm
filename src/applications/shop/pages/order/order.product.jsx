@@ -55,8 +55,6 @@ const OrderProduct=()=> {
             })
     }
 
-    console.log(order)
-
     const deleteCart = (e) => {
         e.preventDefault()
         let state;
@@ -79,8 +77,8 @@ const OrderProduct=()=> {
                 setLoader(false)
             })
     }
-
     console.log(product)
+    console.log(order)
 
     return (
         <>
@@ -99,7 +97,7 @@ const OrderProduct=()=> {
                 {product && <Slider {...settings} className="order-som">
                     {Object.keys(product).map((e, index) => (
                         <Product key={index} name={product[e].name} price={product[e].price}
-                                 quantity={product[e].quantity}/>
+                                 quantity={product[e].quantity} image={product[e].image}/>
                     ))}
                 </Slider>}
                 <span></span>

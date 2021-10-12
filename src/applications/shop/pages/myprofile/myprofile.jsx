@@ -25,6 +25,7 @@ import Select from "react-select";
 import Slider from "react-slick";
 import {confirmationPass, verifiedEmail, verifiedPassword, verifiedPhone} from "../../../../config/helpers";
 import {useDispatch} from "react-redux";
+import dateFormat from 'dateformat';
 
 const MyProfile = () => {
 
@@ -78,7 +79,7 @@ const MyProfile = () => {
     const [phoneError, setPhone] = useState("");
     const [selectFile, setSelectFile] = useState("");//get selecte image
     const [image, setImage] = useState("");//store url selected image
-    const [created, setCreated] = useState(0);
+    const [created, setCreated] = useState("");
     const [comment, setComment] = useState("");
     const [message, setMessage] = useState(false);
     const [loaderProf, setLoaderProf] = useState("");
@@ -170,6 +171,8 @@ const MyProfile = () => {
         const url = URL.createObjectURL(blob)
         setImage(url)
     }
+
+    console.log(infoForm)
     const savePhotoProfile = () => {
         setChangeProfilPhoto(false)
         setLoader(true)
@@ -656,7 +659,7 @@ const MyProfile = () => {
                         }}
                              className={((infoUser.role === 'EXPERT' || infoUser.role === 'INSTITUTION' || infoUser.role === 'user') && productOrder[e].state === 'COMPLETÉ') ? "disable" : ""}>
                             <ProductDemand amount={productOrder[e].price} date={productOrder[e].date}
-                                           state={productOrder[e].state} id={index + 1}/>
+                                           state={productOrder[e].state} id={productOrder[e].id}/>
                         </div>))}
                 </div>
             )||
@@ -687,7 +690,7 @@ const MyProfile = () => {
 
             {!loader && <div className="institute-content">
                 <div className="owner-infos">
-                    {infoUser.role !== 'user' ?
+                    {infoUser.roles !== 'user' ?
                         <div>
                             {imageProfile ?
                                 <img className="avatar"
@@ -712,13 +715,13 @@ const MyProfile = () => {
                         :
                         ""
                     }
-                    <div className={infoUser.role === 'user' ? "marge" : ""}>
+                    <div className={infoUser.roles === 'user' ? "marge" : ""}>
                         <h3 className="name">{infoUser.firstname} {infoUser.lastname}</h3>
                         {/*<p>Joined <ReactTimeAgo date={created} locale="fr-FR" timeStyle="round"/></p>*/}
-                        {created&&<p>Compte crée le {created.split(" ")[0]}</p>}
+                        {created&&<p>Compte crée le {dateFormat(created.split(" ")[0], 'dd-mm-yyyy')}</p>}
                     </div>
                 </div>
-                {infoUser.role === 'user' &&
+                {infoUser.roles === 'user' &&
                 <Slider {...settings} className='menu'>
                     {
                         MENU_ITEMS_USER.map(item => (
@@ -730,7 +733,7 @@ const MyProfile = () => {
                     }
                 </Slider>
                 }
-                {infoUser.role === 'EXPERT' &&
+                {infoUser.roles === 'EXPERT' &&
                 <Slider {...settings} className='menu'>
                     {
                         MENU_ITEMS_EXPERT.map(item => (
@@ -742,7 +745,7 @@ const MyProfile = () => {
                     }
                 </Slider>
                 }
-                {infoUser.role === 'INSTITUTION' &&
+                {infoUser.roles === 'INSTITUTION' &&
                 <Slider {...settings} className='menu'>
                     {
                         MENU_ITEMS.map(item => (

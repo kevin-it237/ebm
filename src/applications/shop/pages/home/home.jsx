@@ -37,12 +37,14 @@ const Home = () => {
     const [products, setProduct] = useState("");
     const [services, setService] = useState("");
     const [parent_services, setParent_Service] = useState("");
+    const [chargeService, setChargeService] = useState(false);
+    const [chargeProduct, setChargeProduct] = useState(false);
     const [favorites, setFavorites] = useState([]);
 
     const settings = {
         speed: 500,
         infinite: false,
-        slidesToShow: 1.25,
+        slidesToShow: 1.15,
         slidesToScroll: 1,
         initialSlide: 0,
     };
@@ -70,20 +72,26 @@ const Home = () => {
     }, []);
 
     const getAllProduct = () => {
+        setChargeProduct(true)
         axios.get(config.baseUrl + '/product/index')
             .then(response => {
                 setProduct(Object.values(response.data.message));
+                setChargeProduct(false)
             }).catch(err => {
             notifyFailed("Verifier votre connexion")
+            setChargeProduct(false)
         })
     }
 
     const getAllParentService = () => {
+        setChargeService(true)
         axios.get(config.baseUrl + '/parent_service/index')
             .then(response => {
                 setParent_Service(Object.values(response.data.message));
+                setChargeService(false)
             }).catch(err => {
             notifyFailed("Verifier votre connexion")
+            setChargeService(false)
         })
     }
 
@@ -99,6 +107,8 @@ const Home = () => {
     const notifyFailed = (err) => {
         toast.error(err)
     }
+
+    console.log(products)
 
     return (
         <>
@@ -128,7 +138,7 @@ const Home = () => {
                 </div>
                 <div className="search">
                     <InputSearch onClick={() => history.push('/search')}
-                                 placeholder={user.role === 'INSTITUTION' ? "Recherchez un expert..." : "Recherchez une institution..."}/>
+                                 placeholder={user.roles === 'INSTITUTION' ? "Recherchez un expert..." : "Recherchez une institution..."}/>
                 </div>
 
                 <ToastContainer/>
@@ -136,7 +146,7 @@ const Home = () => {
                     <h2>Catégories de Services</h2>
                     <span></span>
                 </div>
-                {parent_services.length !== 0 ?
+                {parent_services.length !== 0 && !chargeService &&
                     <Slider {...settings} className="services-wrapper">
                         {Object.keys(parent_services).map((parent_service, index) => (
                             <div key={index} onClick={() => {
@@ -147,16 +157,25 @@ const Home = () => {
                             </div>
                         ))}
                     </Slider>
-                    :
+                }
+                {parent_services.length === 0 && chargeService&&
                     <div className="spinner_loader">
                         <LoaderIcon type="cylon" color="#6B0C72"/>
-                    </div>}
+                    </div>
+                }
+                {parent_services.length === 0 && !chargeService&&
+                    <center>
+                        <br/>
+                        <img src={require("../../../../assets/images/telescope.png").default}/>
+                        <p>Aucun Service</p>
+                    </center>
+                }
 
                 <div className="section-title">
                     <h2>Produits</h2>
                     <span></span>
                 </div>
-                {products.length !== 0 ?
+                {products.length !== 0 && !chargeProduct &&
                     <div className="products-wrapper">
                         {Object.keys(products).map((product, index) => (
                             <div key={index}>
@@ -164,13 +183,22 @@ const Home = () => {
                                              name={products[product]['name_fr']}
                                              price={products[product]['price']}
                                              discount={products[product]['discount']}
-                                             description={products[product]['description']}/>
+                                             description={products[product]['description']}
+                                             image={products[product]['image']}/>
                             </div>
                         ))}
                     </div>
-                    :
+                }
+                {products.length===0&&chargeProduct&&
                     <div className="spinner_loader">
                         <LoaderIcon type="cylon" color="#6B0C72"/>
+                    </div>
+                }
+                {products.length===0&&!chargeProduct&&
+                    <div className="spinner_loader">
+                        <br/>
+                        <img src={require("../../../../assets/images/telescope.png").default}/>
+                        <p>Aucun Produit</p>
                     </div>
                 }
                 {

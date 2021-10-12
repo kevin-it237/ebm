@@ -1,11 +1,11 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import './map.google.scss'
 import { Map, GoogleApiWrapper, Marker } from 'google-maps-react';
 
 
 export const MapGoogle = () => {
 
-    const [location, setLocation] = useState(0);
+    const location = 0;
     const [lat, long] = [0, 0];
 
 
@@ -51,6 +51,7 @@ export const MapGoogle = () => {
 }
 
 export default GoogleApiWrapper({
-    apiKey: 'AIzaSyC2vEJrfaVeGpv_kYngHtWw7VMUM6yWssM'
+    //apiKey: 'AIzaSyC2vEJrfaVeGpv_kYngHtWw7VMUM6yWssM'
+    apiKey: 'AIzaSyAWwCv4eMvfP6L7vNB8eSG0LwHm7mwFdgs'
 })(MapGoogle);
 

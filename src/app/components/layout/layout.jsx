@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import {NavLink, useHistory} from 'react-router-dom'
 import './layout.scss'
 import Home from "../../../assets/icons/homes.svg"
@@ -16,7 +16,7 @@ import {useDispatch, useSelector} from "react-redux";
 import Modal from "../modal/modal";
 import Button from "../buttons/button/button";
 import LoaderIcon from "react-loader-icon";
-import {getToken, getUser, setToken} from "../../../config/helpers";
+import {setToken} from "../../../config/helpers";
 
 const Layout = ({children}) => {
     const path = useSelector(state=>state.path.payload)
@@ -106,7 +106,7 @@ const Layout = ({children}) => {
                             <img src={require('../../../assets/images/avatar.png').default} style={{height:40,borderRadius:"50%",backgroundColor:"#eee",marginRight:20,marginLeft:15}}/>
                         </div>
                         <div style={{flexGrow:1,display:'flex',flexDirection:'column',justifyContent:"center"}}>
-                            <h2 style={{fontSize:10,marginBottom:5}} id={"nav-bar-username"}>{user.firstname} {user.lastname} ({user.role})</h2>
+                            <h2 style={{fontSize:10,marginBottom:5}} id={"nav-bar-username"}>{user.firstname} {user.lastname} ({user.roles})</h2>
                             <strong onClick={handleModal}>Logout</strong>
                         </div>
                     </div>

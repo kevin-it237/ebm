@@ -30,6 +30,8 @@
         }
     }
     .conversation-content {
+        position: relative;
+        z-index: 1;
         overflow-y: auto;
         flex: 1;
         display: flex;
@@ -37,6 +39,7 @@
         padding: 20px;
         >.message {
             position: relative;
+            z-index: 0;
             margin-bottom: 25px;
             padding: 15px;
             height: auto;
@@ -81,6 +84,7 @@
                 color: $grey-300;
                 font-size: 1rem;
                 position: absolute;
+                z-index: 0;
                 top: 105%;
             }
             &--sent {
@@ -107,11 +111,15 @@
         }
     }
     .keyboard-wrapper {
+        z-index: 10;
         height: 60px;
+        position: absolute;
+        overflow: no-display;
+        bottom: 0px;
+        width: 100%;
         box-shadow: 0px 0px 12px rgba($secondary, .2);
         display: grid;
         align-items: center;
-        display: grid;
         grid-template-columns: 20px 1fr 20px;
         align-items: center;
         padding: 0 20px;

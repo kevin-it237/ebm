@@ -86,7 +86,7 @@ const Favorites = () => {
                     {Object.keys(favorites).map((item, index) => (
                         <div key={index}>
                             <ProductItem price={favorites[item]['price']} discount={favorites[item]['discount']}
-                                         name={favorites[item]['name_fr']} id={favorites[item]['id']}/></div>
+                                         name={favorites[item]['name_fr']} id={favorites[item]['id']} image={favorites[item]['image']}/></div>
                     ))}
                 </div>
             }

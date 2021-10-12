@@ -16,6 +16,7 @@ import img from "../../../../assets/images/mansory.png";
 import Rating from "@material-ui/lab/Rating";
 import Button from "../../../../app/components/buttons/button/button";
 import LoaderIcon from "react-loader-icon";
+import productLink from "../../../../config/product.link";
 
 
 const ProductItem = (props) => {
@@ -138,7 +139,7 @@ const ProductItem = (props) => {
                         <Heart style={{fill : (isLike ? "#6B0C72" : 'gray')}}/>
                     </div>
                 </div>
-                <img className="product-image" src={cils} alt="" onClick={(e)=> {e.preventDefault();
+                <img className="product-image" src={productLink.link + props.image} alt="" onClick={(e)=> {e.preventDefault();
                     setSelectProduct(props); setSelect(true)
                 }}/>
                 <div className="product-infos">
@@ -167,7 +168,7 @@ const ProductItem = (props) => {
                                     onChange={(e, newValue)=>{e.preventDefault();
                                         setStar(newValue);}} value={star}/>
                         </div>
-                        <img className="product-image-product" src={cils} alt=""/>
+                        <img className="product-image-product" src={productLink.link + props.image} alt=""/>
                         <h2 style={{wordBreak: "break-word", fontSize: "medium", marginBottom: '2vh', marginTop: '2vh', textAlign: "center"}}>
                             {selectProduct.description}
                         </h2>

@@ -8,7 +8,7 @@ import './reset.password.scss'
 import config from "../../../../config/index";
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
-import {confirmationPass, getToken, setToken, verifiedEmail, verifiedPassword} from "../../../../config/helpers";
+import {confirmationPass, verifiedPassword} from "../../../../config/helpers";
 import {ReactComponent as Uneye} from "../../../../assets/icons/uneye.svg";
 import {ReactComponent as Eye} from "../../../../assets/icons/eye.svg";
 
@@ -29,8 +29,8 @@ const ResetPassword = () => {
             password: loginForm.password,
             token: params.slug
         }
-        axios.post(config.baseUrl+"/password/reset", {...user}).
-        then(response=>{
+        axios.post(config.baseUrl+"/password/reset", {...user})
+        .then(response=>{
             console.log(response)
             history.push('/login');
         }).catch(error=>{

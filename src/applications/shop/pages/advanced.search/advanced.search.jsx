@@ -113,7 +113,6 @@ const AdvancedSearch = () => {
                 (response) => {
                     const address = response.results[0].formatted_address;
                     setAddress(address)
-                    console.log(address);
                 },
                 (error) => {
                     console.error(error);
@@ -121,8 +120,6 @@ const AdvancedSearch = () => {
             );
         })
     }
-
-    console.log(location)
 
     useEffect(() => {
         setRandLoader(true)
@@ -138,12 +135,9 @@ const AdvancedSearch = () => {
                 setRandLoader(false)
             })
             .catch(error => {
-                console.log(error)
                 setRandLoader(false)
             })
     }, [])
-
-    console.log(randInstitut)
 
     const getAllservice = () => {
         let tab = []
@@ -179,20 +173,23 @@ const AdvancedSearch = () => {
 
     const getServiceAround = () => {
         let location = [lat, long];
-        location = location.join(",")
-        setLoading(true)
-        if (distance !== 0) {
-            axios.post(config.baseUrl + '/user/service/search',
-                {around: distance, location: location})
-                .then(response => {
-                    setLoading(false)
-                    setSearch(response.data.message)
-                })
-                .catch(error => {
-                    notify(error)
-                    setLoading(false)
-                })
+        if (location){
+            location = location.join(",")
+            setLoading(true)
+            if (distance !== 0) {
+                axios.post(config.baseUrl + '/user/service/search',
+                    {around: distance, location: location})
+                    .then(response => {
+                        setLoading(false)
+                        setSearch(response.data.message)
+                    })
+                    .catch(error => {
+                        notify(error)
+                        setLoading(false)
+                    })
+            }
         }
+
     }
 
     const notify = (err) => toast.error(err);
@@ -217,8 +214,10 @@ const AdvancedSearch = () => {
     }
 
     const onSelect = (event) => {
-        getServiceByName(event.label);
-        setRecherche(event.label)
+        if (event){
+            getServiceByName(event.label);
+            setRecherche(event.label)
+        }
     }
 
     const getServiceByLike = () => {
@@ -235,8 +234,6 @@ const AdvancedSearch = () => {
                 setLoading(false)
             })
     }
-
-    console.log(search)
 
     const getServiceByNameDistanceLike = () => {
         setLoading(true)
@@ -288,34 +285,25 @@ const AdvancedSearch = () => {
         event.preventDefault();
         setRandInstitut([])
         setSearch([])
-        console.log(search)
         if (star === null) {
             setStar(0)
         }
         if (recherche === "") {
             if (distance !== 0 && star === 0) {
-                console.log('5')
                 getServiceAround();
             } else if (distance === 0 && star !== 0) {
-                console.log('6')
                 getServiceByLike();
             } else if (distance !== 0 && star !== 0) {
-                console.log('7')
-                console.log(star)
                 getServiceByDistanceLike();
             }
         } else {
             if (distance !== 0 && star === 0) {
-                console.log('1')
                 getServiceByNameDistance()
             } else if (distance === 0 && star !== 0) {
-                console.log('2')
                 getServiceByNameLike()
             } else if (distance !== 0 && star !== 0) {
-                console.log('3')
                 getServiceByNameDistanceLike()
             } else if (distance === 0 && star === 0) {
-                console.log("4")
                 getServiceByName();
             }
         }
@@ -336,7 +324,7 @@ const AdvancedSearch = () => {
 
                     <div className="actual-position" onClick={onPosition}>
                         <img src={Region} alt=""/>
-                        <p>{address ? address : "Votre posiion"}</p>
+                        <p>{address ? address : "Votre position"}</p>
                     </div>
                     <div className="filter-box">
                         <div className="filter">
@@ -419,7 +407,6 @@ const AdvancedSearch = () => {
                         <div>
                             <LocationAddress location={search}/>
                         </div>
-
                 }
 
             </div>

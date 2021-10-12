@@ -5,12 +5,15 @@ import { ReactComponent as Camera } from "../../../../assets/icons/camera.svg";
 import { ReactComponent as Send } from "../../../../assets/icons/send.svg";
 import SwipeToDelete from 'react-swipe-to-delete-ios'
 import img from "../../../../assets/images/pic.jpg";
+import addMessage from "../../../../assets/icons/add_message_25px.png"
 import './conversation.scss';
 import axios from "axios";
 import config from "../../../../config/index";
 import dateFormat from 'dateformat';
 import chatLink from '../../../../config/chat.link'
+import productLink from "../../../../config/product.link";
 import {useDispatch, useSelector} from "react-redux";
+import LoaderIcon from "react-loader-icon";
 
 const Chat = () => {
     const history = useHistory();
@@ -28,14 +31,16 @@ const Chat = () => {
     const [showImage, setShowImage] = useState(false)
     const [loader, setLoader] = useState(false)
     const [disable, setDisable] = useState(false)
-    const [imageSend, setImageSend] = useState(false)
+    const [charge, setCharge] = useState(false)
+
 
     useEffect(() => {
         getMessage();
-        dispatch({
+        /*dispatch({
             type: 'ADD_TO_PATH',
             payload: history.location.pathname
         })
+        */
     }, [])
 
     const onChange = (event)=>{
@@ -46,9 +51,8 @@ const Chat = () => {
         }else {
             setDisable(true)
         }
-    }   
-    console.log(send.length)
-    console.log(file)
+    }  
+
 
     const onChangeFile = (event)=>{
         event.preventDefault()
@@ -64,7 +68,6 @@ const Chat = () => {
         formData.append('attachment', event.target.files[0])
         setImage(url)
         setShowImage(true)
-        console.log(formData)
         axios.post(config.baseUrl + '/chat/register', formData,
             {
                 headers: {
@@ -80,17 +83,16 @@ const Chat = () => {
 
     }
 
-    console.log(messages)
     const getMessage=()=>{
+        setCharge(true)
         axios.get(config.baseUrl+'/chat/show')
         .then(response=>{
             setMessages(response.data.message);
-            setLoader(false)
+            setCharge(false)
             setDisable(false)
         })
         .catch(error => {
-            console.log(error)
-            setLoader(false)
+            setCharge(false)
             setDisable(false)
         })
     }
@@ -99,41 +101,48 @@ const Chat = () => {
 
     const onClick = (event)=>{
         event.preventDefault();
-        setLoader(true)
         if (send) {
+            setMessages("")
+            setLoader(true)
             axios.post(config.baseUrl + '/chat/register', {message: send})
                 .then(response => {
-                    console.log(response.data.message)
+                    getMessage();
+                    setLoader(false)
                 })
                 .catch(error => {
-                    console.log(error)
+                    setLoader(false)
                 })
             setSend("")
             setFile("")
-            getMessage();
         }
     
-    }    
+    }   
+
+
+    console.log("loader") 
+    console.log(loader)
     
     const onKeyPress = (event)=>{
         if (event.key === 'Enter' && send.length!==0) {
             event.preventDefault();
+            setMessages("")
             setLoader(true)
             axios.post(config.baseUrl+'/chat/register', {message: send, attachment: file})
             .then(response=>{
-                console.log(response.data.message)
+                getMessage();
+                setLoader(false)
             })
             .catch(error => {
                 console.log(error)
+                setLoader(false)
             })
             setSend("")
             setFile("")
-            getMessage();
         }
     
     }
 
-    console.log(disable)
+    console.log(messages)
     return (
        <div id="chat">
             <div className="header">
@@ -141,29 +150,39 @@ const Chat = () => {
                 <p>Conversation</p>
             </div>
 
-            <div className="conversation-content">
-                {Object.keys(messages).map((message, index)=>(
-                    <div key={index} className={messages[message].message ? ("message "+(messages[message].user_id !== 0 ? "message--sent":"message--received"))
-                    : ("attachment "+(messages[message].user_id !== 0 ? "attachment--sent":"attachment--received"))}>
-                        {messages[message].message && <p>{messages[message].message}</p>}
-                        {messages[message].attachment && <img src={chatLink.link+messages[message].attachment}/>}
-                        <span>{dateFormat(messages[message].created_at, "dddd dS mmmm yyyy, h:mm")}</span>
-                    </div>
-                ))}
-            </div>
-            <div className="keyboard-wrapper">
-                <div className="image-picker">
-                    <label htmlFor="file"><Camera /></label>
-                    {<input className="inputFile" id="file" type="file" src={image} onChange={onChangeFile}
+           {messages && !loader &&<div className="conversation-content">
+               {Object.keys(messages).map((message, index) => (
+                   <div key={index}
+                        className={messages[message].message ? ("message " + (messages[message].role_id !== 1 ? "message--sent" : "message--received"))
+                            : ("attachment " + (messages[message].role_id !== 1 ? "attachment--sent" : "attachment--received"))}>
+                       {messages[message].message && <p>{messages[message].message}</p>}
+                       {messages[message].attachment && <img
+                           src={messages[message].role_id !== 1 ? chatLink.link + messages[message].attachment : productLink.link + messages[message].attachment}/>}
+                       <span>{messages[message].created_at}</span>
+                   </div>
+               ))}
+           </div>}
+           {!charge&&<div className="keyboard-wrapper">
+               <div className="image-picker">
+                   <label htmlFor="file"><Camera/></label>
+                   {<input className="inputFile" id="file" type="file" src={image} onChange={onChangeFile}
                            accept="image/*"/>}
-                </div>
-                <input className="input-text" type="text" placeholder="Entrez votre message ..." name="send"
-                    rows="10" onChange={onChange} value={send} onKeyPress={onKeyPress}/>
-                {!loader&&disable&&<Send onClick={onClick}/>}
-                {loader&&<svg width="20" height="20" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12.5" cy="12.5" r="11" stroke="#6B0C72" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>}
-            </div>
+               </div>
+               <input className="input-text" type="text" placeholder="Entrez votre message ..." name="send"
+                      onChange={onChange} value={send} onKeyPress={onKeyPress}/>
+               {disable && !loader&& <Send onClick={onClick}/>}
+               {loader &&
+               <svg width="20" height="20" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                   <circle cx="12.5" cy="12.5" r="11" stroke="#6B0C72" strokeWidth="3" strokeLinecap="round"
+                           strokeLinejoin="round"/>
+               </svg>}
+           </div>}
+           {
+               messages.length===0&&charge&&
+               <div>
+                   <LoaderIcon type="cylon" color="#6B0C72"/>
+               </div>
+           }
        </div>
     )
 }

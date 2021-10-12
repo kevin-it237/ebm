@@ -8,7 +8,7 @@ import './verification.email.scss'
 import config from "../../../../config/index";
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
-import {getToken, setToken, verifiedEmail, verifiedPassword} from "../../../../config/helpers";
+import { verifiedEmail} from "../../../../config/helpers";
 
 
 const VerificationEmail = () => {
@@ -24,9 +24,9 @@ const VerificationEmail = () => {
         const user = {
             email: loginForm.email
         }
-        axios.post(config.baseUrl+"/password/forgot", {...user}).
-        then(response=>{
-            console.log(response)
+        axios.post(config.baseUrl+"/password/forgot", {...user})
+        .then(response=>{
+            
             history.push('/verification-token');
             setLoading(false)
         }).catch(error=>{

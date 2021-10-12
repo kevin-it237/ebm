@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from "axios";
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
-import {Link, useHistory, useParams} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 import Button from '../../../../app/components/buttons/button/button';
 import ebmLogo from "../../../../assets/images/ebm.svg"
 import ebmLogoBig from "../../../../assets/images/ebm_big.png"
@@ -11,7 +11,6 @@ import config from "../../../../config/index";
 
 const VerificationToken = () => {
     const history = useHistory();
-    const params = useParams();
 
     const [token, setToken] = useState("");
     const [loading,setLoading]= useState(false);
