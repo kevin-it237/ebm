@@ -54,11 +54,7 @@ const SignUp = () => {
                 password_confirmation: signupForm1.confirmation,
                 address: Form2.address,
                 phone: Form2.phone,
-<<<<<<< HEAD
                 roles: role.role,
-=======
-                role: role.role,
->>>>>>> c61581961b5ba5bcda3f9f59c21269d50dcb96d3
                 institution_phone: Form3.institution_phone,
                 institution_address: Form3.institution_address,
                 description: description.description
