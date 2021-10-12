@@ -1,0 +1,35 @@
+/*global responsive stuff appear here*/
+
+/*1. Login Page, Verification page, signup page*/
+
+@media screen and (min-width: 965px) {
+    .login-container,.signup-container{
+        background: url("../assets/responsive/login-cover.jpg") no-repeat center;
+        background-size: cover;
+    }
+    .login-container > *,.signup-container > *{
+        z-index: 1;
+        position: relative;
+    }
+    .login-container *:not(a,div),.signup-container *:not(a,div){
+        color: white;
+    }
+    .login-container input,.signup-container input{
+        background: transparent;
+    }
+    .login-container select,.signup-container select{
+        background: transparent;
+    }
+    .login-container a,.signup-container a{
+        color: var(--purple);
+    }
+    .login-container-overlay{
+        background: rgba(0,0,0,0.6);
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        z-index: 0;
+    }
+}

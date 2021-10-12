@@ -1,0 +1,33 @@
+/*global stuff appear here*/
+:root{
+    --purple:#6B0C72;
+}
+@media screen and (max-width: 960px) {
+    ._show-on-large {
+        display: none!important;
+    }
+
+    ._show-on-small {
+        display: initial!important;
+    }
+    ._show-on-small.dflex {
+        display: flex!important;
+    }
+    ._show-on-small.dgrid {
+        display: grid!important;
+    }
+}
+@media screen and (min-width: 960px)  {
+    ._show-on-large {
+        display: initial!important;
+    }
+    ._show-on-large.dflex {
+        display: flex!important;
+    }
+    ._show-on-large.dgrid {
+        display: grid!important;
+    }
+    ._show-on-small {
+        display: none!important;
+    }
+}
