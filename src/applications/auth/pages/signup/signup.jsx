@@ -278,7 +278,7 @@ const SignUp = () => {
                         </form>
                     </div>
                 ) :(
-                    <div className="signup-container">
+                    <div>
                         <form onSubmit={onHandleSubmit} className="auth-container">
                             {Object.keys(Form3).map((input, index) => (
                                 <div key={index} className="auth-container__input-container">

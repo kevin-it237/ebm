@@ -14,7 +14,7 @@
     .login-container *:not(a,div),.signup-container *:not(a,div){
         color: white;
     }
-    .login-container input,.signup-container input{
+    .login-container input,.signup-container input,.signup-container textarea{
         background: transparent;
     }
     .login-container select,.signup-container select{
