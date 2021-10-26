@@ -35,7 +35,6 @@ const Work = () => {
 
     const onCropComplet = (crop, pixelCrop) => {
         if (imageRef && crop.width && crop.height) {
-            console.log(getCroppedImg(imageRef, crop))
             const croppedImageUrl = getCroppedImg(imageRef, crop)
             setCroppedImageUrl(croppedImageUrl)
         }
