@@ -35,6 +35,7 @@ const Login = () => {
             roles: role.role
         }
 
+        console.log(user)
         axios.post(config.baseUrl+"/login", {...user})
         .then(response=>{
             if(response.data.message === "Votre compte est en cours de vérification"){
@@ -63,6 +64,8 @@ const Login = () => {
             setLoading(false)
         })
     }
+
+
 
     const getUser = () => {
         axios.get(config.baseUrl + '/user/show')

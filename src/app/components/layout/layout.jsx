@@ -69,6 +69,8 @@ const Layout = ({children}) => {
         })
     }
 
+    console.log(user);
+
     const MENU_ITEMS = ["Home", "Chat", "Search", "Document", "UserAccount"];
 
     return (
