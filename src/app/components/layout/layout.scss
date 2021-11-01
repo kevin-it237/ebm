@@ -1,98 +1,114 @@
 @import '../../../assets/styles/global.scss';
 
 #layout {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 
-    #content {
-        overflow-y: scroll;
-        overflow-x: hidden;
-        flex: 1;
+  #content {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    flex: 1;
+  }
+
+  #nav-bar {
+    height: 100%;
+    position: fixed;
+    background-color: white;
+    width: 60%;
+    max-width: 400px;
+    z-index: 19;
+    box-shadow: 6px 0 18px rgb(0, 0, 0, 0.22);
+    transition: all ease 0.6s;
+    left: -1000px;
+
+    &.open {
+      left: 0;
     }
 
-    #nav-bar{
+    #nav-bar-username {
+      color: $primary;
+    }
+
+    .topImage {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 150px;
+      width: 100%;
+
+      > div {
         height: 100%;
-        position: fixed;
-        background-color: white;
-        width: 60%;
-        max-width: 400px;
-        z-index: 19;
-        box-shadow: 6px 0 18px rgb(0 ,0, 0 , 0.22);
-        transition: all ease 0.6s;
-        left:-1000px;
-        &.open{
-            left:0;
-        }
-        #nav-bar-username{
-            color:$primary;
-        }
-        .topImage{
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            height:150px;
-            width:100%;
-            >div{
-                height:100%;
-                width:100%;
-                background: rgba( $primary,0.3);
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-end;
-            }
-        }
-        ul{
-            display: flex;
-            align-items: center;
-            flex-direction: column;
-            li{
-                padding-top: 15px;
-                padding-bottom: 15px;
-                width: 70%;
-                display: flex;
-                justify-content: center;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.09);
-                font-weight: bold;
-                font-size: 1.1em;
-                a{
-                    text-decoration: none;
-                }
-            }
-        }
+        width: 100%;
+        background: rgba($primary, 0.3);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+      }
     }
 
-    #footer {
+    ul {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+
+      li {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        width: 70%;
         display: flex;
-        height: 60px;
-        align-items: center;
-        background-color: $white;
-        justify-content: space-around;
-        box-shadow: 0px 4px 10px rgba(#000000, .3);
-        >a {
-            width: 25%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            svg {
-                transition: all .2s ease-in;
-            }
-            &.active svg{
-                color: $primary;
-                path {
-                    fill: $primary;
-                }
-            }
+        justify-content: center;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+        font-weight: bold;
+        font-size: 1.1em;
+
+        a {
+          text-decoration: none;
         }
+      }
     }
+  }
+
+  .nv-big {
+    position: relative;
+    left: 0!important;
+  }
+
+  #footer {
+    display: flex;
+    height: 60px;
+    align-items: center;
+    background-color: $white;
+    justify-content: space-around;
+    box-shadow: 0px 4px 10px rgba(#000000, .3);
+
+    > a {
+      width: 25%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+
+      svg {
+        transition: all .2s ease-in;
+      }
+
+      &.active svg {
+        color: $primary;
+
+        path {
+          fill: $primary;
+        }
+      }
+    }
+  }
 }
 
 .span-footer-bottom {
-    display: block;
-    position: relative;
-    height: 4px;
-    margin-top: 0.5vh;
-    width: 22px;
-    background-color: $primary;
+  display: block;
+  position: relative;
+  height: 4px;
+  margin-top: 0.5vh;
+  width: 22px;
+  background-color: $primary;
 }

@@ -1,5 +1,5 @@
 export default {
-    baseUrl:window.location.origin.includes("localhost")||window.location.origin.includes("127.0.0.1")?"http://192.168.1.190:8000/api":"http://192.168.1.190:8000/api"
+    baseUrl:window.location.origin.includes("localhost")?"http://localhost:8001/api":"https://eb-mobile.com/public/api"
 }
 
 

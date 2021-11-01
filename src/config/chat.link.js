@@ -1,3 +1,5 @@
+import base from "./index";
+
 export default {
-    link: "http://127.0.0.1:8000/storage"
+    link:  base.baseUrl.replace("/api","")+"/storage"
 }

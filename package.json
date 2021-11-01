@@ -1,5 +1,5 @@
 {
-  "homepage": "./",
+  "homepage": "/public",
   "name": "ebm",
   "version": "0.1.0",
   "author": "kevin-it",
@@ -72,7 +72,7 @@
     ]
   },
   "devDependencies": {
-    "sass": "^1.29.0"
+    "sass": "^1.43.3"
   },
   "browserslist": {
     "production": [

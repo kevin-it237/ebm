@@ -2,11 +2,13 @@ import index from "./index";
 
 export const setToken = (token)=>{
     window.token=token;
-    return window.localStorage.setItem('token', token);
+     window.localStorage.setItem('token', token);
+     return true;
 }
 
 export const getToken = ()=>{
-    return window.localStorage.getItem('token');
+    console.log(window.token,window.localStorage.getItem("token"))
+    return (window.token?window.token:window.localStorage.getItem('token'));
 }
 
 export const verifiedEmail = (email)=>{
@@ -61,4 +63,10 @@ export const rate = (tab) =>{
     }else{
         return 0;
     }
+}
+export const isMobile=()=>{
+    return window.innerWidth<=965;
+}
+export const isMobileApp=()=>{
+    return false;
 }

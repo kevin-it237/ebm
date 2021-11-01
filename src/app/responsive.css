@@ -1,8 +1,80 @@
 /*global responsive stuff appear here*/
 
 /*1. Login Page, Verification page, signup page*/
+.info-user,.info-user-1{
+    background: none;
+}
+@media screen and (max-width: 965px){
+    .my-container{
+        padding: 0;
+        height: auto;
+    }
+    .show-on-large{
+        display: none;
+    }
 
+    #service > .service-name {
+        margin-top: -14vh;
+    }
+}
 @media screen and (min-width: 965px) {
+    .info-user{
+        background: none;
+    }
+    #service > .service-name {
+        margin-top: -14vh;
+    }
+    #nav-bar{
+        border-right: 1px solid #eeeeee;
+        z-index: 0;
+    }
+    .my-container{
+        height: 100vh;
+        overflow-y: auto;overflow-x: hidden;
+    }
+    .search{
+        background-color: #581d55;
+    }
+    #home .search, #advanced-search .search{
+        background-color: transparent;
+    }
+    #nav-bar{
+    z-index: 0;
+         }
+  .products-wrapper {
+        display: flex!important;
+        flex-wrap: wrap;
+    }
+    .product-item{
+        min-width: 185px;
+    }
+    .show-on-large.d-block{
+        display: block;
+    }
+    #home #header {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: fixed;
+        padding-right: 45px;
+        width: calc(100% - 325px);
+        background-color: white;
+        z-index: 10;
+    }
+    #nav-bar{
+        z-index: 0;
+    }
+    .menu{
+        opacity: 0;
+    }
+    #footer{
+        display: none!important;
+    }
+    .search{
+        padding-top: 25px!important;
+        padding-bottom: 10px!important;
+    }
     .login-container,.signup-container{
         background: url("../assets/responsive/login-cover.jpg") no-repeat center;
         background-size: cover;
@@ -32,4 +104,20 @@
         right: 0;
         z-index: 0;
     }
+    #institute .menu{
+        opacity: 1;
+    }
+    .info-user-1{
+        background: none;
+    }
+    #institute .institute-content{
+        background: none;
+    }
+    #cart .footer{
+        width: calc(100% - 300px);
+    }
+    #cart{
+        height: auto;
+    }
+
 }

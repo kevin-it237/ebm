@@ -22,13 +22,13 @@ import Charge from "../../../../app/components/charge/charge";
 import { ReactComponent as Heart } from "../../../../assets/icons/heartClick.svg";
 import Slider from "react-slick";
 import Service from "./service.item";
+import {isMobile} from "../../../../config/helpers";
 
 
 const Home = () => {
     const history = useHistory();
     const dispatch = useDispatch()
     const user = useSelector((state) => state.user.payload)
-
     const nbFavorites = useSelector((state) => state.product.payload)
     const nbCart = useSelector((state) => state.cart.payload)
     const addCart = useSelector((state) => state.cart.loader)
@@ -44,7 +44,7 @@ const Home = () => {
     const settings = {
         speed: 500,
         infinite: false,
-        slidesToShow: 1.15,
+        slidesToShow: isMobile()?1.3:3,
         slidesToScroll: 1,
         initialSlide: 0,
     };
@@ -114,7 +114,7 @@ const Home = () => {
         <>
             <div id="home">
                 <div id="header">
-                    <img onClick={openDrawer} className="menu" src={Menu} alt=""/>
+                    <img onClick={openDrawer} className="menu" src={Menu} alt="ok"/>
                     <div className="favorite-shop">
                         <IconButton>
                             <StyleBadge badgeContent={nbFavorites ? nbFavorites : 0} color="secondary">
