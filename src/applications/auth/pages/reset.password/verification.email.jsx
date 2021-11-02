@@ -25,12 +25,22 @@ const VerificationEmail = () => {
             email: loginForm.email
         }
         axios.post(config.baseUrl+"/password/forgot", {...user})
-        .then(response=>{
-            
-            history.push('/verification-token');
+        .then(res=>{
             setLoading(false)
+            if (res.data.message === 'L\'utilisateur n\'existe pas'){
+                notifyFailed("Email incorrect ou n'existe pas")
+            }else {
+                history.push('/verification-token');
+            }
         }).catch(error=>{
-            notifyFailed("Email incorrect")
+            const code = error.response.data.message
+            if (code.startsWith('SQLSTATE[HY000] [2002]')){
+                notifyFailed("Vérifiez votre connexion internet")
+            }else if (code.startsWith('Connection could not be established with host mail')){
+                notifyFailed('Vérifiez votre connexion internet')
+            }else if (code.startsWith('Connection could not be established with host mail.eb-mobile.com')){
+                notifyFailed("Email incorrect ou n'existe pas")
+            }
             setLoading(false)
         })
     }
@@ -89,7 +99,6 @@ const VerificationEmail = () => {
                     disabled={loading}
                     size="lg" >Code de Vérification
                 </Button>
-
             </form>
         </div>
     )

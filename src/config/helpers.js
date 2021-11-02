@@ -7,7 +7,6 @@ export const setToken = (token)=>{
 }
 
 export const getToken = ()=>{
-    console.log(window.token,window.localStorage.getItem("token"))
     return (window.token?window.token:window.localStorage.getItem('token'));
 }
 
@@ -40,7 +39,11 @@ export const confirmationPass = (password, confirm)=>{
 }
 
 export const verifiedPhone = (phone) =>{
-    if (phone.length !== 9){
+    const regex = /^\+?\d{3} ?\d{3} ?\d{3} ?\d{3}$/gm
+    //const regex = /^(\+?)([0-3] ?){9,20}$/
+    const validation = regex.test(phone)
+    return validation
+    /*if (phone.length !== 9){
         return 'Doit contenir 9 chiffres'
     }
     phone = parseInt(phone);
@@ -49,6 +52,8 @@ export const verifiedPhone = (phone) =>{
     }else {
         return "Doit etre un numero"
     }
+
+     */
 
 }
 

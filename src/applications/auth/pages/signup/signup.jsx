@@ -23,6 +23,7 @@ const SignUp = () => {
     const [role, setRole] = useState("USER");
     const [formStep, setFormStep] = useState(1)
     const [loading,setLoading]= useState(false);
+    const [disabled,setDisabled]= useState(false);
     const [emailError, setEmail] = useState("");
     const [passwordError, setErrorPassword] = useState("");
     const [confirmationError, setConfirmation] = useState("");
@@ -87,39 +88,48 @@ const SignUp = () => {
         }
 
         console.log(user)
-
         setLoading(true)
         axios.post(config.baseUrl+"/register", user)
             .then(res =>{
-                console.log(res.data.message)
                 history.push('/verification/'+user.roles.toLowerCase())
                 setLoading(false)
             })
             .catch(err=>{
-                console.log(err)
-                if (err.response.data){
-                    const error = err.response.data.errors;
-                    if (error.username){
-                        notifyFailed(error.username[0])
-                    }else if(error.firstname){
-                        notifyFailed(error.firstname[0])
-                    }else if(error.lastname){
-                        notifyFailed(error.lastname[0])
-                    }else if(error.email){
-                        notifyFailed(error.email[0])
-                    }else if(error.password){
-                        notifyFailed(error.password[0])
-                    }else if(error.phone){
-                        notifyFailed(error.phone[0])
-                    }else if(error.address){
-                        notifyFailed(error.address[0])
-                    }else if(error.role){
-                        notifyFailed(error.role[0])
-                    }
-                }else if (!err.response.data || !err){
-                    notifyFailed("Verifiez votre connexion internet");
-                }
                 setLoading(false)
+                if (err.response){
+                    if (err.response.data.message){
+                        const code = err.response.data.message
+                        if(code.startsWith('Expected response code 220 but got code')){
+                            notifyFailed('Votre addresse mail est incorrecte')
+                        }else if (code.startsWith('Connection could not be established with host mail')){
+                            notifyFailed('Vérifiez votre connexion internet')
+                        }
+                    }
+                    else if (err.response.data.errors){
+                        const error = err.response.data.errors;
+                        if (error.username){
+                            notifyFailed("Nom d'utilisateur déjà utilisé")
+                        }else if(error.firstname){
+                            notifyFailed(error.firstname[0])
+                        }else if(error.lastname){
+                            notifyFailed(error.lastname[0])
+                        }else if(error.email){
+                            notifyFailed("Address mail déjà utilisée")
+                        }else if(error.password){
+                            notifyFailed(error.password[0])
+                        }else if(error.phone){
+                            notifyFailed("Numéro de téléphone déjà utilisé")
+                        }else if(error.address){
+                            notifyFailed(error.address[0])
+                        }else if(error.role){
+                            notifyFailed(error.role[0])
+                        }
+                    }else if (!err.response.data || !err){
+                        notifyFailed("Verifiez votre connexion internet");
+                    }
+                }else {
+                    notifyFailed('Remplissez tous les champs')
+                }
             })
     }
 
@@ -152,28 +162,42 @@ const SignUp = () => {
         if (e.target.name === 'email'){
             const email = e.target.value;
             if (!verifiedEmail(email)){
+                setDisabled(true)
                 setEmail("Doit etre un email valide")
             }else {
                 setEmail("")
+                setDisabled(false)
             }
         }else if (e.target.name === 'password') {
             const password = e.target.value;
             if (!verifiedPassword(password)) {
+                setDisabled(true)
                 setErrorPassword("Doit contenir au moins 6 caractéres")
             }else {
+                setDisabled(false)
                 setErrorPassword("")
             }
         }else if (e.target.name === 'confirmation') {
             const confirmation = e.target.value;
             const password = signupForm1.password;
             if (!confirmationPass(password, confirmation)) {
+                setDisabled(true)
                 setConfirmation("Doit correspondre au mot de passe");
             }else {
+                setDisabled(false)
                 setConfirmation("")
             }
         }else if (e.target.name === 'phone' || e.target.name === 'institution_phone'){
             const phone = e.target.value;
-            setPhone(verifiedPhone(phone))
+            console.log(verifiedPhone(phone))
+            if (verifiedPhone(phone)){
+                setDisabled(false)
+                setPhone("")
+            }else {
+                setDisabled(true)
+                setPhone("Vérifier votre numero de téléphone")
+            }
+
         }
     }
 
@@ -213,12 +237,18 @@ const SignUp = () => {
 
                         <div className="circles">
                             <span className="selected"></span>
-                            <span></span>
+                            <span onClick={(e)=>{
+                                e.preventDefault();
+                                if (!disabled){
+                                    setFormStep(2);
+                                }
+                            }}></span>
                         </div>
 
                         <Button
                             variant="primary"
                             type="submit"
+                            disabled={disabled}
                             size="lg">Suivant
                         </Button>
 
@@ -264,7 +294,12 @@ const SignUp = () => {
                                 : ""}
                             <ToastContainer/>
                             <div className="circles">
-                                <span></span>
+                                <span onClick={(e)=>{
+                                    e.preventDefault();
+                                    if (!disabled){
+                                        setFormStep(1);
+                                    }
+                                }}></span>
                                 <span className="selected"></span>
                             </div>
                             <Button
@@ -272,9 +307,13 @@ const SignUp = () => {
                                 type="submit"
                                 onSubmit
                                 loading={loading}
-                                disabled={loading}
+                                disabled={disabled}
                                 size="lg">{role.role === "INSTITUTION" ? "Information sur l'Institution": "Completez l'Inscription"}
                             </Button>
+
+                            <div className="auth-container__line-element">
+                                <p className="auth-text">Vous avez déjà un compte ? <Link to="/login">Log In</Link></p>
+                            </div>
                         </form>
                     </div>
                 ) :(
@@ -306,8 +345,18 @@ const SignUp = () => {
                             <ToastContainer/>
 
                             <div className="circles">
-                                <span></span>
-                                {role.role==='INSTITUTION' ? <span></span> : ""}
+                                <span onClick={(e)=>{
+                                    e.preventDefault();
+                                    if (!disabled){
+                                        setFormStep(1);
+                                    }
+                                }}></span>
+                                {role.role==='INSTITUTION' ? <span onClick={(e)=>{
+                                    e.preventDefault();
+                                    if (!disabled){
+                                        setFormStep(2);
+                                    }
+                                }}></span> : ""}
                                 <span className="selected"></span>
                             </div>
                             <Button
@@ -315,9 +364,13 @@ const SignUp = () => {
                                 type="submit"
                                 onSubmit
                                 loading={loading}
-                                disabled={loading}
+                                disabled={disabled}
                                 size="lg">{"Completez l'Inscription"}
                             </Button>
+
+                            <div className="auth-container__line-element">
+                                <p className="auth-text">Vous avez déjà un compte ? <Link to="/login">Log In</Link></p>
+                            </div>
                         </form>
                     </div>
                 )

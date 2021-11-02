@@ -33,6 +33,8 @@ const Layout = ({children}) => {
         event.preventDefault();
         setDrawerOpen(false);
     }
+
+    console.log(user)
     const logout=()=>{
         setLogout(false)
         setLoader(true)
@@ -69,7 +71,6 @@ const Layout = ({children}) => {
         })
     }
 
-    console.log(user);
 
     const MENU_ITEMS = ["Home", "Chat", "Search", "Document", "UserAccount"];
 

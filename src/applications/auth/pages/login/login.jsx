@@ -25,10 +25,12 @@ const Login = () => {
     const [emailError, setEmail] = useState("");
     const [passwordError, setErrorPassword] = useState("");
     const [loading,setLoading]= useState(false);
+    const [disabled,setDisabled]= useState(false);
 
     const onSubmit = (e) => {
         e.preventDefault();
         setLoading(true)
+        setDisabled(true)
         const user = {
             email: loginForm.email,
             password: loginForm.password,
@@ -36,11 +38,19 @@ const Login = () => {
         }
 
         console.log(user)
+
         axios.post(config.baseUrl+"/login", {...user})
         .then(response=>{
+            setLoading(false)
+            setDisabled(false)
+            const code = response.data.message
+            console.log(code)
             if(response.data.message === "Votre compte est en cours de vérification"){
                 notifyInfo("Votre compte est en cours de vérification")
             }else if (response.data.message === "Verifiez votre compte"){
+                history.push('/verification/'+user.roles.toLowerCase())
+            }else if (code === "Votre compte n'est pas vérifié"){
+                notify("Votre addresse mail n'est pas vérifié")
                 history.push('/verification/'+user.roles.toLowerCase())
             }
             else {
@@ -53,15 +63,15 @@ const Login = () => {
                 getCart()
                 history.push('/home');
             }
-            setLoading(false)
         }).catch(error=>{
-            console.log(error.message)
+            setLoading(false)
+            setDisabled(false)
+            console.log(error)
             if (error.message){
                 notify("Email, Mot de passe ou Role Incorrect")
             }else if (!error.message){
                 notify("Erreur de connexion")
             }
-            setLoading(false)
         })
     }
 
@@ -74,8 +84,10 @@ const Login = () => {
                     type: 'USER_INFO',
                     payload: res.data.message
                 })
+                console.log(res.data.message)
             })
             .catch(err=>{
+                console.log(err)
             })
     }
 
@@ -118,15 +130,19 @@ const Login = () => {
         if (e.target.name === 'email'){
             const email = e.target.value;
             if (!verifiedEmail(email)){
+                setDisabled(true)
                 setEmail("Doit etre un email valide")
             }else if (verifiedEmail(email)){
+                setDisabled(false)
                 setEmail("")
             }
         }else if (e.target.name === 'password') {
             const password = e.target.value;
             if (!verifiedPassword(password)) {
+                setDisabled(true)
                 setErrorPassword("Doit contenir au moins 6 caractéres")
             }else if (verifiedPassword(password)){
+                setDisabled(false)
                 setErrorPassword("")
             }
         }
@@ -158,8 +174,8 @@ const Login = () => {
                             autoComplete={"off"}
                             required
                             className={`auth-container__input ${input === 'password' ? 'password' : ''}`}
-                        />{<p className="errorMessage">{input === 'email' ? <div>{emailError}</div>: ""}</p>}
-                        {<p className="errorMessage">{input === 'password' ? <div>{passwordError}</div>: ""}</p>}
+                        />{<p className="errorMessage">{input === 'email' ? <div style={{color: '#e80011'}}>{emailError}</div>: ""}</p>}
+                        {<p className="errorMessage">{input === 'password' ? <div style={{color: '#e80011'}}>{passwordError}</div>: ""}</p>}
                         {input === 'password' ? showPassword ? <Uneye onClick={() => setPassword(!showPassword)} /> : <Eye onClick={() => setPassword(!showPassword)} /> : ''}
                     </div>
                 ))}
@@ -180,7 +196,7 @@ const Login = () => {
                     variant="primary"
                     type="submit"
                     loading={loading}
-                    disabled={loading}
+                    disabled={disabled}
                     size="lg" >Se Connecter
                 </Button>
 

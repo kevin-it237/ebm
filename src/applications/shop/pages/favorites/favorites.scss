@@ -4,18 +4,20 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  .search {
+  .search-favorites {
     padding: 20px;
-    height: 110px;
+    height: 90px;
     display: flex;
-    flex-direction: column;
-    background-image: url("../../../../assets/images/search-bg.svg");
-    background-position: center;
-    justify-content: center;
+    flex-direction: row;
+    background-color: #6B0C72;
+    align-items: center;
+    >.left-back{
+      cursor: pointer;
+    }
     >h2 {
       color: $white;
       font-size: 1.6rem;
-      margin-bottom: 20px;
+      margin-left: 5px;
     }
     input {
       border-radius: 8px !important;

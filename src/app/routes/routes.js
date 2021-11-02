@@ -45,7 +45,6 @@ const Routes = () => {
         axios.defaults.headers['Authorization'] = window.token;
         axios.defaults.headers['Content-Type'] = 'application/json';
     }else {
-         console.log('token is '+window.token);
        history.push("/login");
        // return;
     }

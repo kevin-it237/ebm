@@ -14,6 +14,7 @@ const VerificationToken = () => {
 
     const [token, setToken] = useState("");
     const [loading,setLoading]= useState(false);
+    const [messageError,setMessageError]= useState(null);
 
 
     const onSubmit = (e) => {
@@ -21,20 +22,22 @@ const VerificationToken = () => {
         setLoading(true)
         axios.post(config.baseUrl+"/password/verification", {token: token})
             .then(res =>{
-                history.push('/reset-password/'+token)
                 setLoading(false)
+                if (res.data.message === "Code incorrect"){
+                    setMessageError("Code de verification incorrect")
+                }else {
+                    history.push('/reset-password/'+token)
+                }
             })
             .catch(err=>{
-                console.log(err.response.data)
-                if (err.response.data){
-                    const error = err.response.data.errors;
-                    if (error){
-                        notifyFailed("Code Incorrect")
-                    }
-                }else if (!err.response.data || !err){
-                    notifyFailed("Verifiez votre connexion internet");
-                }
                 setLoading(false)
+                console.log(err.response.data)
+                const code = err.response.data.message
+                if (code.startsWith('SQLSTATE[HY000] [2002]')){
+                    setMessageError("Vérifiez votre connexion internet")
+                }else if(code.errorInfo[0] === "HY000"){
+                    setMessageError("Vérifiez votre connexion internet")
+                }
             })
     }
 
@@ -69,7 +72,7 @@ const VerificationToken = () => {
                             className="auth-container__input"
                         />
                     </div>
-                    <ToastContainer/>
+                    <div className="errorMessage">{messageError}</div>
                     <Button
                         variant="primary"
                         type="submit"
@@ -78,6 +81,7 @@ const VerificationToken = () => {
                         disabled={loading}
                         size="lg">Confirmation
                     </Button>
+                    <div className="code">Un code de verification vous a été envoyé par mail</div>
                 </form>
             </div>
         </div>

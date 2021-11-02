@@ -11,6 +11,5 @@ export default function userPathReducer(state = initialState, action){
             payload: action.payload
         }
     }
-    console.log(nextState)
     return nextState||state;
 }

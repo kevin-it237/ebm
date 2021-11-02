@@ -15,6 +15,7 @@ import img from "../../../../assets/images/mansory.png";
 
 
 const Favorites = () => {
+    const history = useHistory()
     const like = useSelector(state => state.product.payload)
     const addCart = useSelector(state => state.cart.loader)
     const addCartMessage = useSelector((state) => state.cart.message)
@@ -68,12 +69,9 @@ const Favorites = () => {
     return (
         <div id="search" className="product-search">
             <ToastContainer/>
-            <div className="search">
+            <div className="search-favorites">
+                <img className="left-back" onClick={() => history.goBack()} src={require('../../../../../src/assets/icons/left_arrow_30px.png').default}/>
                 <h2>Vos Favoris</h2>
-                {/*<InputSearch placeholder="Recherchez un produit..." onFocus name="name" onChange={(event) => {
-                    setName(event.target.value);
-                    searchFilter(event.target.value)
-                }}/>*/}
             </div>
 
             {<div className="section-title">

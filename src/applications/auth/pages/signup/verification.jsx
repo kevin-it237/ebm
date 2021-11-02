@@ -98,6 +98,7 @@ const Verification = () => {
                         </Button>
                 </form>
             </div>
+            <div className="code">Un code de verification vous a été envoyé par mail</div>
         </div>
     )
 }
