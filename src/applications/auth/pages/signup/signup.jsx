@@ -11,9 +11,12 @@ import ebmLogoBig from "../../../../assets/images/ebm_big.png"
 import './signup.scss'
 import config from "../../../../config/index";
 import {confirmationPass, verifiedEmail, verifiedPassword, verifiedPhone} from "../../../../config/helpers";
+import {useDispatch} from "react-redux";
+import politique from '../../assets/politique/Politique de Confidentialité EBM.pdf'
 
 const SignUp = () => {
     const history = useHistory()
+    const dispatch = useDispatch()
 
     const [showPassword, setPassword] = useState(false);
     const [signupForm1, setForm1] = useState({username: "",firstname: "",lastname: "", email: "", password: "", confirmation: ""});
@@ -91,6 +94,10 @@ const SignUp = () => {
         setLoading(true)
         axios.post(config.baseUrl+"/register", user)
             .then(res =>{
+                dispatch({
+                    type: 'USER_EMAIL',
+                    payload: user.email
+                })
                 history.push('/verification/'+user.roles.toLowerCase())
                 setLoading(false)
             })
@@ -195,7 +202,7 @@ const SignUp = () => {
                 setPhone("")
             }else {
                 setDisabled(true)
-                setPhone("Vérifier votre numero de téléphone")
+                setPhone("Votre Numéro de Téléphone est incorrect")
             }
 
         }
@@ -253,7 +260,11 @@ const SignUp = () => {
                         </Button>
 
                         <div className="auth-container__line-element">
-                            <p className="auth-text">Vous avez déjà un compte ? <Link to="/login">Log In</Link></p>
+                            <p className="auth-text">Vous avez déjà un compte ? <Link to="/login">Se Connecter</Link></p>
+                        </div>
+                        <br/>
+                        <div className="auth-container__line-element">
+                            <p className="auth-text-1">En appuyant sur S’inscrire, vous acceptez notre<br/> <a href={politique} target="_blank" rel="noopener noreferrer">Politique de confidentialité</a>. Vous recevrez peut-être<br/> des notifications par mail de notre part.</p>
                         </div>
                     </form>
                 ): formStep === 2 ?(
@@ -278,7 +289,7 @@ const SignUp = () => {
                             <div className="registation-final__step">
                                 <select name="roleSet" onChange={onChangeRole} required style={{color: 'gray', opacity: '0.8'}}>
                                     <option value="" disabled selected>Choisir un Role</option>
-                                    <option value="USER">Normal</option>
+                                    <option value="USER">Client</option>
                                     <option value="INSTITUTION">Institution</option>
                                     <option value="EXPERT">Expert</option>
                                 </select>
@@ -313,6 +324,10 @@ const SignUp = () => {
 
                             <div className="auth-container__line-element">
                                 <p className="auth-text">Vous avez déjà un compte ? <Link to="/login">Log In</Link></p>
+                            </div>
+                            <br/>
+                            <div className="auth-container__line-element">
+                                <p className="auth-text-1">En appuyant sur S’inscrire, vous acceptez notre<br/> <a href={politique} target="_blank" rel="noopener noreferrer">Politique de confidentialité</a>. Vous recevrez peut-être<br/> des notifications par mail de notre part.</p>
                             </div>
                         </form>
                     </div>
@@ -369,7 +384,12 @@ const SignUp = () => {
                             </Button>
 
                             <div className="auth-container__line-element">
-                                <p className="auth-text">Vous avez déjà un compte ? <Link to="/login">Log In</Link></p>
+                                <p className="auth-text">Vous avez déjà un compte ? <Link to="/login">Log In</Link> </p>
+                            </div>
+
+                            <br/>
+                            <div className="auth-container__line-element">
+                                <p className="auth-text-1">En appuyant sur S’inscrire, vous acceptez notre<br/> <a href={politique} target="_blank" rel="noopener noreferrer">Politique de confidentialité</a>. Vous recevrez peut-être<br/> des notifications par mail de notre part.</p>
                             </div>
                         </form>
                     </div>

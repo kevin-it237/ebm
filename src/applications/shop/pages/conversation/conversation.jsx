@@ -3,28 +3,25 @@ import { useHistory } from 'react-router-dom';
 import { ReactComponent as Back } from "../../../../assets/icons/back_arrow.svg";
 import { ReactComponent as Camera } from "../../../../assets/icons/camera.svg";
 import { ReactComponent as Send } from "../../../../assets/icons/send.svg";
-import SwipeToDelete from 'react-swipe-to-delete-ios'
 import img from "../../../../assets/images/pic.jpg";
-import addMessage from "../../../../assets/icons/add_message_25px.png"
 import './conversation.scss';
 import axios from "axios";
 import config from "../../../../config/index";
-import dateFormat from 'dateformat';
 import chatLink from '../../../../config/chat.link'
 import productLink from "../../../../config/product.link";
 import {useDispatch, useSelector} from "react-redux";
 import LoaderIcon from "react-loader-icon";
+import {isMobile} from "../../../../config/helpers";
 
 const Chat = () => {
     const history = useHistory();
+    const messagesNew = useSelector(state=>state.message.payload);
     const dispatch = useDispatch()
     const user = useSelector(state=>state.user.payload)
 
-    console.log(user)
-
 
     const app_key ='e5f7daf67a4335b5a2ea';
-    const [messages, setMessages] = useState("");
+    const [messages, setMessages] = useState([]);
     const [send, setSend] = useState("");
     const [file, setFile] = useState("");
     const [image, setImage] = useState("");
@@ -36,11 +33,6 @@ const Chat = () => {
 
     useEffect(() => {
         getMessage();
-        /*dispatch({
-            type: 'ADD_TO_PATH',
-            payload: history.location.pathname
-        })
-        */
     }, [])
 
     const onChange = (event)=>{
@@ -83,66 +75,83 @@ const Chat = () => {
 
     }
 
+
     const getMessage=()=>{
+        setLoader(true)
+        setMessages([])
         setCharge(true)
         axios.get(config.baseUrl+'/chat/show')
         .then(response=>{
-            setMessages(response.data.message);
+            //setMessages(response.data.message);
+            dispatch({
+                type: 'ADD_TO_MESSAGE',
+                payload: response.data.message
+            })
             setCharge(false)
+            setLoader(false)
             setDisable(false)
         })
         .catch(error => {
             setCharge(false)
             setDisable(false)
+            setLoader(false)
         })
     }
 
-    console.log(send)
 
     const onClick = (event)=>{
         event.preventDefault();
-        if (send) {
-            setMessages("")
+        if (send !== " ") {
+            setMessages([])
             setLoader(true)
             axios.post(config.baseUrl + '/chat/register', {message: send})
                 .then(response => {
                     getMessage();
-                    setLoader(false)
                 })
                 .catch(error => {
                     setLoader(false)
                 })
             setSend("")
             setFile("")
-        }
-    
-    }   
-
-
-    console.log("loader") 
-    console.log(loader)
-    
-    const onKeyPress = (event)=>{
-        if (event.key === 'Enter' && send.length!==0) {
-            event.preventDefault();
-            setMessages("")
-            setLoader(true)
-            axios.post(config.baseUrl+'/chat/register', {message: send, attachment: file})
-            .then(response=>{
-                getMessage();
-                setLoader(false)
-            })
-            .catch(error => {
-                console.log(error)
-                setLoader(false)
-            })
+        }else {
             setSend("")
             setFile("")
+        }
+
+    
+    }
+
+    console.log(messagesNew)
+    console.log(loader)
+
+    const onKeyPress = (event)=>{
+        if (event.key === 'Enter' && send.length!==0) {
+            if (send !== " "){
+                event.preventDefault();
+                setMessages([])
+                setLoader(true)
+                axios.post(config.baseUrl+'/chat/register', {message: send, attachment: file})
+                    .then(response=>{
+                        dispatch({
+                            type: 'ADD_TO_MESSAGE',
+                            payload: []
+                        })
+                        getMessage();
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        setLoader(false)
+                    })
+                setSend("")
+                setFile("")
+            }else{
+                setSend("")
+                setFile("")
+            }
         }
     
     }
 
-    console.log(messages)
     return (
        <div id="chat">
             <div className="header">
@@ -150,19 +159,132 @@ const Chat = () => {
                 <p>Conversation</p>
             </div>
 
-           {messages && !loader &&<div className="conversation-content">
-               {Object.keys(messages).map((message, index) => (
+           {/*isMobile()&&
+               <div>{messagesNew !== 0 &&<div className="conversation-content">
+                   {Object.keys(messagesNew).map((message, index) => (
+                       <div key={index}
+                            className={messagesNew[message].message ? ("message " + (messagesNew[message].role_id !== 1 ? "message--sent" : "message--received"))
+                                : ("attachment " + (messagesNew[message].role_id !== 1 ? "attachment--sent" : "attachment--received"))}>
+                           {messagesNew[message].message && <p>{messagesNew[message].message}</p>}
+                           {messagesNew[message].attachment && <img
+                               src={messagesNew[message].role_id !== 1 ? chatLink.link + messagesNew[message].attachment : productLink.link + messagesNew[message].attachment}/>}
+                           <span>{messagesNew[message].created_at}</span>
+                       </div>
+                   ))}
+               </div>}
+           </div>*/}
+
+           {/*isMobile()&&
+           <div>{messagesNew.length !== 0 && !loader && <div className="conversation-content">
+               {Object.keys(messagesNew).map((message, index) => (
                    <div key={index}
-                        className={messages[message].message ? ("message " + (messages[message].role_id !== 1 ? "message--sent" : "message--received"))
-                            : ("attachment " + (messages[message].role_id !== 1 ? "attachment--sent" : "attachment--received"))}>
-                       {messages[message].message && <p>{messages[message].message}</p>}
-                       {messages[message].attachment && <img
-                           src={messages[message].role_id !== 1 ? chatLink.link + messages[message].attachment : productLink.link + messages[message].attachment}/>}
-                       <span>{messages[message].created_at}</span>
+                        className={messagesNew[message].message ? ("message " + (messagesNew[message].role_id !== 1 ? "message--sent" : "message--received"))
+                            : ("attachment " + (messagesNew[message].role_id !== 1 ? "attachment--sent" : "attachment--received"))}>
+                       {messagesNew[message].message && <p>{messagesNew[message].message}</p>}
+                       {messagesNew[message].attachment && <img
+                           src={messagesNew[message].role_id !== 1 ? chatLink.link + messagesNew[message].attachment : productLink.link + messagesNew[message].attachment}/>}
+                       <span>{messagesNew[message].created_at}</span>
                    </div>
                ))}
            </div>}
-           {!charge&&<div className="keyboard-wrapper">
+           </div>
+           */}
+           {/*!isMobile()&&
+               <div>{messages.length !== 0 && !loader && <div className="conversation-content-web">
+                   {Object.keys(messages).map((message, index) => (
+                       <div key={index}
+                            className={messages[message].message ? ("message " + (messages[message].role_id !== 1 ? "message--sent" : "message--received"))
+                                : ("attachment " + (messages[message].role_id !== 1 ? "attachment--sent" : "attachment--received"))}>
+                           {messages[message].message && <p>{messages[message].message}</p>}
+                           {messages[message].attachment && <img
+                               src={messages[message].role_id !== 1 ? chatLink.link + messages[message].attachment : productLink.link + messages[message].attachment}/>}
+                           <span>{messages[message].created_at}</span>
+                       </div>
+                   ))}
+               </div>}
+           </div>
+           */}
+           {/*!isMobile()&&
+               <div>{messagesNew !== 0 && <div className="conversation-content-web">
+                   {Object.keys(messagesNew).map((message, index) => (
+                       <div key={index}
+                            className={messagesNew[message].message ? ("message " + (messagesNew[message].role_id !== 1 ? "message--sent" : "message--received"))
+                                : ("attachment " + (messagesNew[message].role_id !== 1 ? "attachment--sent" : "attachment--received"))}>
+                           {messagesNew[message].message && <p>{messagesNew[message].message}</p>}
+                           {messagesNew[message].attachment && <img
+                               src={messagesNew[message].role_id !== 1 ? chatLink.link + messagesNew[message].attachment : productLink.link + messagesNew[message].attachment}/>}
+                           <span>{messagesNew[message].created_at}</span>
+                       </div>
+                   ))}
+               </div>}
+           </div>
+           */}
+           {isMobile()&& <div>{messagesNew !== 0 && <div className={messagesNew!==0 ? "conversation-content-mobile" : ""}>
+               {Object.keys(messagesNew).map((message, index) => (
+                   <div key={index}>
+                       {messagesNew[message].role_id!==1&&<div className="send">
+                           {messagesNew[message].message &&
+                               <div className="message--sent">
+                                   <p>{messagesNew[message].message}</p>
+                               </div>}
+                           {messagesNew[message].attachment &&
+                               <div className="attachment--sent">
+                                   <img
+                                       src={chatLink.link + messagesNew[message].attachment}/>
+                               </div>}
+                           <span style={{marginTop: '5px'}}>{messagesNew[message].created_at}</span>
+                       </div>}
+
+                       {messagesNew[message].role_id===1&&<div className="received">
+                           {messagesNew[message].message &&
+                               <div className="message--received">
+                                   <p>{messagesNew[message].message}</p>
+                               </div>}
+                           {messagesNew[message].attachment &&
+                               <div className="attachment--received">
+                                   <img src={productLink.link + messagesNew[message].attachment}/>/>
+                               </div>}
+                           <span style={{marginTop: '5px'}}>{messagesNew[message].created_at}</span>
+                       </div>}
+                   </div>
+               ))}
+           </div>}
+           </div>
+           }
+           {!isMobile()&&
+               <div>{messagesNew !== 0 && <div className={messagesNew!==0 ? "conversation-content-web-new" : ""}>
+                   {Object.keys(messagesNew).map((message, index) => (
+                       <div key={index}>
+                           {messagesNew[message].role_id!==1&&<div className="send">
+                               {messagesNew[message].message &&
+                                    <div className="message--sent">
+                                        <p>{messagesNew[message].message}</p>
+                                    </div>}
+                               {messagesNew[message].attachment &&
+                                   <div className="attachment--sent">
+                                       <img
+                                           src={chatLink.link + messagesNew[message].attachment}/>
+                                   </div>}
+                               <span style={{marginTop: '5px'}}>{messagesNew[message].created_at}</span>
+                           </div>}
+                           {messagesNew[message].role_id===1&&<div className="received">
+                               {messagesNew[message].message &&
+                               <div className="message--received">
+                                   <p>{messagesNew[message].message}</p>
+                               </div>}
+                               {messagesNew[message].attachment &&
+                               <div className="attachment--received">
+                                   <img src={productLink.link + messagesNew[message].attachment}/>/>
+                               </div>}
+                               <span style={{marginTop: '5px'}}>{messagesNew[message].created_at}</span>
+                           </div>}
+                       </div>
+                   ))}
+               </div>}
+           </div>
+           }
+
+           {isMobile()&&<div className="keyboard-wrapper">
                <div className="image-picker">
                    <label htmlFor="file"><Camera/></label>
                    {<input className="inputFile" id="file" type="file" src={image} onChange={onChangeFile}
@@ -170,19 +292,38 @@ const Chat = () => {
                </div>
                <input className="input-text" type="text" placeholder="Entrez votre message ..." name="send"
                       onChange={onChange} value={send} onKeyPress={onKeyPress}/>
-               {disable && !loader&& <Send onClick={onClick}/>}
+               {disable && !loader && <Send onClick={onClick}/>}
                {loader &&
                <svg width="20" height="20" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                    <circle cx="12.5" cy="12.5" r="11" stroke="#6B0C72" strokeWidth="3" strokeLinecap="round"
                            strokeLinejoin="round"/>
                </svg>}
            </div>}
-           {
-               messages.length===0&&charge&&
+           {!isMobile()&&<div className="keyboard-wrapper-web">
+               <div className="image-picker">
+                   <label htmlFor="file"><Camera/></label>
+                   {<input className="inputFile" id="file" type="file" src={image} onChange={onChangeFile}
+                           accept="image/*"/>}
+               </div>
+               <input className="input-text" type="text" placeholder="Entrez votre message ..." name="send"
+                      onChange={onChange} value={send} onKeyPress={onKeyPress}/>
+               {disable && !loader && <Send onClick={onClick}/>}
+               {loader &&
+               <svg width="20" height="20" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                   <circle cx="12.5" cy="12.5" r="11" stroke="#6B0C72" strokeWidth="3" strokeLinecap="round"
+                           strokeLinejoin="round"/>
+               </svg>}
+           </div>}
+           {!isMobile()&&messagesNew ===0&&loader&&<div style={{position: 'absolute', top: '40%', left: '55%'}}>{
                <div>
                    <LoaderIcon type="cylon" color="#6B0C72"/>
                </div>
-           }
+           }</div>}
+           {isMobile()&&messagesNew ===0&&loader&&<div>{
+               <div>
+                   <LoaderIcon type="cylon" color="#6B0C72"/>
+               </div>
+           }</div>}
        </div>
     )
 }

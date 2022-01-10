@@ -61,6 +61,10 @@ const ProductItem = (props) => {
                                 loader: false
                             }
                         );
+                        dispatch({
+                            type: 'ALL_FAVORITE_PRODUCT',
+                            favorite : response.data.message
+                        })
                     }).catch(err => {
                     notify(err)
                 })
@@ -105,10 +109,6 @@ const ProductItem = (props) => {
             })
             .catch((error)=>{
                 notify(error)
-                /*dispatch({
-                    type: 'ADD_TO_CART',
-                    loader: true
-                });*/
             })
     }
 

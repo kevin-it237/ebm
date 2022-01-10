@@ -40,13 +40,20 @@ const Routes = () => {
     if(getToken()!==null && window.token){
         window.token=getToken();
     }
+
     if (window.token){
         console.log(window.token+" is the token");
         axios.defaults.headers['Authorization'] = window.token;
         axios.defaults.headers['Content-Type'] = 'application/json';
     }else {
-       history.push("/login");
-       // return;
+        history.push("/conversation");
+        if (isMobile()){
+            history.push("/welcome");
+        }else {
+            history.push("/login");
+        }
+        
+        // return;
     }
     return (
             <Switch>
@@ -60,32 +67,30 @@ const Routes = () => {
                 {/* Normal routes here */}
                 <NormalRoute exact>
                     <Route exact={true} component={WelCome} path={'/welcome'} />
+                    
                     <Route exact={true} component={AuthChoice} path={'/auth/choice'} />
                     <Route exact={true} component={Login} path={'/login'} />
                     <Route exact={true} component={SignUp} path={'/signup'} />
                     <Route exact={true} component={Verification} path={'/verification'} />
-                    <Route component={Verification} path={'/verification/:slug'} />
-                    <Route component={Questions} path={'/questions/:slug'} />
-                    <Route component={ResetPassword} path={'/reset-password/:slug'} />
-                    <Route component={VerificationEmail} path={'/verification-email'} />
-                    <Route component={VerificationToken} path={'/verification-token'} />
+                    <Route exact={true} component={Verification} path={'/verification/:slug'} />
+                    <Route exact={true} component={Questions} path={'/questions/:slug'} />
+                    <Route exact={true} component={ResetPassword} path={'/reset-password/:slug'} />
+                    <Route exact={true} component={VerificationEmail} path={'/verification-email'} />
+                    <Route exact={true} component={VerificationToken} path={'/verification-token'} />
 
                     {/*when mobile, take this first*/}
                     {!isMobile()&& <Layout>
-                        <Route exact={true} component={Home} path={'/home'} />
+                        {<Route exact={true} component={Home} path={'/home'}/>}
                         <Route exact={true} component={MyProfile} path={'/profile'} />
                         <Route exact={true} component={ProductSearch} path={'/products'} />
                         <Route exact={true} component={Conversation} path={'/conversation'} />
                         <Route exact={true} component={AdvancedSearch} path={'/advanced-search'} />
                         <Route exact={true} component={Cart} path={'/cart'} />
                         {<Route exact={true} component={Search} path={'/search'}/>}
-                        {/*<Route exact={true} component={ProductSearch} path={'/products'}/>*/}
                         <Route exact={true} component={Institute} path={'/institute'} />
-                        {/*<Route exact={true} component={MyProfile} path={'/profile'}/>*/}
-                        <Route path={'/institute/:slug'} component={Institute} />
+                        <Route exact={true} path={'/institute/:slug'} component={Institute} />
                         <Route exact={true} component={Expert} path={'/expert'} />
-                        <Route path={'/expert/:slug'} component={Expert} />
-                        {<Route exact={true} component={Conversation} path={'/conversation'}/>}
+                        <Route exact={true} path={'/expert/:slug'} component={Expert} />
                         <Route exact={true} component={RateExpert} path={'/rate-expert'} />
                         <Route exact={true} component={Favorites} path={'/favorites'}/>
                         <Route exact={true} component={OrderProduct} path={'/order/product/:slug'}/>
@@ -94,26 +99,23 @@ const Routes = () => {
                     {isMobile()&&<Fragment>
                         <Route exact={true} component={Cart} path={'/cart'}/>
                         {<Route exact={true} component={Search} path={'/search'}/>}
-                        {/*<Route exact={true} component={ProductSearch} path={'/products'}/>*/}
                         <Route exact={true} component={Institute} path={'/institute'}/>
-                        {/*<Route exact={true} component={MyProfile} path={'/profile'}/>*/}
-                        <Route path={'/institute/:slug'} component={Institute}/>
+                        <Route exact={true} path={'/institute/:slug'} component={Institute}/>
                         <Route exact={true} component={Expert} path={'/expert'}/>
-                        <Route path={'/expert/:slug'} component={Expert}/>
-                        {<Route exact={true} component={Conversation} path={'/conversation'}/>}
+                        <Route exact={true} path={'/expert/:slug'} component={Expert}/>
                         <Route exact={true} component={RateExpert} path={'/rate-expert'}/>
                         <Route exact={true} component={Favorites} path={'/favorites'}/>
                         <Route exact={true} component={OrderProduct} path={'/order/product/:slug'}/>
                     </Fragment>}
 
 
-                    <Layout>
+                    {<Layout>
                         <Route exact={true} component={Home} path={'/home'} />
                         <Route exact={true} component={MyProfile} path={'/profile'} />
                         <Route exact={true} component={ProductSearch} path={'/products'} />
                         <Route exact={true} component={Conversation} path={'/conversation'} />
                         <Route exact={true} component={AdvancedSearch} path={'/advanced-search'} />
-                    </Layout>
+                    </Layout>}
 
                 </NormalRoute>
 

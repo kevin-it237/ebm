@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useHistory} from 'react-router-dom';
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
@@ -16,7 +16,10 @@ import img from "../../../../assets/images/mansory.png";
 
 const Favorites = () => {
     const history = useHistory()
+    const dispatch = useDispatch()
     const like = useSelector(state => state.product.payload)
+    const fav = useSelector(state => state.cart.favorite)
+    console.log(fav)
     const addCart = useSelector(state => state.cart.loader)
     const addCartMessage = useSelector((state) => state.cart.message)
     useEffect(() => {
@@ -28,7 +31,6 @@ const Favorites = () => {
     }, [like])
 
     const [favorites, setFavorites] = useState([]);
-    //const [addCart, setAddCart] = useState(false);
     const [loading, setLoading] = useState(false);
     const [allSearch, setAllSearch] = useState([]);
     const [sect, setSect] = useState(false);
@@ -39,6 +41,10 @@ const Favorites = () => {
         axios.get(config.baseUrl + '/user/favorites/product')
             .then(response => {
                 setFavorites(response.data.message);
+                dispatch({
+                    type: 'ALL_FAVORITE_PRODUCT',
+                    favorite : response.data.message
+                })
                 setLoading(false)
             }).catch(err => {
             notifyFailed(err)
@@ -46,6 +52,7 @@ const Favorites = () => {
         })
     }
 
+    console.log(favorites)
     const searchFilter = useCallback((name) => {
         if (name.length !== 0) {
             setLoading(true)
@@ -75,16 +82,16 @@ const Favorites = () => {
             </div>
 
             {<div className="section-title">
-                <h2>{favorites.length} {favorites.length === 0 ? "Aucun Favoris" : "Favoris"}</h2>
+                <h2>{fav.length} {fav.length === 0 ? "Aucun Favoris" : "Favoris"}</h2>
                 <span></span>
             </div>}
             {
-                !loading && favorites && !sect &&
+                fav.length !==0 && !sect &&
                 <div className="products-wrapper">
-                    {Object.keys(favorites).map((item, index) => (
+                    {Object.keys(fav).map((item, index) => (
                         <div key={index}>
-                            <ProductItem price={favorites[item]['price']} discount={favorites[item]['discount']}
-                                         name={favorites[item]['name_fr']} id={favorites[item]['id']} image={favorites[item]['image']}/></div>
+                            <ProductItem price={fav[item]['price']} discount={fav[item]['discount']}
+                                         name={fav[item]['name_fr']} id={fav[item]['id']} image={fav[item]['image']}/></div>
                     ))}
                 </div>
             }
@@ -93,44 +100,19 @@ const Favorites = () => {
                     <LoaderIcon type="cylon" color="#6B0C72"/>
                 </Modal>
             }
-            {/*
-                !addCart&&addCartMessage&&<Modal>
-                    <center>{addCartMessage}</center>
-                </Modal>
-            */}
-            {/*
-                name && allSearch &&sect&&
-                <div className="products-wrapper">
-                    {Object.keys(allSearch).map((item,index)=>(
-                        <div key={index}>
-                            <ProductItem price={allSearch[item]['price']} discount={allSearch[item]['discount']}
-                                         name={allSearch[item]['name_fr']} id={allSearch[item]['id']}/></div>
-                    ))}
-                </div>
-            */}
             {
-                loading &&
+                loading && fav.length===0&&
                 <div className="spinner_load_search">
                     <LoaderIcon type="cylon" color="#6B0C72"/>
                 </div>
             }
             {
-                !loading && favorites.length === 0 &&
+                !loading && fav.length === 0 &&
                 <div>
                     <center>
                         <br/>
                         <img src={require("../../../../assets/images/telescope.png").default}/>
                         <p>Aucun Favoris</p>
-                    </center>
-                </div>
-            }
-            {
-                !loading && sect && allSearch.length === 0 && favorites.length !== 0 &&
-                <div>
-                    <center>
-                        <br/>
-                        <img src={require("../../../../assets/images/telescope.png").default}/>
-                        <p>Pas de favoris avec ce nom</p>
                     </center>
                 </div>
             }

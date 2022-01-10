@@ -28,7 +28,11 @@ import {isMobile} from "../../../../config/helpers";
 const Home = () => {
     const history = useHistory();
     const dispatch = useDispatch()
+    const drawer = useSelector(state=>state.drawer.payload)
     const user = useSelector((state) => state.user.payload)
+    const parent_serv = useSelector((state) => state.service.service)
+    const prods = useSelector((state) => state.service.product)
+    console.log(prods)
     const nbFavorites = useSelector((state) => state.product.payload)
     const nbCart = useSelector((state) => state.cart.payload)
     const addCart = useSelector((state) => state.cart.loader)
@@ -44,7 +48,7 @@ const Home = () => {
     const settings = {
         speed: 500,
         infinite: false,
-        slidesToShow: isMobile()?1.3:3,
+        slidesToShow: isMobile()?1.3:2.6,
         slidesToScroll: 1,
         initialSlide: 0,
     };
@@ -55,9 +59,15 @@ const Home = () => {
         },
     }))(Badge)
 
-    const openDrawer = () => {
-        if (window.setDrawerOpen) {
+    const openDrawer = (e) => {
+        e.preventDefault()
+        if(window.setDrawerOpen){
+            console.log('yujfddu')
             window.setDrawerOpen(true)
+            dispatch({
+                type: 'ADD_TO_REDUCER',
+                payload: true
+            })
         }
     }
 
@@ -77,6 +87,10 @@ const Home = () => {
             .then(response => {
                 setProduct(Object.values(response.data.message));
                 setChargeProduct(false)
+                dispatch({
+                    type: 'ADD_ALL_PRODUCT',
+                    product: response.data.message
+                })
             }).catch(err => {
             notifyFailed("Verifier votre connexion")
             setChargeProduct(false)
@@ -88,6 +102,10 @@ const Home = () => {
         axios.get(config.baseUrl + '/parent_service/index')
             .then(response => {
                 setParent_Service(Object.values(response.data.message));
+                dispatch({
+                    type: 'ADD_ALL_PARENT_SERVICE',
+                    service: response.data.message
+                })
                 setChargeService(false)
             }).catch(err => {
             notifyFailed("Verifier votre connexion")
@@ -108,12 +126,10 @@ const Home = () => {
         toast.error(err)
     }
 
-    console.log(products)
-
     return (
         <>
             <div id="home">
-                <div id="header">
+                <div id={isMobile() ? "header" : "header-web"}>
                     <img onClick={openDrawer} className="menu" src={Menu} alt="ok"/>
                     <div className="favorite-shop">
                         <IconButton>
@@ -122,7 +138,7 @@ const Home = () => {
                                     e.preventDefault();
                                     history.push('/favorites')
                                 }}>
-                                    <Heart style={{fill: '#6B0C72', width: 18, height: 18}}/>
+                                    <Heart style={{fill: '#6B0C72', width: 18, height: 16}}/>
                                 </div>
                             </StyleBadge>
                         </IconButton>
@@ -136,34 +152,38 @@ const Home = () => {
                         </IconButton>
                     </div>
                 </div>
-                <div className="search">
+                {!isMobile()&&<div className="search-web">
                     <InputSearch onClick={() => history.push('/search')}
                                  placeholder={user.roles === 'INSTITUTION' ? "Recherchez un expert..." : "Recherchez une institution..."}/>
-                </div>
+                </div>}
+                {isMobile()&&<div className="search">
+                    <InputSearch onClick={() => history.push('/search')}
+                                 placeholder={user.roles === 'INSTITUTION' ? "Recherchez un expert..." : "Recherchez une institution..."}/>
+                </div>}
 
                 <ToastContainer/>
                 <div className="section-title">
                     <h2>Catégories de Services</h2>
                     <span></span>
                 </div>
-                {parent_services.length !== 0 && !chargeService &&
+                {parent_serv.length !== 0 &&
                     <Slider {...settings} className="services-wrapper">
-                        {Object.keys(parent_services).map((parent_service, index) => (
+                        {Object.keys(parent_serv).map((parent_service, index) => (
                             <div key={index} onClick={() => {
                                 setShowDrawerService(true);
-                                setService(parent_services[parent_service]['name'])
+                                setService(parent_serv[parent_service]['name'])
                             }}>
-                                <Service name={parent_services[parent_service].name}/>
+                                <Service name={parent_serv[parent_service].name}/>
                             </div>
                         ))}
                     </Slider>
                 }
-                {parent_services.length === 0 && chargeService&&
+                {parent_serv.length === 0 && chargeService&&
                     <div className="spinner_loader">
                         <LoaderIcon type="cylon" color="#6B0C72"/>
                     </div>
                 }
-                {parent_services.length === 0 && !chargeService&&
+                {parent_serv.length === 0 && !chargeService&&
                     <center>
                         <br/>
                         <img src={require("../../../../assets/images/telescope.png").default}/>
@@ -175,26 +195,26 @@ const Home = () => {
                     <h2>Produits</h2>
                     <span></span>
                 </div>
-                {products.length !== 0 && !chargeProduct &&
+                {prods.length !== 0 &&
                     <div className="products-wrapper">
-                        {Object.keys(products).map((product, index) => (
+                        {Object.keys(prods).map((product, index) => (
                             <div key={index}>
-                                <ProductItem id={products[product]['id']}
-                                             name={products[product]['name_fr']}
-                                             price={products[product]['price']}
-                                             discount={products[product]['discount']}
-                                             description={products[product]['description']}
-                                             image={products[product]['image']}/>
+                                <ProductItem id={prods[product]['id']}
+                                             name={prods[product]['name_fr']}
+                                             price={prods[product]['price']}
+                                             discount={prods[product]['discount']}
+                                             description={prods[product]['description']}
+                                             image={prods[product]['image']}/>
                             </div>
                         ))}
                     </div>
                 }
-                {products.length===0&&chargeProduct&&
+                {prods.length===0&&chargeProduct&&
                     <div className="spinner_loader">
                         <LoaderIcon type="cylon" color="#6B0C72"/>
                     </div>
                 }
-                {products.length===0&&!chargeProduct&&
+                {prods.length===0&&!chargeProduct&&
                     <div className="spinner_loader">
                         <br/>
                         <img src={require("../../../../assets/images/telescope.png").default}/>

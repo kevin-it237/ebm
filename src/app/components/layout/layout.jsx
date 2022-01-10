@@ -21,6 +21,8 @@ import {isMobile, setToken} from "../../../config/helpers";
 const Layout = ({children}) => {
     const path = useSelector(state=>state.path.payload)
     const user = useSelector(state=>state.user.payload)
+    const drawer = useSelector(state=>state.drawer.payload)
+    console.log(drawer)
     const dispatch = useDispatch();
     const history = useHistory();
     const [drawerOpen,setDrawerOpen]=useState(false);
@@ -34,22 +36,29 @@ const Layout = ({children}) => {
         setDrawerOpen(false);
     }
 
-    console.log(user)
-    const logout=()=>{
+    const fermer=(e)=>{
+        e.preventDefault()
+        setLogout(false)
+    }
+
+    const logout=(e)=>{
+        e.preventDefault()
         setLogout(false)
         setLoader(true)
         setDrawerOpen(false)
         axios.get(config.baseUrl+'/user/logout')
             .then(response=>{
-                window.localStorage.removeItem('token');
-                setToken(null)
-                axios.defaults.headers['Authorization']=null;
-                dispatch({
-                    type: 'INFO_USER',
-                    payload: ""
-                })
+                if (response.data.message === 'Utilisateur Deconnecter'){
+                    history.push('/login')
+                    window.localStorage.removeItem('token');
+                    setToken(null)
+                    axios.defaults.headers['Authorization']=null;
+                    dispatch({
+                        type: 'INFO_USER',
+                        payload: ""
+                    })
+                }
                 setLoader(false)
-                history.push('/login')
             })
             .catch(error=>{
                 console.log(error)
@@ -77,7 +86,7 @@ const Layout = ({children}) => {
     return (
         <>
             <div id="layout">
-                {drawerOpen && <div onClick={e=>{window.setDrawerOpen(false)}} style={{height: "100%", width: "100%", backgroundColor: "rgba(0,0,0,0.2)", zIndex: 19,position:"fixed"}}>
+                {drawerOpen && <div onClick={e=>{e.preventDefault(); window.setDrawerOpen(false)}} style={{height: "100%", width: "100%", backgroundColor: "rgba(0,0,0,0.2)", zIndex: 19,position:"fixed"}}>
 
                 </div>}
                 <div id={"nav-bar"} className={(drawerOpen?'open':'')}>
@@ -91,6 +100,8 @@ const Layout = ({children}) => {
                         <ul>
                             <li> <NavLink to={"/home"} onClick={(event)=> {event.preventDefault();
                                 history.push('/home'); setDrawerOpen(false)}}>Acceuil</NavLink> </li>
+                            <li> <NavLink to={"/conversation"} onClick={(event)=> {event.preventDefault();
+                                history.push('/conversation'); setDrawerOpen(false)}}>Chat</NavLink> </li>
                             <li> <NavLink to={"/products"} onClick={(event)=> {event.preventDefault();
                                 history.push('/products'); setDrawerOpen(false)}}>Produits</NavLink> </li>
                             <li> <NavLink to={"/profile"} onClick={(event)=> {event.preventDefault();
@@ -104,17 +115,17 @@ const Layout = ({children}) => {
                             }}>Notez Expert</NavLink></li> : ""}
                         </ul>
                     </div>
-                    <div style={{display:'flex',flexDirection:"row",height:60,alignItems:"center",borderTop:"1px solid rgb(0, 0, 0, 0.05)"}}>
+                    <div style={{display:'flex',flexDirection:"row",height:60,alignItems:"center",borderTop:"1px solid rgb(0, 0, 0, 0.05)", cursor: 'pointer'}}>
                         <div>
                             <img src={require('../../../assets/images/avatar.png').default} style={{height:40,borderRadius:"50%",backgroundColor:"#eee",marginRight:20,marginLeft:15}}/>
                         </div>
                         <div style={{flexGrow:1,display:'flex',flexDirection:'column',justifyContent:"center"}}>
                             <h2 style={{fontSize:10,marginBottom:5}} id={"nav-bar-username"}>{user.firstname} {user.lastname} ({user.roles})</h2>
-                            <strong onClick={handleModal}>Logout</strong>
+                            <strong onClick={handleModal} className='logout-button'>Logout</strong>
                         </div>
                     </div>
                     {
-                        log&&<Modal hide={()=>setLogout(false)}>
+                        log&&<Modal>
                             <center><h2 style={{fontSize: "small", marginTop: 10}}>Voulez vous vraiment vous déconnecter ?</h2></center>
                             <br/>
                             <div style={{display: "flex", justifyContent: "space-between"}}>
@@ -142,6 +153,8 @@ const Layout = ({children}) => {
                             <ul>
                                 <li> <NavLink to={"/home"} onClick={(event)=> {event.preventDefault();
                                     history.push('/home'); setDrawerOpen(false)}}>Acceuil</NavLink> </li>
+                                <li> <NavLink to={"/conversation"} onClick={(event)=> {event.preventDefault();
+                                    history.push('/conversation'); setDrawerOpen(false)}}>Chat</NavLink> </li>
                                 <li> <NavLink to={"/products"} onClick={(event)=> {event.preventDefault();
                                     history.push('/products'); setDrawerOpen(false)}}>Produits</NavLink> </li>
                                 <li> <NavLink to={"/profile"} onClick={(event)=> {event.preventDefault();
@@ -185,28 +198,32 @@ const Layout = ({children}) => {
                         {children}
                     </div>
                 </div>
-                <div id="footer">
-                {
-                    MENU_ITEMS.map(item=>(
-                        <div>
-                            {item==='Home'&&<NavLink to="/home" onClick={() => changeContent(item)}>
-                                {path==='/home' ? <img src={HomeColor} alt=""/> : <img src={Home} alt=""/>}
-                            </NavLink>}
-                            {item==='Chat'&&<NavLink to="/conversation" onClick={() => changeContent(item)}>
-                                {path==='/conversation' ? <img src={ChatColor} width="22" height="22" alt=""/> : <img src={Chat} alt=""/>}
-                            </NavLink>}
-                            {item==='Search'&&<NavLink to="/advanced-search" onClick={() => changeContent(item)}>
-                                <img src={Search} alt=""/></NavLink>}
-                            {item==='Document'&&<NavLink to="/products" onClick={() => changeContent(item)}>
-                                {path==='/products' ? <img src={DocumentColor} width="22" height="22" alt=""/> : <img src={Document} alt=""/>}
-                            </NavLink>}
-                            {item==='UserAccount'&&<NavLink to="/profile" onClick={() => changeContent(item)}>
-                                {path==='/profile' ? <img src={UserAccountColor} alt=""/> : <img src={UserAccount} alt=""/>}
-                            </NavLink>}
-                        </div>
-                    ))
-                }
-                </div>
+                {isMobile()&&<div id="footer">
+                    {
+                        MENU_ITEMS.map(item => (
+                            <div>
+                                {item === 'Home' && <NavLink to="/home" onClick={() => changeContent(item)}>
+                                    {path === '/home' ? <img src={HomeColor} alt=""/> : <img src={Home} alt=""/>}
+                                </NavLink>}
+                                {item === 'Chat' && <NavLink to="/conversation" onClick={() => changeContent(item)}>
+                                    {path === '/conversation' ? <img src={ChatColor} width="22" height="22" alt=""/> :
+                                        <img src={Chat} alt=""/>}
+                                </NavLink>}
+                                {item === 'Search' &&
+                                <NavLink to="/advanced-search" onClick={() => changeContent(item)}>
+                                    <img src={Search} alt=""/></NavLink>}
+                                {item === 'Document' && <NavLink to="/products" onClick={() => changeContent(item)}>
+                                    {path === '/products' ? <img src={DocumentColor} width="22" height="22" alt=""/> :
+                                        <img src={Document} alt=""/>}
+                                </NavLink>}
+                                {item === 'UserAccount' && <NavLink to="/profile" onClick={() => changeContent(item)}>
+                                    {path === '/profile' ? <img src={UserAccountColor} alt=""/> :
+                                        <img src={UserAccount} alt=""/>}
+                                </NavLink>}
+                            </div>
+                        ))
+                    }
+                </div>}
                 {/*{item ==="Home"&&<NavLink to="/home"><img src={item} alt="" /></NavLink>}
                     <NavLink to="/conversation"><img src={Conversation} alt=""/></NavLink>
                         <NavLink to="/advanced-search"><img src={Search} alt="" /></NavLink>

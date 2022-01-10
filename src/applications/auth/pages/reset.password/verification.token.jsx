@@ -8,13 +8,22 @@ import ebmLogo from "../../../../assets/images/ebm.svg"
 import ebmLogoBig from "../../../../assets/images/ebm_big.png"
 import './verification.email.scss'
 import config from "../../../../config/index";
+import {useSelector} from "react-redux";
 
 const VerificationToken = () => {
     const history = useHistory();
+    const email = useSelector(state=>state.user.payload)
+    console.log(email)
+
+    const back=(e)=>{
+        e.preventDefault()
+        history.push('/login')
+    }
 
     const [token, setToken] = useState("");
     const [loading,setLoading]= useState(false);
     const [messageError,setMessageError]= useState(null);
+    const [message,setMessage]= useState('Un code de verification vous a été envoyé par mail');
 
 
     const onSubmit = (e) => {
@@ -23,7 +32,7 @@ const VerificationToken = () => {
         axios.post(config.baseUrl+"/password/verification", {token: token})
             .then(res =>{
                 setLoading(false)
-                if (res.data.message === "Code incorrect"){
+                if (res.data.message === "code incorrect"){
                     setMessageError("Code de verification incorrect")
                 }else {
                     history.push('/reset-password/'+token)
@@ -32,12 +41,33 @@ const VerificationToken = () => {
             .catch(err=>{
                 setLoading(false)
                 console.log(err.response.data)
-                const code = err.response.data.message
+                /*const code = err.response.data.message
                 if (code.startsWith('SQLSTATE[HY000] [2002]')){
                     setMessageError("Vérifiez votre connexion internet")
                 }else if(code.errorInfo[0] === "HY000"){
                     setMessageError("Vérifiez votre connexion internet")
                 }
+
+                 */
+            })
+    }
+
+    const resendCode = (e) => {
+        e.preventDefault();
+        setMessage(null)
+        const user = {
+            email : email
+        }
+        setLoading(true)
+        axios.post(config.baseUrl+"/resend/forgot", {...user})
+            .then(res =>{
+                console.log(res.data.message)
+                setLoading(false)
+                setMessage('Un code de verification vous a été renvoyé par mail')
+            })
+            .catch(err=>{
+                console.log(err)
+                setLoading(false)
             })
     }
 
@@ -81,7 +111,11 @@ const VerificationToken = () => {
                         disabled={loading}
                         size="lg">Confirmation
                     </Button>
-                    <div className="code">Un code de verification vous a été envoyé par mail</div>
+                    {message&&<div className="code" style={{color: 'white'}}>{message}</div>}
+                    <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10}}>
+                        <div style={{fontSize: 13, marginTop: 10, color: 'white', fontWeight: "bold", cursor: "pointer"}} onClick={back}>Revenir au Login</div>
+                        <div className="resend-code" style={{fontSize: 12}} onClick={resendCode}>Vous n'avez pas reçu le code ?</div>
+                    </div>
                 </form>
             </div>
         </div>

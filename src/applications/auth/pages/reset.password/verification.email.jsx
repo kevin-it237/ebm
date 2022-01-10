@@ -9,14 +9,21 @@ import config from "../../../../config/index";
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import { verifiedEmail} from "../../../../config/helpers";
+import {useDispatch} from "react-redux";
 
 
 const VerificationEmail = () => {
     const history = useHistory();
+    const dispatch = useDispatch()
 
     const [loginForm, setLoginForm] = useState({email: ""});
     const [emailError, setEmail] = useState("");
     const [loading,setLoading]= useState(false);
+
+    const back=(e)=>{
+        e.preventDefault()
+        history.push('/login')
+    }
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -24,11 +31,15 @@ const VerificationEmail = () => {
         const user = {
             email: loginForm.email
         }
+        dispatch({
+            type: 'USER_EMAIL',
+            payload: loginForm.email
+        })
         axios.post(config.baseUrl+"/password/forgot", {...user})
         .then(res=>{
             setLoading(false)
             if (res.data.message === 'L\'utilisateur n\'existe pas'){
-                notifyFailed("Email incorrect ou n'existe pas")
+                notifyFailed("Verifier votre addresse mail")
             }else {
                 history.push('/verification-token');
             }
@@ -100,6 +111,7 @@ const VerificationEmail = () => {
                     size="lg" >Code de Vérification
                 </Button>
             </form>
+            <div style={{display: "flex", fontSize: 13, marginTop: 10, color: '#6B0C72', fontWeight: "bold", cursor: "pointer"}} onClick={back}>Revenir au Login</div>
         </div>
     )
 }

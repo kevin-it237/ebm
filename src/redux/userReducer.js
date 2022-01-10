@@ -11,5 +11,11 @@ export default function cartReducer(state = initialState, action){
             payload: action.payload,
         }
     }
+    if (action.type === 'USER_EMAIL'){
+        nextState = {
+            ...state,
+            payload: action.payload
+        }
+    }
     return nextState||state;
 }

@@ -39,22 +39,21 @@ export const confirmationPass = (password, confirm)=>{
 }
 
 export const verifiedPhone = (phone) =>{
-    const regex = /^\+?\d{3} ?\d{3} ?\d{3} ?\d{3}$/gm
-    //const regex = /^(\+?)([0-3] ?){9,20}$/
-    const validation = regex.test(phone)
-    return validation
-    /*if (phone.length !== 9){
-        return 'Doit contenir 9 chiffres'
-    }
-    phone = parseInt(phone);
-    if (typeof phone === "number"){
-        return ""
+    const regex = /^\+?\d{1,3} ?\d{3,} ?\d{3,} ?\d{3,}$/gm
+    const regex6 = /^\00?\d{1,3} ?\d{3,} ?\d{3,} ?\d{3,}$/gm
+    //const regex3 = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/gm
+    const regex1 = /^(\+?)([0-3] ?){9,20}$/gm
+    const regex7 = /^(\00?)([0-3] ?){9,20}$/gm
+    //const regex2 = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{3}$/gm
+    const regex2 = /^(\+\d{1,3}\s)?\(?\d{3,}\)?[\s.-]?\d{3,}[\s.-]?\d{3,}$/gm
+    const regex5 = /^(\00\d{1,3}\s)?\(?\d{3,}\)?[\s.-]?\d{3,}[\s.-]?\d{3,}$/gm
+    const regex3 = /^(\00\d{1,3}\s)?(\d{9,})$/gm
+    const regex4 = /^(\+\s?\d{1,3})?(\d{9,})$/gm
+    if (regex.test(phone) || regex1.test(phone) || regex2.test(phone) || regex3.test(phone) || regex4.test(phone) || regex5.test(phone) || regex6.test(phone) || regex7.test(phone)){
+        return true
     }else {
-        return "Doit etre un numero"
+        return false
     }
-
-     */
-
 }
 
 export const rate = (tab) =>{

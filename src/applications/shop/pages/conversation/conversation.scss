@@ -12,7 +12,7 @@
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 0 15px;
+        padding: 20px 15px;
         >p {
             color: $primary;
             font-size: 1.5rem;
@@ -29,6 +29,17 @@
             margin-left: auto;
         }
     }
+
+    .conversation-content-mobile {
+        position: relative;
+        z-index: 1;
+        overflow-y: auto;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+    }
+
     .conversation-content {
         position: relative;
         z-index: 1;
@@ -57,6 +68,11 @@
             &--sent {
                 border-radius: 35px 35px 0 35px;
                 background-color: $primary;
+                max-width: 70%;
+                margin-left: 30%;
+                right: 0;
+                align-content: end;
+                width: max-content;
                 >p {
                     color: $white;
                 }
@@ -66,8 +82,13 @@
             }
 
             &--received {
+                display: flex;
+                flex-direction: column;
+                justify-content: right;
+                width: max-content;
                 background-color: rgba($primary, .03);
                 border-radius: 35px 35px 35px 0;
+                max-width: 70%;
                 >p {
                     color: $secondary;
                 }
@@ -121,7 +142,7 @@
         display: grid;
         align-items: center;
         grid-template-columns: 20px 1fr 20px;
-        align-items: center;
+        background-color: white;
         padding: 0 20px;
         column-gap: 10px;
         .inputFile {
@@ -136,6 +157,267 @@
         svg {
             width: 20px;
             height: 20px;
+        }
+        .input-text {
+            border: none !important;
+            outline: none !important;
+            height: auto;
+            width: 100%;
+            &:focus {
+                border: none;
+                outline: none !important;
+            }
+        }
+    }
+
+    .conversation-content-web {
+        position: relative;
+        z-index: 0;
+        overflow-y: auto;
+        height: auto;
+        flex: 1;
+        display: flex;
+        margin-right: 20%;
+        flex-direction: column;
+        padding: 20px;
+        padding-bottom: 60px;
+        margin-top: 5px;
+        box-shadow: 0 0 1em rgba(10, 0, 0, 0.09);
+
+        >.message {
+            position: relative;
+            z-index: 0;
+            margin-bottom: 25px;
+            padding: 15px;
+            height: auto;
+            word-break: break-word;
+            >p {
+                font-size: 1.2rem;
+                line-height: 16px;
+            }
+            >span {
+                color: $grey-300;
+                font-size: 1rem;
+                position: absolute;
+                top: 105%;
+            }
+            &--sent {
+                border-radius: 35px 35px 0 35px;
+                background-color: $primary;
+                max-width: 50%;
+                width: max-content;
+                margin-left: 50%;
+                >p {
+                    color: $white;
+                }
+                >span {
+                    right: 0;
+                }
+            }
+
+            &--received {
+                background-color: rgba($primary, .03);
+                border-radius: 35px 35px 35px 0;
+                max-width: 50%;
+                width: max-content;
+                >p {
+                    color: $secondary;
+                }
+                >span {
+                    left: 0;
+                }
+            }
+        }
+        >.attachment {
+            margin-bottom: 25px;
+            position: relative;
+            display: flex;
+            >span {
+                color: $grey-300;
+                font-size: 1rem;
+                position: absolute;
+                z-index: 0;
+                top: 105%;
+            }
+            &--sent {
+                img {
+                    margin-left: auto;
+                }
+                >span {
+                    right: 5px;
+                }
+            }
+            &--received {
+                img {
+                    margin-right: auto;
+                }
+                >span {
+                    left: 5px;
+                }
+            }
+            >img {
+                width: 60%;
+                height: auto;
+                border-radius: 10px;
+            }
+        }
+    }
+
+    .send{
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    .received{
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .message--sent {
+        position: relative;
+        z-index: 0;
+        height: auto;
+        padding: 15px;
+        word-break: break-word;
+        border-radius: 35px 35px 0 35px;
+        background-color: $primary;
+        max-width: 60%;
+        width: max-content;
+        margin-left: 50%;
+        font-size: 1.3rem;
+        >p {
+            color: $white;
+        }
+        >span {
+            right: 0;
+        }
+    }
+
+    .message--received {
+        position: relative;
+        z-index: 0;
+        padding: 15px;
+        height: auto;
+        word-break: break-word;
+        background-color: rgba($primary, .03);
+        border-radius: 35px 35px 35px 0;
+        max-width: 60%;
+        width: max-content;
+        font-size: 1.3rem;
+        >p {
+            color: $secondary;
+        }
+        >span {
+            left: 0;
+        }
+    }
+
+    .attachment--sent {
+        position: relative;
+        display: flex;
+        >span {
+            color: $grey-300;
+            font-size: 1rem;
+            position: absolute;
+            z-index: 0;
+            top: 105%;
+        }
+        >span {
+            right: 5px;
+        }
+        >img {
+            width: 60%;
+            height: auto;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+    }
+
+    .attachment--received {
+        position: relative;
+        display: flex;
+        >span {
+            color: $grey-300;
+            font-size: 1rem;
+            position: absolute;
+            z-index: 0;
+            top: 105%;
+        }
+        >span {
+            right: 5px;
+        }
+        >img {
+            width: 60%;
+            height: auto;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+    }
+
+    .message {
+        position: relative;
+        z-index: 0;
+        margin-bottom: 25px;
+        padding: 15px;
+        height: auto;
+        word-break: break-word;
+        >p {
+            font-size: 1.2rem;
+            line-height: 16px;
+        }
+        >span {
+            color: $grey-300;
+            font-size: 1rem;
+            position: absolute;
+            top: 105%;
+        }
+
+    }
+
+    .conversation-content-web-new {
+        position: relative;
+        z-index: 0;
+        overflow-y: auto;
+        flex: 1;
+        display: flex;
+        margin-right: 20%;
+        flex-direction: column;
+        padding: 20px;
+        padding-bottom: 60px;
+        margin-top: 5px;
+        box-shadow: 0 0 1em rgba(10, 0, 0, 0.09);
+    }
+
+    .keyboard-wrapper-web {
+        z-index: 99;
+        height: 60px;
+        position: absolute;
+        overflow: no-display;
+        bottom: 0px;
+        width: 80%;
+        box-shadow: 0px 0px 12px rgba($secondary, .2);
+        display: grid;
+        align-items: center;
+        grid-template-columns: 20px 1fr 20px;
+        background-color: white;
+        padding: 0 20px;
+        column-gap: 10px;
+        .inputFile {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .image-picker {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        svg {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
         }
         .input-text {
             border: none !important;

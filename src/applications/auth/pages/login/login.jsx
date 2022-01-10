@@ -37,8 +37,6 @@ const Login = () => {
             roles: role.role
         }
 
-        console.log(user)
-
         axios.post(config.baseUrl+"/login", {...user})
         .then(response=>{
             setLoading(false)
@@ -84,7 +82,6 @@ const Login = () => {
                     type: 'USER_INFO',
                     payload: res.data.message
                 })
-                console.log(res.data.message)
             })
             .catch(err=>{
                 console.log(err)
@@ -182,7 +179,7 @@ const Login = () => {
                 <div className="registation-final__step">
                     <select name="roleSet" onChange={onChangeRole} required style={{color: 'gray', opacity: '0.8'}}>
                         <option value="" disabled selected>Quelle est votre role ?</option>
-                        <option value="USER">Normal</option>
+                        <option value="USER">Client</option>
                         <option value="INSTITUTION">Institution</option>
                         <option value="EXPERT">Expert</option>
                     </select>

@@ -62,6 +62,17 @@
             text-transform: capitalize;
         }
     }
+    >.categories-web {
+        margin-top: 20px;
+        display: grid;
+        gap: 10px;
+        >.category-item-web {
+            font-size: 2rem;
+            cursor: pointer;
+            color: $secondary;
+            text-transform: capitalize;
+        }
+    }
     >.spinner_load{
         display: flex;
         justify-content: space-around;

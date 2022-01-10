@@ -8,15 +8,18 @@ import ebmLogo from "../../../../assets/images/ebm.svg"
 import ebmLogoBig from "../../../../assets/images/ebm_big.png"
 import './signup.scss'
 import config from "../../../../config/index";
+import {useSelector} from "react-redux";
 
 const Verification = () => {
     const history = useHistory();
     const params = useParams();
+    const email = useSelector(state=>state.user.payload)
 
     const role = params.slug;
 
     const [signupForm1, setForm1] = useState({verCode: ""});
     const [loading,setLoading]= useState(false);
+    const [message,setMessage]= useState('Un code de verification vous a été envoyé par mail');
 
     useEffect(()=>{
         notify("Un code vous a été envoyé par Email");
@@ -52,6 +55,26 @@ const Verification = () => {
                 setLoading(false)
             })
     }
+
+    const resendCode = (e) => {
+        e.preventDefault();
+        setMessage(null)
+        const user = {
+            email : email
+        }
+        setLoading(true)
+        axios.post(config.baseUrl+"/resend", {...user})
+            .then(res =>{
+                console.log(res.data.message)
+                setLoading(false)
+                setMessage('Un code de verification vous a été renvoyé par mail')
+            })
+            .catch(err=>{
+                console.log(err)
+                setLoading(false)
+            })
+    }
+
     const notify = (err) => toast.info(err);
     const notifyError = (err) => toast.error(err);
 
@@ -98,7 +121,8 @@ const Verification = () => {
                         </Button>
                 </form>
             </div>
-            <div className="code">Un code de verification vous a été envoyé par mail</div>
+            {message&&<div className="code">{message}</div>}
+            <div className="resend-code" onClick={resendCode}>Vous n'avez pas reçu le code ?</div>
         </div>
     )
 }

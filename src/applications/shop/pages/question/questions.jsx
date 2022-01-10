@@ -12,7 +12,7 @@ const Questions = () => {
 
     const onclick=(event)=>{
         event.preventDefault();
-        history.push('/https://docs.google.com/forms/d/e/1FAIpQLSc76SL-RUcSkRt83tdAFdvwlSLRhmhx2rLao5grlBBCICL-Iw/viewform?usp=sf_link')
+        history.push('https://docs.google.com/forms/d/e/1FAIpQLScpvBNHPRi6oYZ3MC6lIMaDXKDIBo4QtZorako33heTS43gBQ/viewform?usp=sf_link')
     }
 
     const onLogin=()=>{
@@ -31,8 +31,8 @@ const Questions = () => {
             <div className="auth-container__line-element">
                 <p className="auth-text">
                     Cliquez <a
-                        style={{textDecoration: 'none'}}
-                        href={'https://docs.google.com/forms/d/e/1FAIpQLSc76SL-RUcSkRt83tdAFdvwlSLRhmhx2rLao5grlBBCICL-Iw/viewform?usp=sf_link'}
+                        style={{textDecoration: 'none', fontWeight: 'bold'}}
+                        href={'https://docs.google.com/forms/d/e/1FAIpQLScpvBNHPRi6oYZ3MC6lIMaDXKDIBo4QtZorako33heTS43gBQ/viewform?usp=sf_link'}
                         variant="primary"
                         type="submit"
                         size="lg">Ici

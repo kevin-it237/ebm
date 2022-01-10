@@ -24,7 +24,7 @@ import ProductDemand from "../../../shop/components/historique/product.demand";
 import Select from "react-select";
 import Slider from "react-slick";
 import {confirmationPass, verifiedEmail, verifiedPassword, verifiedPhone} from "../../../../config/helpers";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import dateFormat from 'dateformat';
 
 const MyProfile = () => {
@@ -67,6 +67,7 @@ const MyProfile = () => {
     const timeAgo = new TimeAgo('fr-CA')
     const history = useHistory()
     const dispatch = useDispatch()
+    const profile = useSelector(state=>state.profile.profile)
     const inputFile = useRef(null);
     const [showPassword, setPassword] = useState(false);
     const [content, setContent] = useState("Information");
@@ -267,6 +268,10 @@ const MyProfile = () => {
                                 email: response.data.message.email,
                                 address: response.data.message.address,
                                 phone: response.data.message.phone,
+                            })
+                            dispatch({
+                                type: 'ALL_PROFILE_INFO',
+                                profile: response.data.message
                             })
                             setImageProfile(response.data.message.logo)
                             setLoader(false)

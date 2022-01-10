@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import cils from "../../../../assets/images/cils.jpg"
 import axios from "axios";
 import config from "../../../../config/index";
+import productLink from "../../../../config/product.link";
 
 const ProductItem = (props, state) => {
     const dispatch = useDispatch();
@@ -59,15 +60,13 @@ const ProductItem = (props, state) => {
         products[index]=currentProduct;
         update([...products])
     }
-
-    console.log(count)
     const notifyFailed = (err)=>{
         toast.error(err)
     }
 
     return (
         <div className="cart-item" style={{backgroundColor:"white",padding:"0 20px"}}>
-            <img src={cils} alt="" />
+            <img src={productLink.link + props.image} alt={props.name} />
             <div className="product-infos">
                 <h4 className="name">{props.name}</h4>
                 {props.discount !==0 ?

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {ReactComponent as Back} from "../../../../assets/icons/back_arrow.svg"
 import {useHistory} from 'react-router-dom';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import CardItem from "../../components/cart.item/cart.item"
 import Button from "../../../../app/components/buttons/button/button";
 import Modal from "../../../../app/components/modal/modal";
@@ -13,10 +13,12 @@ import config from "../../../../config/index";
 import LoaderIcon from "react-loader-icon";
 import img from "../../../../assets/images/ebm.svg";
 import Charge from "../../../../app/components/charge/charge";
+import {isMobile} from "../../../../config/helpers";
 
 const Cart = () => {
     const history = useHistory()
     const dispatch = useDispatch();
+    const prod = useSelector(state => state.cart.product)
     const [showModal, setShowModal] = useState(false);
     const [products, setProduct] = useState("");
     const [loading, setLoading] = useState(false);
@@ -33,6 +35,10 @@ const Cart = () => {
         axios.get(config.baseUrl + '/user/cart/quantity')
             .then(response => {
                 setProduct(response.data.message)
+                dispatch({
+                    type: 'ALL_CART_PRODUCT',
+                    product: response.data.message
+                })
                 setLoading(false)
             })
             .catch(error => {
@@ -42,9 +48,9 @@ const Cart = () => {
     }
 
     let total = 0;
-    if (products.length !== 0) {
-        for (let i = 0; i < products.length; i++) {
-            total += products[i]["quantity"] * products[i]["price"] - (products[i]["quantity"] * products[i]["price"] * products[i]["discount"]) / 100;
+    if (prod.length !== 0) {
+        for (let i = 0; i < prod.length; i++) {
+            total += prod[i]["quantity"] * prod[i]["price"] - (prod[i]["quantity"] * prod[i]["price"] * prod[i]["discount"]) / 100;
         }
     }
 
@@ -57,6 +63,10 @@ const Cart = () => {
                 dispatch({
                     type: 'ADD_TO_CART',
                     payload: 0
+                });
+                dispatch({
+                    type: 'ALL_CART_PRODUCT',
+                    product: []
                 });
                 setMessage("Commande Enregistrée")
                 setRegist(false)
@@ -72,10 +82,9 @@ const Cart = () => {
             .then(response => {
                 console.log(response.data.message)
                 dispatch({
-                        type: 'ADD_TO_CART',
-                        payload: response.data.message
-                    }
-                );
+                    type: 'ADD_TO_CART',
+                    payload: response.data.message
+                });
             }).catch(err => {
         })
     }
@@ -87,6 +96,10 @@ const Cart = () => {
                 axios.get(config.baseUrl + '/user/cart/quantity')
                     .then(response => {
                         setProduct(response.data.message)
+                        dispatch({
+                            type: 'ALL_CART_PRODUCT',
+                            product: response.data.message
+                        })
                         getCartNumber();
                     })
                     .catch(error => {
@@ -109,9 +122,9 @@ const Cart = () => {
                     <Back onClick={() => history.goBack()}/>
                     <p>Panier</p>
                 </div>
-                {!loading && products.length !== 0 &&
+                {prod.length !== 0&&
                 <div className="cart-items" style={{padding: 0, paddingTop: 20, paddingBottom: 20}}>
-                    {Object.keys(products).map((product, index) => (
+                    {Object.keys(prod).map((product, index) => (
                         <SwipeToDelete key={index}
                             onDelete={() => Undelete(products[product]['id'])} // required
                             height={91} // required
@@ -124,36 +137,46 @@ const Cart = () => {
                             disabled={false} // default
                             rtl={false} // default
                         >
-                            <CardItem id={products[product]['id']} products={products}
-                                      name={products[product]['name']}
-                                      price={products[product]['price']}
-                                      quantity={products[product]['quantity']}
-                                      discount={products[product]['discount']} update={setProduct} index={index}/>
+                            <CardItem id={prod[product]['id']} products={prod}
+                                      name={prod[product]['name']}
+                                      price={prod[product]['price']}
+                                      quantity={prod[product]['quantity']}
+                                      image = {prod[product]['image']}
+                                      discount={prod[product]['discount']} update={setProduct} index={index}/>
 
                         </SwipeToDelete>
                     ))}
                 </div>
                 }
-                {loading && products.length === 0 &&
-                <Charge className="spinner_load">
-                    <LoaderIcon type="cylon" color="#6B0C72"/>
-                </Charge>
+                {loading && prod.length===0 &&
+                    <Charge className="spinner_load">
+                        <LoaderIcon type="cylon" color="#6B0C72"/>
+                    </Charge>
                 }
                 {regist &&
                 <Charge>
                     <LoaderIcon type="cylon" color="#6B0C72"/>
                 </Charge>
                 }
-                {!loading && products.length === 0 &&
-                <div style={{marginTop: 50}}>
-                    <center>
+                {!loading && prod.length === 0 &&isMobile()&&
+                    <div style={{position: 'absolute', top: '30%', left: '35%'}}>
+                        <center>
                         <br/>
                         <img src={require("../../../../assets/images/telescope.png").default}/>
                         <p>{"Aucun Produit dans le panier"}</p>
-                    </center>
-                </div>
+                        </center>
+                        </div>
                 }
-                {products.length !== 0 ?
+                {!loading && prod.length === 0 &&!isMobile()&&
+                    <div style={{position: 'absolute', top: '30%', left: '50%'}}>
+                        <center>
+                        <br/>
+                        <img src={require("../../../../assets/images/telescope.png").default}/>
+                        <p>{"Aucun Produit dans le panier"}</p>
+                        </center>
+                        </div>
+                }
+                {prod.length !== 0 ?
                     <div className="footer" style={{position: "fixed", bottom: 0, width: '100%'}}>
                         <div className="summary">
                             <p>TOTAL</p>

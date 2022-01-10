@@ -112,3 +112,11 @@
   width: 22px;
   background-color: $primary;
 }
+
+.logout-button{
+  cursor: pointer;
+}
+
+.logout-button:hover{
+  color: red;
+}
