@@ -219,7 +219,7 @@ const Chat = () => {
                </div>}
            </div>
            */}
-           {isMobile()&& <div>{messagesNew !== 0 && <div className={messagesNew!==0 ? "conversation-content-mobile" : ""}>
+           {isMobile()&& <div>{messagesNew.length !== 0 && <div className={messagesNew!==0 ? "conversation-content-mobile" : ""}>
                {Object.keys(messagesNew).map((message, index) => (
                    <div key={index}>
                        {messagesNew[message].role_id!==1&&<div className="send">
@@ -252,7 +252,7 @@ const Chat = () => {
            </div>
            }
            {!isMobile()&&
-               <div>{messagesNew !== 0 && <div className={messagesNew!==0 ? "conversation-content-web-new" : ""}>
+               <div>{messagesNew.length !== 0 && <div className={messagesNew!==0 ? "conversation-content-web-new" : ""}>
                    {Object.keys(messagesNew).map((message, index) => (
                        <div key={index}>
                            {messagesNew[message].role_id!==1&&<div className="send">
@@ -314,15 +314,30 @@ const Chat = () => {
                            strokeLinejoin="round"/>
                </svg>}
            </div>}
-           {!isMobile()&&messagesNew ===0&&loader&&<div style={{position: 'absolute', top: '40%', left: '55%'}}>{
+           {!isMobile()&&messagesNew.length ===0&&loader&&<div style={{position: 'absolute', top: '40%', left: '55%'}}>{
                <div>
                    <LoaderIcon type="cylon" color="#6B0C72"/>
                </div>
            }</div>}
-           {isMobile()&&messagesNew ===0&&loader&&<div>{
+           {isMobile()&&messagesNew.length ===0&&loader&&<div>{
                <div>
                    <LoaderIcon type="cylon" color="#6B0C72"/>
                </div>
+           }</div>}
+
+            {!isMobile()&&messagesNew.length ===0&&!loader&&<div style={{position: 'absolute', top: '40%', left: '55%'}}>{
+               <center>
+                    <br/>
+                    <img src={require("../../../../assets/images/telescope.png").default}/>
+                    <p>Vous n'avez pas de message</p>
+                </center>
+           }</div>}
+           {isMobile()&&messagesNew.length ===0&&loader&&<div>{
+               <center>
+                    <br/>
+                    <img src={require("../../../../assets/images/telescope.png").default}/>
+                    <p>Vous n'avez pas de message</p>
+                </center>
            }</div>}
        </div>
     )
