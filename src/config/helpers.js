@@ -2,9 +2,28 @@ import index from "./index";
 
 export const setToken = (token)=>{
     window.token=token;
-     window.localStorage.setItem('token', token);
-     return true;
+    window.localStorage.setItem('token', token);
+    return true;
 }
+
+export const setExist=()=>{
+    window.localStorage.setItem('exist', true)
+    return true;
+}
+
+export const setUser=(user)=>{
+    console.log(user)
+    window.user = user;
+    window.localStorage.setItem('user', JSON.stringify(user))
+}
+
+export const getUser=()=>{
+    return (window.localStorage.getItem('user'));
+}
+
+export const getExist=()=>{
+    return window.localStorage.getItem('exist');
+} 
 
 export const getToken = ()=>{
     return (window.token?window.token:window.localStorage.getItem('token'));

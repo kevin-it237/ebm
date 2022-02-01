@@ -101,6 +101,8 @@ const MyProfile = () => {
     const [productLoader, setProductLoader] = useState(false);//loader for state
     const [expertLoader, setExpertLoader] = useState(false);//loader for state
 
+    const [errorMessage, setErrorMessage] = useState(null);//loader for state
+
     const [crop, setCrop] = useState({aspect: 1, width: 150, height: 150});
     const [changePhotoProfile, setChangeProfilPhoto] = useState(false);
     const [croppedImageUrl, setCroppedImageUrl] = useState(null);
@@ -195,6 +197,15 @@ const MyProfile = () => {
                     .catch(error => {
                         console.log(error)
                         setLoader(false)
+                        if (error.request) {
+                            // The request was made but no response was received
+                            console.log(error.request);
+                            setErrorMessage("Erreur de connexion !");
+
+                        } else {
+                            // Something happened in setting up the request that triggered an Error
+                            console.log('Error', error.message);
+                        }
                     })
             })
             .catch(error => {
@@ -278,6 +289,15 @@ const MyProfile = () => {
                         })
                         .catch(error => {
                             console.log(error)
+                            if (error.request) {
+                                // The request was made but no response was received
+                                console.log(error.request);
+                                setErrorMessage("Erreur de connexion !");
+
+                            } else {
+                                // Something happened in setting up the request that triggered an Error
+                                console.log('Error', error.message);
+                            }
                         })
                 } else {
                     setInfoForm({
@@ -301,6 +321,16 @@ const MyProfile = () => {
             })
             .catch(error => {
                 console.log(error)
+                setLoader(false)
+                if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                    setErrorMessage("Erreur de connexion !");
+
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                }
             })
     }
 
@@ -318,6 +348,7 @@ const MyProfile = () => {
         event.preventDefault();
         setEditProf(false)
         setLoaderProf(true)
+        setMessage(false)
         let user = {
             firstname: infoForm.name,
             lastname: infoForm.surname,
@@ -330,11 +361,21 @@ const MyProfile = () => {
                 .then(response => {
                     setLoaderProf(false)
                     setMessage("Modification Enregistrée")
+                    getUserData()
                 })
                 .catch(error => {
                     console.log(error)
                     setLoaderProf(false)
-                    setMessage("Erreur d'enregistrement")
+                    if (error.request) {
+                        // The request was made but no response was received
+                        console.log(error.request);
+                        setErrorMessage("Erreur de connexion !");
+
+                    } else {
+                        // Something happened in setting up the request that triggered an Error
+                        console.log('Error', error.message);
+                        setMessage("Erreur d'enregistrement")
+                    }
                 })
         } else {
             user['address'] = infoForm.address;
@@ -343,11 +384,20 @@ const MyProfile = () => {
                 .then(response => {
                     setLoaderProf(false)
                     setMessage("Modification Enregistrée")
+                    getUserData()
                 })
                 .catch(error => {
                     setLoaderProf(false)
-                    setMessage("Erreur d'enregistrement")
-                    console.log(error)
+                    if (error.request) {
+                        // The request was made but no response was received
+                        console.log(error.request);
+                        setErrorMessage("Erreur de connexion !");
+
+                    } else {
+                        // Something happened in setting up the request that triggered an Error
+                        console.log('Error', error.message);
+                        setMessage("Erreur d'enregistrement")
+                    }
                 })
         }
     }
@@ -356,6 +406,8 @@ const MyProfile = () => {
         event.preventDefault();
         setEditProf(false)
         setLoaderProf(true)
+        setErrorMessage(null)
+        setMessage(false)
         const user = {
             password: infoForm2.password,
             confirmation: infoForm2.confirmation
@@ -368,7 +420,16 @@ const MyProfile = () => {
             .catch(error => {
                 console.log(error)
                 setLoaderProf(false)
-                setMessage("Erreur d'enregistrement")
+                if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                    setErrorMessage("Erreur de connexion !");
+
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                    setMessage("Erreur d'enregistrement")
+                }
             })
     }
 
@@ -402,38 +463,73 @@ const MyProfile = () => {
 
     const getOrderExpert = () => {
         setExpertLoader(true)
+        setErrorMessage(null)
         axios.get(config.baseUrl + '/institution/expert/order/index')
             .then(res => {
                 setExpertOrder(res.data.message)
                 setExpertLoader(false)
             })
-            .catch(err => {
-                console.log(err)
+            .catch(error => {
+                console.log(error)
                 setExpertLoader(false)
+                if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                    setErrorMessage("Erreur de connexion !");
+
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                    setErrorMessage("Erreur de chargement !")
+                }
             })
     }
+
     const getOrderService = () => {
         setServiceLoader(true)
+        setErrorMessage(null)
         axios.get(config.baseUrl + '/user/service/order/index')
             .then(res => {
                 setServiceOrder(res.data.message)
                 setServiceLoader(false)
             })
-            .catch(err => {
-                console.log(err)
+            .catch(error => {
+                console.log(error)
                 setServiceLoader(false)
+                if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                    setErrorMessage("Erreur de connexion !");
+
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                    setErrorMessage("Erreur de chargement !")
+                }
             })
     }
+
     const getOrderProduct = () => {
         setProductLoader(true)
+        setErrorMessage(null)
         axios.get(config.baseUrl + '/user/product/order/index')
             .then(res => {
                 setProductOrder(res.data.message)
                 setProductLoader(false)
             })
-            .catch(err => {
-                console.log(err)
+            .catch(error => {
+                console.log(error)
                 setProductLoader(false)
+                if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                    setErrorMessage("Erreur de connexion !");
+
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                    setErrorMessage("Erreur de chargement !")
+                }
             })
     }
 
@@ -524,6 +620,9 @@ const MyProfile = () => {
     let bottomContent;
     if (content === "Information") {
         bottomContent = (<div className={"info-user"} style={{width: "100%"}}>
+            {errorMessage&&<div style={{color: 'red', marginTop: '5px', marginBottom: '5px'}}>
+                <center>{errorMessage}</center>
+            </div>}
             {infoForm ? <form className="auth-container">
                     {Object.keys(infoForm).map((input, index) => (
                         <div key={index} className="auth-container__input-container">
@@ -611,19 +710,25 @@ const MyProfile = () => {
                         <ExpertDemand name={expertOrder[e].name} date={expertOrder[e].date}
                                       state={expertOrder[e].state} id={index + 1}/>
                     </div>))}
-            </div>)|| (
-                expertOrder.length===0&&!expertLoader&&
+            </div>)||
+                (expertOrder.length===0&&!expertLoader&&!errorMessage&&
                     <div><br/>
                         <center>
                             <img src={require("../../../../assets/images/telescope.png").default}/>
                             <p>{infoUser.role === 'INSTITUTION' ? "Aucune demande d'expert éffectuée" : "Aucune demande d'expert reçue"}</p>
                         </center>
-                    </div>)||(
-                        expertOrder.length===0&&expertLoader&&
-                        <div>
-                            <LoaderIcon type="cylon" color="#6B0C72"/>
-                        </div>
-            )
+                    </div>)
+                ||(expertOrder.length===0&&expertLoader&&!errorMessage&&
+                    <div>
+                        <LoaderIcon type="cylon" color="#6B0C72"/>
+                    </div>)||(expertOrder.length===0&&!expertLoader&&errorMessage&&
+                    <div><br/>
+                        <center>
+                            <img src={require("../../../../assets/images/telescope.png").default}/>
+                            <p>{errorMessage}</p>
+                        </center>
+                    </div>
+                )
         }
     } else if (content === "Commandes de service") {
             bottomContent = (!serviceLoader&&serviceOrder.length!==0&&<div>
@@ -639,18 +744,25 @@ const MyProfile = () => {
                                        date={serviceOrder[e].date}
                                        state={serviceOrder[e].state} id={index + 1}/></div>
                 ))}
-            </div>) || (!serviceLoader&&serviceOrder.length===0&&
+            </div>) || (!serviceLoader&&serviceOrder.length===0&&!errorMessage&&
                 <div>
                     <br/>
                     <center>
                         <img src={require("../../../../assets/images/telescope.png").default}/>
                         <p>{infoUser.role === 'INSTITUTION' ? "Aucune demande de service reçue" : infoUser.role === 'EXPERT' ? "Aucune demande de service" : "Aucune demande de service éffectuée"}</p>
                     </center>
-                </div>) || (serviceLoader&&serviceOrder.length===0&&
+                </div>) || (serviceLoader&&serviceOrder.length===0&&!errorMessage&&
                 <div>
                     <LoaderIcon type="cylon" color="#6B0C72"/>
                 </div>
-            )
+            )||(!serviceLoader&&serviceOrder.length===0&&errorMessage&&
+                <div>
+                    <br/>
+                    <center>
+                        <img src={require("../../../../assets/images/telescope.png").default}/>
+                        <p>{errorMessage}</p>
+                    </center>
+                </div>)
     } else if (content === "Commandes de produit") {
         {
             bottomContent = (
@@ -668,11 +780,11 @@ const MyProfile = () => {
                         </div>))}
                 </div>
             )||
-            (productLoader&&productOrder.length === 0&&
+            (productLoader&&productOrder.length === 0&&!errorMessage&&
             <div>
                 <LoaderIcon type="cylon" color="#6B0C72"/>
             </div>)||
-                (!productLoader&&productOrder.length===0&&
+                (!productLoader&&productOrder.length===0&&!errorMessage&&
                     <div>
                         <br/>
                         <center>
@@ -680,7 +792,16 @@ const MyProfile = () => {
                             <p>Aucune commande de produits éffectuées</p>
                         </center>
                     </div>
-                    )
+                    )||
+                (!productLoader&&productOrder.length===0&&errorMessage&&
+                    <div>
+                        <br/>
+                        <center>
+                            <img src={require("../../../../assets/images/telescope.png").default}/>
+                            <p>{errorMessage}</p>
+                        </center>
+                    </div>
+                )
         }
     }
 

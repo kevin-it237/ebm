@@ -5,6 +5,7 @@ import ebmLogo from "../../../../assets/images/ebm.svg"
 import './auth.choice.scss'
 
 import illustration2 from "../../assets/images/illustration2.svg"
+import {setExist} from "../../../../config/helpers";
 
 const AuthChoice = () => {
 

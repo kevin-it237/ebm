@@ -11,12 +11,26 @@ import './login.scss'
 import config from "../../../../config/index";
 import { ToastContainer, toast } from 'material-react-toastify';
 import 'material-react-toastify/dist/ReactToastify.css';
-import {setToken, verifiedEmail, verifiedPassword} from "../../../../config/helpers";
+import {
+    getToken,
+    setToken,
+    verifiedEmail,
+    verifiedPassword,
+    setUser,
+    getUser
+} from "../../../../config/helpers";
 import {useDispatch} from "react-redux";
+
 
 
 const Login = () => {
     const history = useHistory();
+
+    console.log(getToken())
+
+    if(getToken()){
+        history.push("/home");
+    }
     const dispatch = useDispatch();
 
     const [showPassword, setPassword] = useState(false);
@@ -37,40 +51,55 @@ const Login = () => {
             roles: role.role
         }
 
-        axios.post(config.baseUrl+"/login", {...user})
-        .then(response=>{
-            setLoading(false)
-            setDisabled(false)
-            const code = response.data.message
-            console.log(code)
-            if(response.data.message === "Votre compte est en cours de vérification"){
-                notifyInfo("Votre compte est en cours de vérification")
-            }else if (response.data.message === "Verifiez votre compte"){
-                history.push('/verification/'+user.roles.toLowerCase())
-            }else if (code === "Votre compte n'est pas vérifié"){
-                notify("Votre addresse mail n'est pas vérifié")
-                history.push('/verification/'+user.roles.toLowerCase())
-            }
-            else {
-                const token = `Bearer ${response.data.acces_token}`;
-                setToken(token);
-                window.axios = axios;
-                axios.defaults.headers['Authorization'] = window.token;
-                getUser()
-                getFavorites()
-                getCart()
-                history.push('/home');
-            }
-        }).catch(error=>{
-            setLoading(false)
-            setDisabled(false)
-            console.log(error)
-            if (error.message){
-                notify("Email, Mot de passe ou Role Incorrect")
-            }else if (!error.message){
-                notify("Erreur de connexion")
-            }
-        })
+        axios.post(config.baseUrl+"/justlogmein", {...user})
+            .then(response=>{
+                setLoading(false)
+                setDisabled(false)
+                const code = response.data.message
+                console.log(code)
+                if(response.data.message === "Votre compte est en cours de vérification"){
+                    notifyInfo("Votre compte est en cours de vérification")
+                }else if (response.data.message === "Verifiez votre compte"){
+                    history.push('/verification/'+user.roles.toLowerCase())
+                }else if (code === "Votre compte n'est pas vérifié"){
+                    notify("Votre addresse mail n'est pas vérifié")
+                    history.push('/verification/'+user.roles.toLowerCase())
+                }
+                else {
+                    const token = `Bearer ${response.data.acces_token}`;
+                    setToken(token);
+                    window.axios = axios;
+                    axios.defaults.headers['Authorization'] = window.token;
+                    getUser()
+                    getFavorites()
+                    getCart()
+                    history.push('/home');
+                }
+            }).catch(error=>{
+                setLoading(false)
+                setDisabled(false)
+                console.log(error)
+                if (error.response) {
+                    // Request made and server responded
+                    console.log(error.response.data);
+                    console.log(error.response.data.message);
+                    if(error.response.data.message.startsWith("Attempt to read property \"email_verified_at\" on null")){
+                        notify("Ce compte n'existe pas !")
+                    }else if (error.response.data.message.startsWith("Mot de passe ne correspond pas")){
+                        notify("Mot passe ou Role incorrect !")
+                    }
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                    notify("Erreur de connexion !")
+
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                }
+            })
     }
 
 
@@ -82,6 +111,7 @@ const Login = () => {
                     type: 'USER_INFO',
                     payload: res.data.message
                 })
+                setUser(res.data.message)
             })
             .catch(err=>{
                 console.log(err)

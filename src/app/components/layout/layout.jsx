@@ -11,18 +11,17 @@ import DocumentColor from "../../../assets/icons/product_documents_50px.png"
 import UserAccount from "../../../assets/icons/userSvg.svg"
 import UserAccountColor from "../../../assets/icons/userSvgColor.svg"
 import axios from "axios";
-import config from "../../../config/index";
 import {useDispatch, useSelector} from "react-redux";
 import Modal from "../modal/modal";
 import Button from "../buttons/button/button";
 import LoaderIcon from "react-loader-icon";
-import {isMobile, setToken} from "../../../config/helpers";
+import {getUser, isMobile, setToken, getToken} from "../../../config/helpers";
 
 const Layout = ({children}) => {
     const path = useSelector(state=>state.path.payload)
     const user = useSelector(state=>state.user.payload)
+    const data = JSON.parse(getUser())
     const drawer = useSelector(state=>state.drawer.payload)
-    console.log(drawer)
     const dispatch = useDispatch();
     const history = useHistory();
     const [drawerOpen,setDrawerOpen]=useState(false);
@@ -31,6 +30,7 @@ const Layout = ({children}) => {
     const [loader,setLoader]=useState(false);
     window.setDrawerOpen =  setDrawerOpen;
 
+    console.log(drawerOpen)
     const onLock=(event)=>{
         event.preventDefault();
         setDrawerOpen(false);
@@ -43,30 +43,22 @@ const Layout = ({children}) => {
 
     const logout=(e)=>{
         e.preventDefault()
+        console.log('hjkndfdijk')
         setLogout(false)
-        setLoader(true)
         setDrawerOpen(false)
-        axios.get(config.baseUrl+'/user/logout')
-            .then(response=>{
-                if (response.data.message === 'Utilisateur Deconnecter'){
-                    history.push('/login')
-                    window.localStorage.removeItem('token');
-                    setToken(null)
-                    axios.defaults.headers['Authorization']=null;
-                    dispatch({
-                        type: 'INFO_USER',
-                        payload: ""
-                    })
-                }
-                setLoader(false)
-            })
-            .catch(error=>{
-                console.log(error)
-                setLoader(false)
-            })
+        window.localStorage.removeItem('token');
+        setToken(null)
+        axios.defaults.headers['Authorization']=null;
+        dispatch({
+            type: 'INFO_USER',
+            payload: ""
+        })
+        window.localStorage.removeItem('user')
+        history.push('/login')
     }
 
     const handleModal = (e)=>{
+        console.log('icic')
         e.preventDefault()
         setDrawerOpen(false)
         setLogout(true)
@@ -119,23 +111,12 @@ const Layout = ({children}) => {
                         <div>
                             <img src={require('../../../assets/images/avatar.png').default} style={{height:40,borderRadius:"50%",backgroundColor:"#eee",marginRight:20,marginLeft:15}}/>
                         </div>
-                        <div style={{flexGrow:1,display:'flex',flexDirection:'column',justifyContent:"center"}}>
-                            <h2 style={{fontSize:10,marginBottom:5}} id={"nav-bar-username"}>{user.firstname} {user.lastname} ({user.roles})</h2>
-                            <strong onClick={handleModal} className='logout-button'>Logout</strong>
+                        <div style={{flexGrow:1,display:'flex',flexDirection:'column',justifyContent:"center", cursor: 'pointer'}}>
+                            {data !== null && <h2 style={{fontSize: 10, marginBottom: 5}} id={"nav-bar-username"}>{data.firstname} {data.lastname} ({data.roles})</h2>}
+                            {data === null && user &&<h2 style={{fontSize: 10, marginBottom: 5}} id={"nav-bar-username"}>{user.firstname} {user.lastname} ({user.roles})</h2>}
+                            <strong onClick={handleModal} className='logout-button'>Se déconnecter</strong>
                         </div>
                     </div>
-                    {
-                        log&&<Modal>
-                            <center><h2 style={{fontSize: "small", marginTop: 10}}>Voulez vous vraiment vous déconnecter ?</h2></center>
-                            <br/>
-                            <div style={{display: "flex", justifyContent: "space-between"}}>
-                                <Button onClick={(e)=> {e.preventDefault();
-                                    setLogout(false)
-                                }}>Annuler</Button>
-                                <Button style={{background: 'green', marginLeft: 10}} onClick={logout}>Oui</Button>
-                            </div>
-                        </Modal>
-                    }
                     {
                         !log&&loader&&<LoaderIcon type="cylon" color="#6B0C72"/>
                     }
@@ -172,23 +153,13 @@ const Layout = ({children}) => {
                             <div>
                                 <img src={require('../../../assets/images/avatar.png').default} style={{height:40,borderRadius:"50%",backgroundColor:"#eee",marginRight:20,marginLeft:15}}/>
                             </div>
-                            <div style={{flexGrow:1,display:'flex',flexDirection:'column',justifyContent:"center"}}>
-                                <h2 style={{fontSize:10,marginBottom:5}} id={"nav-bar-username"}>{user.firstname} {user.lastname} ({user.roles})</h2>
-                                <strong onClick={handleModal}>Logout</strong>
+                            <div style={{flexGrow:1,display:'flex',flexDirection:'column',justifyContent:"center", cursor: 'pointer'}}>
+                                {data !== null && <h2 style={{fontSize: 10, marginBottom: 5}} id={"nav-bar-username"}>{data.firstname} {data.lastname} ({data.roles})</h2>}
+
+                                {data === null && user &&<h2 style={{fontSize: 10, marginBottom: 5}} id={"nav-bar-username"}>{user.firstname} {user.lastname} ({user.roles})</h2>}
+                                <strong onClick={handleModal} className="logout-button">Se déconnecter</strong>
                             </div>
                         </div>
-                        {
-                            log&&<Modal hide={()=>setLogout(false)}>
-                                <center><h2 style={{fontSize: "small", marginTop: 10}}>Voulez vous vraiment vous déconnecter ?</h2></center>
-                                <br/>
-                                <div style={{display: "flex", justifyContent: "space-between"}}>
-                                    <Button onClick={(e)=> {e.preventDefault();
-                                        setLogout(false)
-                                    }}>Annuler</Button>
-                                    <Button style={{background: 'green', marginLeft: 10}} onClick={logout}>Oui</Button>
-                                </div>
-                            </Modal>
-                        }
                         {
                             !log&&loader&&<LoaderIcon type="cylon" color="#6B0C72"/>
                         }
@@ -198,6 +169,17 @@ const Layout = ({children}) => {
                         {children}
                     </div>
                 </div>
+                {
+                    log&&<Modal hide={()=>setLogout(false)}>
+                        <center><h3 style={{fontSize: "small", marginTop: 10}}>Voulez vous vraiment vous déconnecter ?</h3></center>
+                        <br/>
+                        <div style={{display: "flex", justifyContent: "space-between"}}>
+                            <Button onClick={(e)=> {e.preventDefault(); setLogout(false)
+                                    }}>Annuler</Button>
+                            <Button style={{background: 'green', marginLeft: 10}} onClick={logout}>Oui</Button>
+                        </div>
+                    </Modal>
+                }
                 {isMobile()&&<div id="footer">
                     {
                         MENU_ITEMS.map(item => (
@@ -224,11 +206,6 @@ const Layout = ({children}) => {
                         ))
                     }
                 </div>}
-                {/*{item ==="Home"&&<NavLink to="/home"><img src={item} alt="" /></NavLink>}
-                    <NavLink to="/conversation"><img src={Conversation} alt=""/></NavLink>
-                        <NavLink to="/advanced-search"><img src={Search} alt="" /></NavLink>
-                        <NavLink to="/products"><img src={Products} alt="" /></NavLink>
-                        <NavLink to="/profile"><img src={Profile} alt="" /></NavLink>*/}
             </div>
         </>
     )

@@ -12,6 +12,7 @@ import productLink from "../../../../config/product.link";
 import {useDispatch, useSelector} from "react-redux";
 import LoaderIcon from "react-loader-icon";
 import {isMobile} from "../../../../config/helpers";
+import {toast} from "react-toastify";
 
 const Chat = () => {
     const history = useHistory();
@@ -29,6 +30,7 @@ const Chat = () => {
     const [loader, setLoader] = useState(false)
     const [disable, setDisable] = useState(false)
     const [charge, setCharge] = useState(false)
+    const [errorMessage, setErrorMessage] = useState(null)
 
 
     useEffect(() => {
@@ -95,6 +97,27 @@ const Chat = () => {
             setCharge(false)
             setDisable(false)
             setLoader(false)
+
+            if (error.response) {
+                // Request made and server responded
+                console.log(error.response.data);
+                console.log(error.response.data.message);
+                if(error.response.data.message.startsWith("Attempt to read property \"email_verified_at\" on null")){
+                    console.log("Ce compte n'existe pas !")
+                }else if (error.response.data.message.startsWith("Mot de passe ne correspond pas")){
+                    console.log("Mot passe ou Role incorrect !")
+                }
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                console.log(error.request);
+                setErrorMessage("Erreur de connexion !")
+
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
         })
     }
 
@@ -107,18 +130,27 @@ const Chat = () => {
             axios.post(config.baseUrl + '/chat/register', {message: send})
                 .then(response => {
                     getMessage();
+                    setSend("")
+                    setFile("")
                 })
                 .catch(error => {
+                    if(error.request){
+                        notifyFailed("Vérifier votre connexion !")
+                    }else if(error.response.data){
+                        console.log(error.response.data)
+                    }
                     setLoader(false)
                 })
-            setSend("")
-            setFile("")
         }else {
             setSend("")
             setFile("")
         }
 
     
+    }
+
+    const notifyFailed = (err) => {
+        toast.error(err)
     }
 
     console.log(messagesNew)
@@ -332,12 +364,27 @@ const Chat = () => {
                     <p>Vous n'avez pas de message</p>
                 </center>
            }</div>}
-           {isMobile()&&messagesNew.length ===0&&loader&&<div>{
+           {isMobile()&&messagesNew.length ===0&&!loader&&<div>{
                <center>
                     <br/>
                     <img src={require("../../../../assets/images/telescope.png").default}/>
                     <p>Vous n'avez pas de message</p>
                 </center>
+           }</div>}
+
+           {isMobile()&&errorMessage&&!loader&&<div>{
+               <center>
+                   <br/>
+                   <img src={require("../../../../assets/images/telescope.png").default}/>
+                   <p>{errorMessage}</p>
+               </center>
+           }</div>}
+           {!isMobile()&&errorMessage&&!loader&&<div style={{position: 'absolute', top: '40%', left: '55%'}}>{
+               <center>
+                   <br/>
+                   <img src={require("../../../../assets/images/telescope.png").default}/>
+                   <p>{errorMessage}</p>
+               </center>
            }</div>}
        </div>
     )

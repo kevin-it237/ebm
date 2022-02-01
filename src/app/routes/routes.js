@@ -1,5 +1,5 @@
 import React, {Fragment} from 'react';
-import {Switch, Route, useHistory} from 'react-router-dom';
+import {Route, HashRouter, Redirect } from 'react-router-dom';
 import {connect} from 'react-redux'
 import PrivateRoute from './private.route';
 import NormalRoute from './normal.route';
@@ -21,7 +21,7 @@ import Expert from '../../applications/shop/pages/expert/expert'
 import MyProfile from '../../applications/shop/pages/myprofile/myprofile'
 import Conversation from '../../applications/shop/pages/conversation/conversation'
 import RateExpert from '../../applications/shop/pages/rate/rate'
-import {getToken, isMobile} from "../../config/helpers";
+import {getToken, getExist, isMobile, setExist} from "../../config/helpers";
 import axios from "axios";
 import Questions from "../../applications/shop/pages/question/questions";
 import VerificationEmail from "../../applications/auth/pages/reset.password/verification.email";
@@ -35,28 +35,21 @@ import OrderProduct from "../../applications/shop/pages/order/order.product";
  */
 const Routes = () => {
     window.axios = axios;
-    const history = useHistory()
-    console.log(getToken(),window.token)
     if(getToken()!==null && window.token){
         window.token=getToken();
     }
 
+    
     if (window.token){
-        console.log(window.token+" is the token");
         axios.defaults.headers['Authorization'] = window.token;
         axios.defaults.headers['Content-Type'] = 'application/json';
-    }else {
-        history.push("/conversation");
-        if (isMobile()){
-            history.push("/welcome");
-        }else {
-            history.push("/login");
-        }
-        
-        // return;
     }
+
     return (
-            <Switch>
+            <HashRouter>
+                {(isMobile() && getExist() && getToken() === 'null')&&<Redirect to={"/login"}/>}
+                {(isMobile() && getExist() && getToken() !== 'null')&&<Redirect to={"/home"}/>}
+                {(isMobile() && !getExist() )&&<Redirect to={"/welcome"}/>}
                 {/* Private routes here */}
                 <PrivateRoute exact path={"/"}>
                     {/* <Route exact component={Tracker} path={"/"} /> */}
@@ -120,7 +113,7 @@ const Routes = () => {
                 </NormalRoute>
 
 
-            </Switch>)
+            </HashRouter>)
 }
 
 const mapStateToProps = () =>({

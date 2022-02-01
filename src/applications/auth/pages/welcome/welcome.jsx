@@ -8,6 +8,7 @@ import ebmLogo from "../../../../assets/images/ebm.svg"
 import './welcome.scss'
 
 import illustration1 from "../../assets/images/illustration1.svg"
+import {setExist} from "../../../../config/helpers";
 
 const STEPS = [
     {
@@ -37,6 +38,7 @@ const Welcome = () => {
      * @param {string} step 
      */
     const navigate = (step) => {
+        setExist()
         const currentStepId = currentStep.id
        
         if(step === "NEXT") {
