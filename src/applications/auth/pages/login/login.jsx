@@ -26,11 +26,6 @@ import {useDispatch} from "react-redux";
 const Login = () => {
     const history = useHistory();
 
-    console.log(getToken())
-
-    if(getToken()){
-        history.push("/home");
-    }
     const dispatch = useDispatch();
 
     const [showPassword, setPassword] = useState(false);
@@ -50,8 +45,8 @@ const Login = () => {
             password: loginForm.password,
             roles: role.role
         }
-
-        axios.post(config.baseUrl+"/justlogmein", {...user})
+//justlogmein
+        axios.post(config.baseUrl+"/login", {...user})
             .then(response=>{
                 setLoading(false)
                 setDisabled(false)
@@ -82,9 +77,13 @@ const Login = () => {
                 if (error.response) {
                     // Request made and server responded
                     console.log(error.response.data);
+                    
                     console.log(error.response.data.message);
-                    if(error.response.data.message.startsWith("Attempt to read property \"email_verified_at\" on null")){
-                        notify("Ce compte n'existe pas !")
+                    if(error.response.data.errors.startsWith("Votre mail n'a pas été vérifié")){
+                        notify("Vérifier votre addresse mail !")
+                    }
+                    else if(error.response.data.message.startsWith("Attempt to read property \"email_verified_at\" on null")){
+                        notify("Email ou Mot de passe Incorrect !")
                     }else if (error.response.data.message.startsWith("Mot de passe ne correspond pas")){
                         notify("Mot passe ou Role incorrect !")
                     }

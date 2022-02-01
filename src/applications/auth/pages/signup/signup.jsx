@@ -103,13 +103,16 @@ const SignUp = () => {
             })
             .catch(err=>{
                 setLoading(false)
+                console.log(err.response)
                 if (err.response){
                     if (err.response.data.message){
                         const code = err.response.data.message
                         if(code.startsWith('Expected response code 220 but got code')){
                             notifyFailed('Votre addresse mail est incorrecte')
                         }else if (code.startsWith('Connection could not be established with host mail')){
-                            notifyFailed('Vérifiez votre connexion internet')
+                            notifyFailed('Vérifiez votre connexion')
+                        }else {
+                            notifyFailed('Vérifiez votre connexion')
                         }
                     }
                     else if (err.response.data.errors){
@@ -132,10 +135,10 @@ const SignUp = () => {
                             notifyFailed(error.role[0])
                         }
                     }else if (!err.response.data || !err){
-                        notifyFailed("Verifiez votre connexion internet");
+                        notifyFailed("Verifiez votre connexion");
                     }
                 }else {
-                    notifyFailed('Remplissez tous les champs')
+                    notifyFailed("Verifiez votre connexion")
                 }
             })
     }
@@ -196,7 +199,6 @@ const SignUp = () => {
             }
         }else if (e.target.name === 'phone' || e.target.name === 'institution_phone'){
             const phone = e.target.value;
-            console.log(verifiedPhone(phone))
             if (verifiedPhone(phone)){
                 setDisabled(false)
                 setPhone("")

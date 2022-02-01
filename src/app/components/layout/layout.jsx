@@ -46,14 +46,13 @@ const Layout = ({children}) => {
         console.log('hjkndfdijk')
         setLogout(false)
         setDrawerOpen(false)
-        window.localStorage.removeItem('token');
-        setToken(null)
         axios.defaults.headers['Authorization']=null;
         dispatch({
             type: 'INFO_USER',
             payload: ""
         })
         window.localStorage.removeItem('user')
+        window.localStorage.removeItem('token');
         history.push('/login')
     }
 
