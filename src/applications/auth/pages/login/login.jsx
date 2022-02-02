@@ -46,7 +46,7 @@ const Login = () => {
             roles: role.role
         }
 //justlogmein
-        axios.post(config.baseUrl+"/login", {...user})
+        axios.post(config.baseUrl+"/justlogmein", {...user})
             .then(response=>{
                 setLoading(false)
                 setDisabled(false)
@@ -80,7 +80,7 @@ const Login = () => {
                     
                     console.log(error.response.data.message);
                     if(error.response.data.errors.startsWith("Votre mail n'a pas été vérifié")){
-                        notify("Vérifier votre addresse mail !")
+                        notify("Votre mail n'a pas été vérifié !")
                     }
                     else if(error.response.data.message.startsWith("Attempt to read property \"email_verified_at\" on null")){
                         notify("Email ou Mot de passe Incorrect !")

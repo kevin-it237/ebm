@@ -8,7 +8,8 @@ import config from "../../../../config";
 import axios from "axios";
 
 const LocationAddress=(props)=> {
-    const key = "AIzaSyAWwCv4eMvfP6L7vNB8eSG0LwHm7mwFdgs";
+    //const key = "AIzaSyAWwCv4eMvfP6L7vNB8eSG0LwHm7mwFdgs";
+    const key = "AIzaSyC2vEJrfaVeGpv_kYngHtWw7VMUM6yWssM";
     const containerStyle={
         width: '100%',
         height: '60vh'
@@ -118,35 +119,7 @@ const LocationAddress=(props)=> {
         setMap(map)
     }, [])
     return (
-        <>{/*disable &&
-        <LoadScript googleMapsApiKey={key}>
-            {!notCoord &&
-            <GoogleMap onLoad={onLoad} mapContainerStyle={containerStyle} onUnmount={onUnmount} zoom={zoom}>
-                {location.map((loc, index) => (
-                    <Marker key={index} position={{
-                        lat: parseFloat(location[index].split(",")[0]),
-                        lng: parseFloat(location[index].split(",")[1])
-                    }}>
-                        {multiAddress.map(add => (
-                            <InfoWindow key={index}>
-                                <div>{multiAddress[index]}</div>
-                            </InfoWindow>
-                        ))}
-                    </Marker>
-                ))}
-            </GoogleMap>
-            }
-            {
-                notCoord && <GoogleMap onLoad={onLoad} center={coords} mapContainerStyle={containerStyle}
-                                       onUnmount={onUnmount} zoom={16}>
-                    <Marker position={coords}>
-                        <InfoWindow>
-                            <div>{address}</div>
-                        </InfoWindow>
-                    </Marker>
-                </GoogleMap>
-            }
-        </LoadScript>*/}
+        <>
             {
                 disable&&<LoadScript googleMapsApiKey={key}>
                     <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom}>
@@ -168,38 +141,27 @@ const LocationAddress=(props)=> {
                     </GoogleMap>
                 </LoadScript>
             }
-            {!disable && <LoadScript googleMapsApiKey={key}>
-            <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom}>
-                {Object.keys(allPosition).map((e, index) => (
-                    <Marker key={index} icon={image}
-                            position={{
+            {!disable && 
+            <LoadScript googleMapsApiKey={key}>
+                <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom}>
+                    {Object.keys(allPosition).map((e, index) => (
+                        <Marker key={index} icon={image}
+                                position={{
+                                    lat: parseFloat(allPosition[index].location.split(",")[0]),
+                                    lng: parseFloat(allPosition[index].location.split(",")[1])
+                                }}>
+                            {<InfoWindow position={{
                                 lat: parseFloat(allPosition[index].location.split(",")[0]),
                                 lng: parseFloat(allPosition[index].location.split(",")[1])
                             }}>
-                        {<InfoWindow position={{
-                            lat: parseFloat(allPosition[index].location.split(",")[0]),
-                            lng: parseFloat(allPosition[index].location.split(",")[1])
-                        }}>
-                            <div>{allPosition[index].institution_address}</div>
-                        </InfoWindow>}
-                    </Marker>
-                ))}
-
-            </GoogleMap>
-        </LoadScript>}
-    </>
+                                <div>{allPosition[index].institution_address}</div>
+                            </InfoWindow>}
+                        </Marker>
+                    ))}
+                </GoogleMap>
+            </LoadScript>}
+        </>
     )
-    {/*
-        (!disable &&
-            <div>
-                <br/>
-                <center>
-                    <img src={require("../../../../assets/images/telescope.png").default}/>
-                    <p>Pas de donnée de localisation</p>
-                </center>
-            </div>
-        )*/
-    }
 }
 
 export default LocationAddress;

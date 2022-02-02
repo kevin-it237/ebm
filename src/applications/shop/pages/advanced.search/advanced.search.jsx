@@ -27,6 +27,7 @@ import LocationAddress from "../../components/localization/location.address";
 import {confirmAlert} from "react-confirm-alert";
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import {useDispatch} from "react-redux";
+import {isMobile} from "../../../../config/helpers"
 
 
 
@@ -412,7 +413,7 @@ const AdvancedSearch = () => {
             </div>
 
             {
-                showFilter &&
+                showFilter && isMobile()&&
                 <BottomDrawer onClose={() => setShowFilter(false)}>
                     <div className="section-title">
                         <h2>Trier par :</h2>
@@ -459,6 +460,57 @@ const AdvancedSearch = () => {
                         </div>
                     </div>
                     <Button size="sm" style={{height: '8vh'}} onClick={saveCommand}>Commencer la Recherche</Button>
+                </BottomDrawer>
+            }
+
+            {
+                showFilter && !isMobile()&&
+                <BottomDrawer onClose={() => setShowFilter(false)}>
+                    <div className="section-title">
+                        <h2>Trier par :</h2>
+                        <span></span>
+                    </div>
+                    <div className="options" style={{
+                        fontSize: '2vh', display: 'flex', flexDirection: 'column',
+                        justifyContent: 'space-between', marginTop: '3vh'
+                    }}>
+                        <div className="filters" style={{display: 'flex', flexDirection: 'column', height: '10vh'}}>
+                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                        <img src={Map} alt=""/>
+                                        <div className="option" style={{marginLeft: '2vh'}}>Distance Max.</div>
+                                    </div>
+                                    <p className="option" style={{color: '#6B0C72'}}>{distance} {unit}</p>
+                                </div>
+                                <Slider
+                                    value={distance} step={25} max={10000}
+                                    onChange={(event, newValue) => {
+                                        setDistance(newValue)
+                                    }}
+                                    aria-label="pretto slider"
+                                    style={{color: '#6B0C72'}}
+                                />
+                            </div>
+                            <div className="filter" style={{
+                                display: 'flex',
+                                height: '8vh',
+                                alignItems: 'center',
+                                justifyContent: 'space-between'
+                            }}>
+                                <div style={{display: 'flex'}}>
+                                    <Rating disabled max={1} size="large"/>
+                                    <p className="option" style={{marginLeft: '2vh'}}>Like Min.</p>
+                                </div>
+                                <div>
+                                    <Rating size="large" precision={0.5} onChange={(event, newValue) => {
+                                        event.preventDefault();
+                                        setStar(newValue)
+                                    }} value={star}/>
+                                </div>
+
+                            </div>
+                        </div>
+                        <Button size="sm" style={{height: '8vh'}} onClick={saveCommand}>Commencer la Recherche</Button>
                 </BottomDrawer>
             }
         </>
