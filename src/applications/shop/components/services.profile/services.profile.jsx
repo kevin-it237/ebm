@@ -161,11 +161,11 @@ const ServicesProfile = () => {
                 showModal &&
                 <Modal hide={() => setShowModal(false)}>
                     <div className="cart-modal-content">
-                        <h3>Choisir un service</h3>
+                        <h3 style={{marginBottom: 20}}>Choisir un service</h3>
                         <Select
                             placeholder="Service(s)..."
                             onChange={handleChange}
-                            closeMenuOnSelect={false}
+                            closeMenuOnSelect={true}
                             components={animatedComponents}
                             options={selectService}
                         />

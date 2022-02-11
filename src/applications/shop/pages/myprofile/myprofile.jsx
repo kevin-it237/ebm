@@ -188,25 +188,7 @@ const MyProfile = () => {
                 }
             })
             .then(res => {
-                axios.get(config.baseUrl + '/user/profile/photo')
-                    .then(res => {
-                        console.log(res.data.message)
-                        setImageProfile(res.data.message)
-                        setLoader(false)
-                    })
-                    .catch(error => {
-                        console.log(error)
-                        setLoader(false)
-                        if (error.request) {
-                            // The request was made but no response was received
-                            console.log(error.request);
-                            setErrorMessage("Erreur de connexion !");
-
-                        } else {
-                            // Something happened in setting up the request that triggered an Error
-                            console.log('Error', error.message);
-                        }
-                    })
+                getPhotoProfile()
             })
             .catch(error => {
                 console.log(error)
@@ -214,11 +196,34 @@ const MyProfile = () => {
         setSelectFile("")
     }
 
+    const getPhotoProfile=()=>{
+        axios.get(config.baseUrl + '/user/profile/photo')
+            .then(res => {
+                console.log(res.data.message)
+                setImageProfile(res.data.message)
+                setLoader(false)
+            })
+            .catch(error => {
+                console.log(error)
+                setLoader(false)
+                if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                    setErrorMessage("Erreur de connexion !");
+
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                }
+            })
+    }
+
 
     useEffect(() => {
         getUserData()
         getJoinedDate();
         getOrderExpert();
+        getPhotoProfile();
         setLoader(true)
         dispatch({
             type: 'ADD_TO_PATH',
@@ -273,6 +278,7 @@ const MyProfile = () => {
                 if (response.data.message.role === 'INSTITUTION') {
                     axios.get(config.baseUrl + '/institution/info')
                         .then(response => {
+                            console.log(response.data.message)
                             setInfoForm({
                                 name: response.data.message.name,
                                 surname: response.data.message.surname,
@@ -804,6 +810,8 @@ const MyProfile = () => {
                 )
         }
     }
+
+    console.log(imageProfile)
 
     return (
         <div id="institute">

@@ -36,6 +36,7 @@
        background-repeat: no-repeat;
        >.owner-infos {
            display: flex;
+           padding-top: 20px;
            align-items: center;
            >.avatar {
                width: 80px;
@@ -43,7 +44,6 @@
                border-radius: 50%;
                margin-right: 10px;
                box-shadow: 0 2px 15px rgba(#000, .35);
-               margin-top: -15px;
            }
            .name {
                 font-size: 1.5rem;
@@ -95,6 +95,7 @@
          display: flex;
          margin-top: 20px;
          flex-wrap: nowrap;
+         cursor: pointer;
 
          &.actived{
            color: $primary;

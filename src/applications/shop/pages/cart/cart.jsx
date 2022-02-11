@@ -34,6 +34,7 @@ const Cart = () => {
         setLoading(true)
         axios.get(config.baseUrl + '/user/cart/quantity')
             .then(response => {
+                console.log(response.data.message)
                 setProduct(response.data.message)
                 dispatch({
                     type: 'ALL_CART_PRODUCT',
@@ -117,64 +118,55 @@ const Cart = () => {
 
     return (
         <>
-            <div id="cart">
+            {isMobile()&&<div id="cart">
                 <div className="header">
                     <Back onClick={() => history.goBack()}/>
                     <p>Panier</p>
                 </div>
-                {prod.length !== 0&&
+                {prod.length !== 0 &&
                 <div className="cart-items" style={{padding: 0, paddingTop: 20, paddingBottom: 20}}>
                     {Object.keys(prod).map((product, index) => (
                         <SwipeToDelete key={index}
-                            onDelete={() => Undelete(products[product]['id'])} // required
-                            height={91} // required
+                                       onDelete={() => Undelete(products[product]['id'])} // required
+                                       height={91} // required
                             // optional
-                            transitionDuration={250} // default
-                            deleteWidth={75} // default
-                            deleteColor="rgba(252, 58, 48, 1.00)" // default
-                            deleteText="Retirer" // default
-                            deleteComponent={null} // not default
-                            disabled={false} // default
-                            rtl={false} // default
+                                       transitionDuration={250} // default
+                                       deleteWidth={75} // default
+                                       deleteColor="rgba(252, 58, 48, 1.00)" // default
+                                       deleteText="Retirer" // default
+                                       deleteComponent={null} // not default
+                                       disabled={false} // default
+                                       rtl={false} // default
                         >
                             <CardItem id={prod[product]['id']} products={prod}
                                       name={prod[product]['name']}
                                       price={prod[product]['price']}
                                       quantity={prod[product]['quantity']}
-                                      image = {prod[product]['image']}
+                                      image={prod[product]['image']}
                                       discount={prod[product]['discount']} update={setProduct} index={index}/>
 
                         </SwipeToDelete>
                     ))}
                 </div>
                 }
-                {loading && prod.length===0 &&
-                    <Charge className="spinner_load">
-                        <LoaderIcon type="cylon" color="#6B0C72"/>
-                    </Charge>
+                {loading && prod.length === 0 &&
+                <Charge className="spinner_load">
+                    <LoaderIcon type="cylon" color="#6B0C72"/>
+                </Charge>
                 }
                 {regist &&
                 <Charge>
                     <LoaderIcon type="cylon" color="#6B0C72"/>
                 </Charge>
                 }
-                {!loading && prod.length === 0 &&isMobile()&&
-                    <div style={{position: 'absolute', top: '30%', left: '35%'}}>
-                        <center>
+                {!loading && prod.length === 0 && isMobile() &&
+                <div style={{position: 'absolute', top: '30%', left: '35%'}}>
+                    <center>
                         <br/>
                         <img src={require("../../../../assets/images/telescope.png").default}/>
                         <p>{"Aucun Produit dans le panier"}</p>
-                        </center>
-                        </div>
-                }
-                {!loading && prod.length === 0 &&!isMobile()&&
-                    <div style={{position: 'absolute', top: '30%', left: '50%'}}>
-                        <center>
-                        <br/>
-                        <img src={require("../../../../assets/images/telescope.png").default}/>
-                        <p>{"Aucun Produit dans le panier"}</p>
-                        </center>
-                        </div>
+                    </center>
+                </div>
                 }
                 {prod.length !== 0 ?
                     <div className="footer" style={{position: "fixed", bottom: 0, width: '100%'}}>
@@ -186,7 +178,70 @@ const Cart = () => {
                         <Button onClick={() => setShowModal(true)} size="sm">VALIDER</Button>
                     </div>
                     : <div></div>}
-            </div>
+            </div>}
+
+            {!isMobile()&&<div id="cart-web">
+                <div className="header-web">
+                    <Back onClick={() => history.goBack()}/>
+                    <p>Panier</p>
+                </div>
+                {prod.length !== 0 &&
+                <div className="cart-items-web" style={{padding: 0, paddingTop: 20, paddingBottom: 20}}>
+                    {Object.keys(prod).map((product, index) => (
+                        <SwipeToDelete key={index}
+                                       onDelete={() => Undelete(products[product]['id'])} // required
+                                       height={91} // required
+                            // optional
+                                       transitionDuration={250} // default
+                                       deleteWidth={75} // default
+                                       deleteColor="rgba(252, 58, 48, 1.00)" // default
+                                       deleteText="Retirer" // default
+                                       deleteComponent={null} // not default
+                                       disabled={false} // default
+                                       rtl={false} // default
+                        >
+                            <CardItem id={prod[product]['id']} products={prod}
+                                      name={prod[product]['name']}
+                                      price={prod[product]['price']}
+                                      quantity={prod[product]['quantity']}
+                                      image={prod[product]['image']}
+                                      discount={prod[product]['discount']} update={setProduct} index={index}/>
+
+                        </SwipeToDelete>
+                    ))}
+                </div>
+                }
+                {loading && prod.length === 0 &&
+                <Charge className="spinner_load">
+                    <LoaderIcon type="cylon" color="#6B0C72"/>
+                </Charge>
+                }
+                {regist &&
+                <Charge>
+                    <LoaderIcon type="cylon" color="#6B0C72"/>
+                </Charge>
+                }
+                {!loading && prod.length === 0 && !isMobile() &&
+                <div style={{position: 'absolute', top: '30%', left: '50%'}}>
+                    <center>
+                        <br/>
+                        <img src={require("../../../../assets/images/telescope.png").default}/>
+                        <p>{"Aucun Produit dans le panier"}</p>
+                    </center>
+                </div>
+                }
+                {prod.length !== 0 ?
+                    <div className="footer" style={{position: "fixed", bottom: 0, width: '100%'}}>
+                        <div className="summary">
+                            <p>TOTAL</p>
+                            <p className="price">{total} XAF</p>
+                        </div>
+
+                        <Button onClick={() => setShowModal(true)} size="sm">VALIDER</Button>
+                    </div>
+                    : <div></div>}
+            </div>}
+
             {
                 showModal &&
                 <Modal hide={() => setShowModal(false)}>

@@ -46,7 +46,7 @@ const Login = () => {
             roles: role.role
         }
 //justlogmein
-        axios.post(config.baseUrl+"/justlogmein", {...user})
+        axios.post(config.baseUrl+"/login", {...user})
             .then(response=>{
                 setLoading(false)
                 setDisabled(false)
@@ -77,15 +77,18 @@ const Login = () => {
                 if (error.response) {
                     // Request made and server responded
                     console.log(error.response.data);
-                    
-                    console.log(error.response.data.message);
-                    if(error.response.data.errors.startsWith("Votre mail n'a pas été vérifié")){
-                        notify("Votre mail n'a pas été vérifié !")
-                    }
-                    else if(error.response.data.message.startsWith("Attempt to read property \"email_verified_at\" on null")){
-                        notify("Email ou Mot de passe Incorrect !")
-                    }else if (error.response.data.message.startsWith("Mot de passe ne correspond pas")){
-                        notify("Mot passe ou Role incorrect !")
+                    if(error.response.data.errors){
+                        if(error.response.data.errors.startsWith("Votre mail n'a pas été vérifié")){
+                            notify("Votre mail n'a pas été vérifié !")
+                        }
+                    }else if(error.response.data.message){
+                        if (error.response.data.message.startsWith("Role Incorrect")){
+                            notify('Role incorrect !')
+                        }else if(error.response.data.message.startsWith("Attempt to read property \"email_verified_at\" on null")){
+                            notify("Email ou Mot de passe Incorrect !")
+                        }else if (error.response.data.message.startsWith("Mot de passe ne correspond pas")){
+                            notify("Mot passe incorrect !")
+                        }
                     }
                     console.log(error.response.status);
                     console.log(error.response.headers);

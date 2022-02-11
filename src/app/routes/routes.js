@@ -1,5 +1,5 @@
 import React, {Fragment} from 'react';
-import {Route, HashRouter, Redirect } from 'react-router-dom';
+import {Route, BrowserRouter, HashRouter, Redirect } from 'react-router-dom';
 import {connect} from 'react-redux'
 import PrivateRoute from './private.route';
 import NormalRoute from './normal.route';
@@ -46,7 +46,7 @@ const Routes = () => {
     }
 
     return (
-            <HashRouter>
+            <BrowserRouter>
                 {(isMobile() && getExist() && getToken() === 'null')&&<Redirect to={"/login"}/>}
                 {(isMobile() && getExist() && getToken() !== 'null')&&<Redirect to={"/home"}/>}
                 {(isMobile() && !getExist() )&&<Redirect to={"/welcome"}/>}
@@ -113,7 +113,7 @@ const Routes = () => {
                 </NormalRoute>
 
 
-            </HashRouter>)
+            </BrowserRouter>)
 }
 
 const mapStateToProps = () =>({

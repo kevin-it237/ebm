@@ -28,11 +28,13 @@ const LocationAddress=(props)=> {
     const [position, setPosition] = useState([])
     const [allPosition, setAllPosition] = useState([])
     const [multiAddress, setMultiAddress] = useState([])
+    const [noData, setNoData] = useState(false)
 
     const locationProps = props.location;
 
     let tab = []
     useEffect(() => {
+        checkConnection()
         getLocation()
         if (locationProps.length !== 0) {
             setNotCoord(false)
@@ -67,7 +69,7 @@ const LocationAddress=(props)=> {
             })
     }
 
-    console.log(allPosition)
+    console.log(locationProps)
 
     const getAddress = (lat, lng) => {
         Geocode.setApiKey(key);
@@ -105,6 +107,14 @@ const LocationAddress=(props)=> {
             );
     }
 
+    const checkConnection=()=>{
+        if(!navigator.onLine){
+            setNoData(true)
+        }else {
+            setNoData(false)
+        }
+    }
+
 
     const [map, setMap] = useState(null)
 
@@ -120,8 +130,8 @@ const LocationAddress=(props)=> {
     }, [])
     return (
         <>
-            {
-                disable&&<LoadScript googleMapsApiKey={key}>
+            {!noData&&<div>{
+                disable && <LoadScript googleMapsApiKey={key}>
                     <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom}>
                         {Object.keys(locationProps).map((e, index) => (
                             <Marker key={index} icon={image}
@@ -140,26 +150,34 @@ const LocationAddress=(props)=> {
 
                     </GoogleMap>
                 </LoadScript>
-            }
-            {!disable && 
-            <LoadScript googleMapsApiKey={key}>
-                <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom}>
-                    {Object.keys(allPosition).map((e, index) => (
-                        <Marker key={index} icon={image}
-                                position={{
+                }
+                {!disable &&
+                <LoadScript googleMapsApiKey={key}>
+                    <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom}>
+                        {Object.keys(allPosition).map((e, index) => (
+                            <Marker key={index} icon={image}
+                                    position={{
+                                        lat: parseFloat(allPosition[index].location.split(",")[0]),
+                                        lng: parseFloat(allPosition[index].location.split(",")[1])
+                                    }}>
+                                {<InfoWindow position={{
                                     lat: parseFloat(allPosition[index].location.split(",")[0]),
                                     lng: parseFloat(allPosition[index].location.split(",")[1])
                                 }}>
-                            {<InfoWindow position={{
-                                lat: parseFloat(allPosition[index].location.split(",")[0]),
-                                lng: parseFloat(allPosition[index].location.split(",")[1])
-                            }}>
-                                <div>{allPosition[index].institution_address}</div>
-                            </InfoWindow>}
-                        </Marker>
-                    ))}
-                </GoogleMap>
-            </LoadScript>}
+                                    <div>{allPosition[index].institution_address}</div>
+                                </InfoWindow>}
+                            </Marker>
+                        ))}
+                    </GoogleMap>
+                </LoadScript>}
+            </div>}
+            {noData&&<div>
+                <br/>
+                <center>
+                    <img src={require("../../../../assets/images/telescope.png").default}/>
+                    <p>Vérifier votre connection internet</p>
+                </center>
+            </div>}
         </>
     )
 }

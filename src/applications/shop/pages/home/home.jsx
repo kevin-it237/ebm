@@ -64,7 +64,6 @@ const Home = () => {
     const openDrawer = (e) => {
         e.preventDefault()
         if(window.setDrawerOpen){
-            console.log('yujfddu')
             window.setDrawerOpen(true)
             dispatch({
                 type: 'ADD_TO_REDUCER',
@@ -72,8 +71,6 @@ const Home = () => {
             })
         }
     }
-
-    console.log(drawer)
 
     useEffect(() => {
         getAllProduct();

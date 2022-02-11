@@ -27,10 +27,46 @@
   >span {
     display: block;
     z-index: auto;
-    margin-top: 8vh;
+    margin-top: 7.2vh;
     position: relative;
     height: 4px;
-    width: 20%;
+    width: 15%;
+    margin-left: 2vh;
+    background-color: $primary;
+  }
+}
+
+#service-web{
+  height: 18vh;
+  width: auto;
+  background-color: rgba($primary, 0.1);
+  border-radius: 2vh;
+  margin: 0.5vh;
+
+  >.service-name-web {
+    z-index: auto;
+    margin-top: -15vh;
+    text-transform: capitalize;
+    position: relative;
+    top: 50px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: $primary;
+    margin-left: 2vh;
+  }
+
+  >.service-image-web{
+    height: 18vh;
+    width: 27vh;
+  }
+
+  >span {
+    display: block;
+    z-index: auto;
+    margin-top: 7vh;
+    position: relative;
+    height: 4px;
+    width: 10%;
     margin-left: 2vh;
     background-color: $primary;
   }

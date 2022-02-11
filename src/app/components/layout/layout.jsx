@@ -43,7 +43,6 @@ const Layout = ({children}) => {
 
     const logout=(e)=>{
         e.preventDefault()
-        console.log('hjkndfdijk')
         setLogout(false)
         setDrawerOpen(false)
         axios.defaults.headers['Authorization']=null;
@@ -57,7 +56,6 @@ const Layout = ({children}) => {
     }
 
     const handleModal = (e)=>{
-        console.log('icic')
         e.preventDefault()
         setDrawerOpen(false)
         setLogout(true)
@@ -70,6 +68,8 @@ const Layout = ({children}) => {
             payload: contentName
         })
     }
+
+    console.log(user)
 
 
     const MENU_ITEMS = ["Home", "Chat", "Search", "Document", "UserAccount"];
@@ -91,19 +91,17 @@ const Layout = ({children}) => {
                         <ul>
                             <li> <NavLink to={"/home"} onClick={(event)=> {event.preventDefault();
                                 history.push('/home'); setDrawerOpen(false)}}>Acceuil</NavLink> </li>
-                            <li> <NavLink to={"/conversation"} onClick={(event)=> {event.preventDefault();
-                                history.push('/conversation'); setDrawerOpen(false)}}>Chat</NavLink> </li>
                             <li> <NavLink to={"/products"} onClick={(event)=> {event.preventDefault();
-                                history.push('/products'); setDrawerOpen(false)}}>Produits</NavLink> </li>
+                                history.push('/products'); setDrawerOpen(false)}}>Bio Shop</NavLink> </li>
+                            <li> <NavLink to={"/advanced-search"} onClick={(event)=> {event.preventDefault();
+                                history.push('/advanced-search'); setDrawerOpen(false)}}>Institutions</NavLink> </li>
+                            <li> <NavLink to={"/conversation"} onClick={(event)=> {event.preventDefault();
+                                history.push('/conversation'); setDrawerOpen(false)}}>Message</NavLink> </li>
+                            {user.roles === 'user' &&<li><NavLink to={"/rate-expert"} onClick={(event) => {event.preventDefault();
+                                history.push('/rate-expert');setDrawerOpen(false)}}>Notez Expert</NavLink></li>}
                             <li> <NavLink to={"/profile"} onClick={(event)=> {event.preventDefault();
                                 history.push('/profile'); setDrawerOpen(false)}}>Profil</NavLink> </li>
-                            <li> <NavLink to={"/advanced-search"} onClick={(event)=> {event.preventDefault();
-                                history.push('/advanced-search'); setDrawerOpen(false)}}>Recherche</NavLink> </li>
-                            {user.role === 'user' ?<li><NavLink to={"/rate-expert"} onClick={(event) => {
-                                event.preventDefault();
-                                history.push('/rate-expert');
-                                setDrawerOpen(false)
-                            }}>Notez Expert</NavLink></li> : ""}
+
                         </ul>
                     </div>
                     <div style={{display:'flex',flexDirection:"row",height:60,alignItems:"center",borderTop:"1px solid rgb(0, 0, 0, 0.05)", cursor: 'pointer'}}>
@@ -112,7 +110,7 @@ const Layout = ({children}) => {
                         </div>
                         <div style={{flexGrow:1,display:'flex',flexDirection:'column',justifyContent:"center", cursor: 'pointer'}}>
                             {data !== null && <h2 style={{fontSize: 10, marginBottom: 5}} id={"nav-bar-username"}>{data.firstname} {data.lastname} ({data.roles})</h2>}
-                            {data === null && user &&<h2 style={{fontSize: 10, marginBottom: 5}} id={"nav-bar-username"}>{user.firstname} {user.lastname} ({user.roles})</h2>}
+                            {data === null && user &&<h2 style={{fontSize: 10, marginBottom: 5}} id={"nav-bar-username"}>{user.firstname} {user.lastname} ({user.roles === "user" ? 'Client' : user.roles})</h2>}
                             <strong onClick={handleModal} className='logout-button'>Se déconnecter</strong>
                         </div>
                     </div>
@@ -133,19 +131,17 @@ const Layout = ({children}) => {
                             <ul>
                                 <li> <NavLink to={"/home"} onClick={(event)=> {event.preventDefault();
                                     history.push('/home'); setDrawerOpen(false)}}>Acceuil</NavLink> </li>
-                                <li> <NavLink to={"/conversation"} onClick={(event)=> {event.preventDefault();
-                                    history.push('/conversation'); setDrawerOpen(false)}}>Chat</NavLink> </li>
                                 <li> <NavLink to={"/products"} onClick={(event)=> {event.preventDefault();
-                                    history.push('/products'); setDrawerOpen(false)}}>Produits</NavLink> </li>
+                                    history.push('/products'); setDrawerOpen(false)}}>Bio Shop</NavLink> </li>
+                                <li> <NavLink to={"/advanced-search"} onClick={(event)=> {event.preventDefault();
+                                    history.push('/advanced-search'); setDrawerOpen(false)}}>Institutions</NavLink> </li>
+                                <li> <NavLink to={"/conversation"} onClick={(event)=> {event.preventDefault();
+                                    history.push('/conversation'); setDrawerOpen(false)}}>Message</NavLink> </li>
+                                {user.roles === 'user' &&<li><NavLink to={"/rate-expert"} onClick={(event) => {
+                                    event.preventDefault();history.push('/rate-expert'); setDrawerOpen(false)}}>Notez Expert</NavLink></li>}
                                 <li> <NavLink to={"/profile"} onClick={(event)=> {event.preventDefault();
                                     history.push('/profile'); setDrawerOpen(false)}}>Profil</NavLink> </li>
-                                <li> <NavLink to={"/advanced-search"} onClick={(event)=> {event.preventDefault();
-                                    history.push('/advanced-search'); setDrawerOpen(false)}}>Recherche</NavLink> </li>
-                                {user.role === 'user' ?<li><NavLink to={"/rate-expert"} onClick={(event) => {
-                                    event.preventDefault();
-                                    history.push('/rate-expert');
-                                    setDrawerOpen(false)
-                                }}>Notez Expert</NavLink></li> : ""}
+
                             </ul>
                         </div>
                         <div style={{display:'flex',flexDirection:"row",height:60,alignItems:"center",borderTop:"1px solid rgb(0, 0, 0, 0.05)"}}>
@@ -155,7 +151,7 @@ const Layout = ({children}) => {
                             <div style={{flexGrow:1,display:'flex',flexDirection:'column',justifyContent:"center", cursor: 'pointer'}}>
                                 {data !== null && <h2 style={{fontSize: 10, marginBottom: 5}} id={"nav-bar-username"}>{data.firstname} {data.lastname} ({data.roles})</h2>}
 
-                                {data === null && user &&<h2 style={{fontSize: 10, marginBottom: 5}} id={"nav-bar-username"}>{user.firstname} {user.lastname} ({user.roles})</h2>}
+                                {data === null && user &&<h2 style={{fontSize: 10, marginBottom: 5}} id={"nav-bar-username"}>{user.firstname} {user.lastname} ({user.roles === "user" ? 'Client' : user.roles})</h2>}
                                 <strong onClick={handleModal} className="logout-button">Se déconnecter</strong>
                             </div>
                         </div>

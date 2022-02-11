@@ -172,12 +172,15 @@ const Work = () => {
         inputFile.current.click()
     }
 
+    console.log(image)
+
     return (
         <div>
             {
                 showModal &&
                 <Modal hide={() => {
                     setShowModal(false);
+                    setImage('')
                 }}>
                     <div className="cart-modal-content">
                         <h3>Ajouter l'oeuvre</h3>
@@ -185,18 +188,16 @@ const Work = () => {
                         <TextArea rows={1} name="title" onChange={changeDescription} value={form.title}
                                   placeholder="Entrez le titre..." style={{fontSize: 'small'}}/>
                         <p style={{fontSize: 'small', color: '#6B0C72', fontWeight: "bold"}}>Image</p>
-                        <input id="inputFile" type="file" accept="image/*" ref={inputFile} onChange={onFile}
-                               style={{display: "none"}}/>
-                        {image ?
-                            <ReactCrop src={image} crop={crop} onChange={(newCrop) => {
-                                setCrop(newCrop)
-                            }}
-                                       minWidth="10" minHeight="10" locked
-                                       onImageLoaded={onImageLoad} onComplete={onCropComplet} onClick={onButtonClick}/>
+                        <input id="inputFile" type="file" accept="image/*" ref={inputFile} onChange={onFile} style={{display: "none"}}/>
+                            {image ?
+                                <ReactCrop src={image} crop={crop} onChange={(newCrop) => {
+                                    setCrop(newCrop)
+                                }}
+                                           minWidth="300" minHeight="300" className="reactCrop"
+                                           onImageLoaded={onImageLoad} onComplete={onCropComplet}/>
 
-                            : <div style={{width: "100%", height: 200, backgroundColor: "#eee"}} src={image}
-                                   onClick={onButtonClick}>
-                            </div>}
+                                : <div style={{width: "100%", height: 200, backgroundColor: "#eee", cursor: 'pointer'}} onClick={onButtonClick}></div>
+                            }
                         <p style={{fontSize: 'small', color: '#6B0C72', fontWeight: "bold"}}>Description</p>
                         <TextArea rows={8} placeholder="Entrez la description..." style={{fontSize: "small"}}
                                   name="description" onChange={changeDescription} value={form.description}/>
@@ -213,8 +214,8 @@ const Work = () => {
                         <h3>{selectArtwork.title}</h3>
                         <p style={{fontSize: 'medium'}}>Image</p>
                         <img src={imageLink.link + selectArtwork.image}
-                             style={{width: "100%", backgroundColor: "#eee", height: 200}}
-                             alt={selectArtwork.title}/>
+                             style={{width: "100%", height: "100%"}}
+                             alt={selectArtwork.title} height={200}/>
                         <p style={{fontSize: 'medium'}}>Description</p>
                         <div style={{fontSize: 'small'}}>{selectArtwork.description}</div>
                         <Button size="sm" style={{backgroundColor: 'red'}} onClick={() => {
@@ -230,29 +231,29 @@ const Work = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    height: 130,
-                    marginRight: 5,
-                    marginBottom: 5
+                    height: 180,
+                    width: 180,
+                    cursor: 'pointer'
                 }} className={"artwork"} onClick={e => {
                     setShowModal(true)
                 }}>
                     <strong style={{color: "white", fontSize: 34}}>+</strong>
                 </div>
                 {artworks.map(artwork => (
-                    <div className="artwork" style={{justifyContent: 'space-around', display: "flex", height: 130, marginRight: 5}}
+                    <div className="artwork"
                          onClick={e => {
                              setSelectedArtwork(artwork);
                              setSelectedWork(true)
                          }}>
                         {/*<p>{artwork.title}</p>*/}
-                        <div style={{
+                        {/*<div style={{
                             backgroundImage: `url("${imageLink.link + artwork.image}")`,
                             backgroundSize: "cover",
                             backgroundPosition: "center",
-                            height: "100%",
-                            width: "100%"
-                        }}/>
-                        {/*<img src={imageLink.link + artwork.image} alt={artwork.owner_type}/>*/}
+                            height: "90%",
+                            width: "90%"
+                        }}/>*/}
+                        {<img src={imageLink.link + artwork.image} alt={artwork.owner_type} width={180} height={180}/>}
                     </div>
                 ))}
             </div>
@@ -280,7 +281,7 @@ const Work = () => {
             {
                 !loader && artworks.length === 0 && <div style={{
                     backgroundColor: "#eee", display: "flex", alignItems: "center", justifyContent: "center",
-                    height: 100, width: "25%"
+                    height: 180, width: 180, cursor: 'pointer'
                 }} className={"artwork"} onClick={e => {
                     setShowModal(true)
                 }}>
