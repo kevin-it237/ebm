@@ -21,7 +21,7 @@ import Expert from '../../applications/shop/pages/expert/expert'
 import MyProfile from '../../applications/shop/pages/myprofile/myprofile'
 import Conversation from '../../applications/shop/pages/conversation/conversation'
 import RateExpert from '../../applications/shop/pages/rate/rate'
-import {getToken, getExist, isMobile, setExist} from "../../config/helpers";
+import {getToken, getExist, isMobile} from "../../config/helpers";
 import axios from "axios";
 import Questions from "../../applications/shop/pages/question/questions";
 import VerificationEmail from "../../applications/auth/pages/reset.password/verification.email";

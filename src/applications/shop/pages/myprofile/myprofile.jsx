@@ -101,7 +101,7 @@ const MyProfile = () => {
     const [productLoader, setProductLoader] = useState(false);//loader for state
     const [expertLoader, setExpertLoader] = useState(false);//loader for state
 
-    const [errorMessage, setErrorMessage] = useState(null);//loader for state
+    const [errorMessage, setErrorMessage] = useState(false);//loader for state
 
     const [crop, setCrop] = useState({aspect: 1, width: 150, height: 150});
     const [changePhotoProfile, setChangeProfilPhoto] = useState(false);
@@ -175,7 +175,7 @@ const MyProfile = () => {
         setImage(url)
     }
 
-    console.log(infoForm)
+
     const savePhotoProfile = () => {
         setChangeProfilPhoto(false)
         setLoader(true)
@@ -224,6 +224,7 @@ const MyProfile = () => {
         getJoinedDate();
         getOrderExpert();
         getPhotoProfile();
+        setErrorMessage(false)
         setLoader(true)
         dispatch({
             type: 'ADD_TO_PATH',
@@ -350,21 +351,24 @@ const MyProfile = () => {
             })
     }
 
+    console.log(errorMessage)
     const editProfile = (event) => {
         event.preventDefault();
         setEditProf(false)
         setLoaderProf(true)
         setMessage(false)
+        setErrorMessage(false)
         let user = {
             firstname: infoForm.name,
             lastname: infoForm.surname,
             email: infoForm.email
         }
-        if (infoUser.role === 'INSTITUTION') {
+        if (infoUser.roles === 'INSTITUTION') {
             user['institution_address'] = infoForm.address;
             user['institution_phone'] = infoForm.phone;
             axios.put(config.baseUrl + '/institution/update', {...user})
                 .then(response => {
+                    console.log(response)
                     setLoaderProf(false)
                     setMessage("Modification Enregistrée")
                     getUserData()
@@ -388,6 +392,7 @@ const MyProfile = () => {
             user['phone'] = infoForm.phone;
             axios.put(config.baseUrl + '/user/update', {...user})
                 .then(response => {
+                    console.log(response)
                     setLoaderProf(false)
                     setMessage("Modification Enregistrée")
                     getUserData()
@@ -441,6 +446,9 @@ const MyProfile = () => {
 
     const confirmEdit = (e) => {
         e.preventDefault();
+        console.log('dzfzdfdz')
+        console.log(emailError)
+        console.log(phoneError)
         if (!emailError&&!phoneError){
             setEditProf(true)
         }

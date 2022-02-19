@@ -46,7 +46,7 @@ const Login = () => {
             roles: role.role
         }
 //justlogmein
-        axios.post(config.baseUrl+"/login", {...user})
+        axios.post(config.baseUrl+"/justlogmein", {...user})
             .then(response=>{
                 setLoading(false)
                 setDisabled(false)

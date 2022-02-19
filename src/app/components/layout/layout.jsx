@@ -15,13 +15,12 @@ import {useDispatch, useSelector} from "react-redux";
 import Modal from "../modal/modal";
 import Button from "../buttons/button/button";
 import LoaderIcon from "react-loader-icon";
-import {getUser, isMobile, setToken, getToken} from "../../../config/helpers";
+import {getUser, isMobile} from "../../../config/helpers";
 
 const Layout = ({children}) => {
     const path = useSelector(state=>state.path.payload)
     const user = useSelector(state=>state.user.payload)
     const data = JSON.parse(getUser())
-    const drawer = useSelector(state=>state.drawer.payload)
     const dispatch = useDispatch();
     const history = useHistory();
     const [drawerOpen,setDrawerOpen]=useState(false);
@@ -30,16 +29,6 @@ const Layout = ({children}) => {
     const [loader,setLoader]=useState(false);
     window.setDrawerOpen =  setDrawerOpen;
 
-    console.log(drawerOpen)
-    const onLock=(event)=>{
-        event.preventDefault();
-        setDrawerOpen(false);
-    }
-
-    const fermer=(e)=>{
-        e.preventDefault()
-        setLogout(false)
-    }
 
     const logout=(e)=>{
         e.preventDefault()
