@@ -20,6 +20,9 @@ import {getUser, isMobile} from "../../../config/helpers";
 const Layout = ({children}) => {
     const path = useSelector(state=>state.path.payload)
     const user = useSelector(state=>state.user.payload)
+
+    const drawer = useSelector(state=>state.drawer.payload)
+
     const data = JSON.parse(getUser())
     const dispatch = useDispatch();
     const history = useHistory();
@@ -30,10 +33,13 @@ const Layout = ({children}) => {
     window.setDrawerOpen =  setDrawerOpen;
 
 
+    console.log(drawer)
+
     const logout=(e)=>{
         e.preventDefault()
         setLogout(false)
         setDrawerOpen(false)
+        onDrawer()
         axios.defaults.headers['Authorization']=null;
         dispatch({
             type: 'INFO_USER',
@@ -46,8 +52,16 @@ const Layout = ({children}) => {
 
     const handleModal = (e)=>{
         e.preventDefault()
+        onDrawer()
         setDrawerOpen(false)
         setLogout(true)
+    }
+
+    const onDrawer = ()=>{
+        dispatch({
+            type: 'ADD_TO_DRAWER',
+            payload: false
+        })
     }
 
     const changeContent = (contentName) => {
@@ -58,18 +72,16 @@ const Layout = ({children}) => {
         })
     }
 
-    console.log(user)
-
-
     const MENU_ITEMS = ["Home", "Chat", "Search", "Document", "UserAccount"];
 
+    console.log(user)
     return (
         <>
             <div id="layout">
-                {drawerOpen && <div onClick={e=>{e.preventDefault(); window.setDrawerOpen(false)}} style={{height: "100%", width: "100%", backgroundColor: "rgba(0,0,0,0.2)", zIndex: 19,position:"fixed"}}>
+                {drawer && <div onClick={e=>{e.preventDefault(); window.setDrawerOpen(false); onDrawer()}} style={{height: "100%", width: "100%", backgroundColor: "rgba(0,0,0,0.2)", zIndex: 19,position:"fixed"}}>
 
                 </div>}
-                <div id={"nav-bar"} className={(drawerOpen?'open':'')}>
+                <div id={"nav-bar"} className={(drawer?'open':'')}>
 
                     <div className={"topImage"} style={{backgroundImage:`url('${require('../../../assets/images/navbar.jpg').default}')`}}>
                         <div>
@@ -79,17 +91,21 @@ const Layout = ({children}) => {
                     <div style={{height:'calc(100vh -  210px)',overflowY:'auto',overflowX:'hidden'}}>
                         <ul>
                             <li> <NavLink to={"/home"} onClick={(event)=> {event.preventDefault();
-                                history.push('/home'); setDrawerOpen(false)}}>Acceuil</NavLink> </li>
+                                history.push('/home'); onDrawer()}}>Acceuil</NavLink> </li>
                             <li> <NavLink to={"/products"} onClick={(event)=> {event.preventDefault();
-                                history.push('/products'); setDrawerOpen(false)}}>Bio Shop</NavLink> </li>
+                                history.push('/products'); onDrawer()}}>Bio Shop</NavLink> </li>
+                            {user.roles === 'EXPERT' &&<li> <NavLink to={"/advanced-expert"} onClick={(event)=> {event.preventDefault();
+                                history.push('/advanced-expert'); onDrawer()}}>Experts</NavLink> </li>}
                             <li> <NavLink to={"/advanced-search"} onClick={(event)=> {event.preventDefault();
-                                history.push('/advanced-search'); setDrawerOpen(false)}}>Institutions</NavLink> </li>
+                                history.push('/advanced-search');onDrawer()}}>Institutions</NavLink> </li>
                             <li> <NavLink to={"/conversation"} onClick={(event)=> {event.preventDefault();
-                                history.push('/conversation'); setDrawerOpen(false)}}>Message</NavLink> </li>
+                                history.push('/conversation'); onDrawer()}}>Message</NavLink> </li>
                             {user.roles === 'user' &&<li><NavLink to={"/rate-expert"} onClick={(event) => {event.preventDefault();
-                                history.push('/rate-expert');setDrawerOpen(false)}}>Notez Expert</NavLink></li>}
+                                history.push('/rate-expert'); onDrawer()}}>Notez Expert</NavLink></li>}
                             <li> <NavLink to={"/profile"} onClick={(event)=> {event.preventDefault();
-                                history.push('/profile'); setDrawerOpen(false)}}>Profil</NavLink> </li>
+                                history.push('/profile'); onDrawer()}}>Mon Profil</NavLink> </li>
+                            <li> <NavLink to={"/prestation"} onClick={(event)=> {event.preventDefault();
+                                history.push('/prestation'); onDrawer()}}>Prestation</NavLink> </li>
 
                         </ul>
                     </div>
@@ -119,17 +135,21 @@ const Layout = ({children}) => {
                         <div style={{height:'calc(100vh -  210px)',overflowY:'auto',overflowX:'hidden'}}>
                             <ul>
                                 <li> <NavLink to={"/home"} onClick={(event)=> {event.preventDefault();
-                                    history.push('/home'); setDrawerOpen(false)}}>Acceuil</NavLink> </li>
+                                    history.push('/home'); onDrawer()}}>Acceuil</NavLink> </li>
                                 <li> <NavLink to={"/products"} onClick={(event)=> {event.preventDefault();
-                                    history.push('/products'); setDrawerOpen(false)}}>Bio Shop</NavLink> </li>
+                                    history.push('/products'); onDrawer()}}>Bio Shop</NavLink> </li>
+                                {user.roles !== 'EXPERT' &&<li> <NavLink to={"/advanced-expert"} onClick={(event)=> {event.preventDefault();
+                                    history.push('/advanced-expert'); onDrawer()}}>Experts</NavLink> </li>}
                                 <li> <NavLink to={"/advanced-search"} onClick={(event)=> {event.preventDefault();
-                                    history.push('/advanced-search'); setDrawerOpen(false)}}>Institutions</NavLink> </li>
+                                    history.push('/advanced-search'); onDrawer()}}>Institutions</NavLink> </li>
                                 <li> <NavLink to={"/conversation"} onClick={(event)=> {event.preventDefault();
-                                    history.push('/conversation'); setDrawerOpen(false)}}>Message</NavLink> </li>
+                                    history.push('/conversation'); onDrawer()}}>Message</NavLink> </li>
                                 {user.roles === 'user' &&<li><NavLink to={"/rate-expert"} onClick={(event) => {
-                                    event.preventDefault();history.push('/rate-expert'); setDrawerOpen(false)}}>Notez Expert</NavLink></li>}
+                                    event.preventDefault();history.push('/rate-expert'); onDrawer()}}>Notez Expert</NavLink></li>}
                                 <li> <NavLink to={"/profile"} onClick={(event)=> {event.preventDefault();
-                                    history.push('/profile'); setDrawerOpen(false)}}>Profil</NavLink> </li>
+                                    history.push('/profile'); onDrawer()}}>Mon Profil</NavLink> </li>
+                                <li> <NavLink to={"/prestation"} onClick={(event)=> {event.preventDefault();
+                                    history.push('/prestation'); onDrawer()}}>Prestation</NavLink> </li>
 
                             </ul>
                         </div>

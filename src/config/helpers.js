@@ -6,13 +6,20 @@ export const setToken = (token)=>{
     return true;
 }
 
+export const setUserData=(data)=>{
+    window.localStorage.setItem('userData', JSON.stringify(data))
+}
+
+export const getUserDataFunction=()=>{
+    return window.localStorage.getItem('userData')
+}
+
 export const setExist=()=>{
     window.localStorage.setItem('exist', true)
     return true;
 }
 
 export const setUser=(user)=>{
-    console.log(user)
     window.user = user;
     window.localStorage.setItem('user', JSON.stringify(user))
 }
@@ -71,6 +78,14 @@ export const verifiedPhone = (phone) =>{
     if (regex.test(phone) || regex1.test(phone) || regex2.test(phone) || regex3.test(phone) || regex4.test(phone) || regex5.test(phone) || regex6.test(phone) || regex7.test(phone)){
         return true
     }else {
+        return false
+    }
+}
+
+export const checkValue = (data)=>{
+    if(data === ""){
+        return true
+    }else{
         return false
     }
 }

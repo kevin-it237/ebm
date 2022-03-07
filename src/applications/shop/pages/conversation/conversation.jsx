@@ -186,71 +186,15 @@ const Chat = () => {
 
     return (
        <div id="chat">
-            <div className="header">
-                <Back onClick={() => history.goBack()}/>
-                <p>Conversation</p>
-            </div>
-
-           {/*isMobile()&&
-               <div>{messagesNew !== 0 &&<div className="conversation-content">
-                   {Object.keys(messagesNew).map((message, index) => (
-                       <div key={index}
-                            className={messagesNew[message].message ? ("message " + (messagesNew[message].role_id !== 1 ? "message--sent" : "message--received"))
-                                : ("attachment " + (messagesNew[message].role_id !== 1 ? "attachment--sent" : "attachment--received"))}>
-                           {messagesNew[message].message && <p>{messagesNew[message].message}</p>}
-                           {messagesNew[message].attachment && <img
-                               src={messagesNew[message].role_id !== 1 ? chatLink.link + messagesNew[message].attachment : productLink.link + messagesNew[message].attachment}/>}
-                           <span>{messagesNew[message].created_at}</span>
-                       </div>
-                   ))}
-               </div>}
-           </div>*/}
-
-           {/*isMobile()&&
-           <div>{messagesNew.length !== 0 && !loader && <div className="conversation-content">
-               {Object.keys(messagesNew).map((message, index) => (
-                   <div key={index}
-                        className={messagesNew[message].message ? ("message " + (messagesNew[message].role_id !== 1 ? "message--sent" : "message--received"))
-                            : ("attachment " + (messagesNew[message].role_id !== 1 ? "attachment--sent" : "attachment--received"))}>
-                       {messagesNew[message].message && <p>{messagesNew[message].message}</p>}
-                       {messagesNew[message].attachment && <img
-                           src={messagesNew[message].role_id !== 1 ? chatLink.link + messagesNew[message].attachment : productLink.link + messagesNew[message].attachment}/>}
-                       <span>{messagesNew[message].created_at}</span>
-                   </div>
-               ))}
+           {isMobile()&&<div className="new-mobile">
+               <Back onClick={() => history.goBack()}/>
+               <p>Conversation</p>
            </div>}
-           </div>
-           */}
-           {/*!isMobile()&&
-               <div>{messages.length !== 0 && !loader && <div className="conversation-content-web">
-                   {Object.keys(messages).map((message, index) => (
-                       <div key={index}
-                            className={messages[message].message ? ("message " + (messages[message].role_id !== 1 ? "message--sent" : "message--received"))
-                                : ("attachment " + (messages[message].role_id !== 1 ? "attachment--sent" : "attachment--received"))}>
-                           {messages[message].message && <p>{messages[message].message}</p>}
-                           {messages[message].attachment && <img
-                               src={messages[message].role_id !== 1 ? chatLink.link + messages[message].attachment : productLink.link + messages[message].attachment}/>}
-                           <span>{messages[message].created_at}</span>
-                       </div>
-                   ))}
-               </div>}
-           </div>
-           */}
-           {/*!isMobile()&&
-               <div>{messagesNew !== 0 && <div className="conversation-content-web">
-                   {Object.keys(messagesNew).map((message, index) => (
-                       <div key={index}
-                            className={messagesNew[message].message ? ("message " + (messagesNew[message].role_id !== 1 ? "message--sent" : "message--received"))
-                                : ("attachment " + (messagesNew[message].role_id !== 1 ? "attachment--sent" : "attachment--received"))}>
-                           {messagesNew[message].message && <p>{messagesNew[message].message}</p>}
-                           {messagesNew[message].attachment && <img
-                               src={messagesNew[message].role_id !== 1 ? chatLink.link + messagesNew[message].attachment : productLink.link + messagesNew[message].attachment}/>}
-                           <span>{messagesNew[message].created_at}</span>
-                       </div>
-                   ))}
-               </div>}
-           </div>
-           */}
+           {!isMobile()&&<div className="new">
+               <Back onClick={() => history.goBack()}/>
+               <p>Conversation</p>
+           </div>}
+
            {isMobile()&& <div>{messagesNew.length !== 0 && <div className={messagesNew!==0 ? "conversation-content-mobile" : ""}>
                {Object.keys(messagesNew).map((message, index) => (
                    <div key={index}>

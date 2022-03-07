@@ -12,12 +12,11 @@ import config from "../../../../config/index";
 import { ToastContainer, toast } from 'material-react-toastify';
 import 'material-react-toastify/dist/ReactToastify.css';
 import {
-    getToken,
     setToken,
     verifiedEmail,
     verifiedPassword,
     setUser,
-    getUser
+    checkConnection
 } from "../../../../config/helpers";
 import {useDispatch} from "react-redux";
 
@@ -88,6 +87,8 @@ const Login = () => {
                             notify("Email ou Mot de passe Incorrect !")
                         }else if (error.response.data.message.startsWith("Mot de passe ne correspond pas")){
                             notify("Mot passe incorrect !")
+                        }else if (error.response.data.message.startsWith("SQLSTATE[HY000] [2002] No connection")){
+                            notify("Erreur de connexion !")
                         }
                     }
                     console.log(error.response.status);
@@ -213,7 +214,7 @@ const Login = () => {
                         <option value="" disabled selected>Quelle est votre role ?</option>
                         <option value="USER">Client</option>
                         <option value="INSTITUTION">Institution</option>
-                        <option value="EXPERT">Expert</option>
+                        <option value="EXPERT">Freelance</option>
                     </select>
                 </div>
 

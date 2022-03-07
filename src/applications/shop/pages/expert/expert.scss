@@ -10,6 +10,7 @@
         background-repeat: no-repeat;
         >.header-title {
             display: flex;
+          cursor: pointer;
             align-items: center;
             padding: 20px 15px;
             >h4 {
@@ -58,6 +59,31 @@
                 font-weight: 400;
            }    
        }
+       >.owner-infos-web {
+            display: flex;
+            align-items: center;
+            margin-top: 30px;
+            >.avatar {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                margin-right: 10px;
+                box-shadow: 0 2px 15px rgba(#000, .35);
+                margin-top: -15px;
+            }
+            .name {
+                font-size: 1.5rem;
+            text-transform: capitalize;
+                color: $primary;
+                font-weight: 600;
+                margin-bottom: 5px;
+            }
+            .address {
+                font-size: 1.1rem;
+                color: $secondary;
+                font-weight: 400;
+            }    
+        }
        >.description {
            color: $secondary;
          word-break: break-word;
@@ -99,8 +125,9 @@
            }
        }
 
-       >.menu {
+       >.menu-expert {
            display: flex;
+           justify-content: space-around;
            margin-top: 20px;
            >.menu-item {
                 margin-right: 20px;
@@ -108,6 +135,7 @@
                 font-weight: 600;
                 padding-bottom: 4px;
                 color: $grey-500;
+                cursor: pointer;
                 &.actived {
                     border-bottom: solid 3px $primary;
                     color: $primary;

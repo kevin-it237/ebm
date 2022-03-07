@@ -16,12 +16,14 @@
                 margin-left: 10px;
             }
             .check-icon {
+                cursor: pointer;
                 width: 20px;
                 margin-left: auto;
                 polygon { fill: $white !important ;}
             }
             .close {
                 width: 20px;
+                cursor: pointer;
                 path { fill: $white !important ;}
             }
         }

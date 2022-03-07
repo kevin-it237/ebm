@@ -15,6 +15,8 @@ import ReactTimeAgo from "react-time-ago";
 import fr from "javascript-time-ago/locale/en";
 import logoLink from "../../../../config/logo.link";
 
+import {isMobile} from "../../../../config/helpers"
+
 const Expert = () => {
     const params = useParams();
     const history = useHistory();
@@ -28,6 +30,7 @@ const Expert = () => {
     const [each, setEach] = useState([]);
     const [created, setCreated] = useState(0);
 
+    const MENU_ITEMS = ["Revues", "Services", "Oeuvres"];
 
     useEffect(()=>{
         getInfoExpert();
@@ -35,8 +38,6 @@ const Expert = () => {
         getEachVote();
         getJoinedDate()
     },[]);
-
-    const MENU_ITEMS = ["Revues", "Services", "Oeuvres"];
 
     const changeContent = (contentName) => {
         setContent(contentName);
@@ -55,6 +56,7 @@ const Expert = () => {
     const getInfoExpert = () =>{
         axios.get(config.baseUrl+"/expert/show/"+select)
             .then(response=>{
+                console.log(response.data.message)
                 setExpert(response.data.message);
             })
             .catch(error=>{
@@ -93,7 +95,7 @@ const Expert = () => {
             })
     }
 
-    console.log(each)
+    console.log(MENU_ITEMS)
 
     let bottomContent = (<Reviews/>);
     if(content === "Revues") {
@@ -114,13 +116,21 @@ const Expert = () => {
             </div>
 
             <div className="institute-content">
-                <div className="owner-infos">
+                {isMobile() &&<div className="owner-infos">
                     <img className="avatar" src={logoLink.link +expert.logo} alt={expert.username} />
                     <div>
                         <h3 className="name">{expert.username} {expert.firstname}</h3>
                         {<p>Joined <ReactTimeAgo date={created} locale="en-US" timeStyle="round"/></p>}
                     </div>
-                </div>
+                </div>}
+
+                {!isMobile() &&<div className="owner-infos-web">
+                    <img className="avatar" src={logoLink.link +expert.logo} alt={expert.username} />
+                    <div>
+                        <h3 className="name">{expert.username} {expert.firstname}</h3>
+                        {<p>Joined <ReactTimeAgo date={created} locale="en-US" timeStyle="round"/></p>}
+                    </div>
+                </div>}
 
                 <p className="description">
                     {expert.description}
@@ -142,7 +152,7 @@ const Expert = () => {
                     </div>
                 }
 
-                <div className="menu">
+                <div className="menu-expert">
                     {
                         MENU_ITEMS.map(item => (
                             <h2 key={item} onClick={() => changeContent(item)} className={`menu-item ${content=== item ? "actived": ""}`}>{item}</h2>

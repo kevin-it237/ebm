@@ -14,11 +14,13 @@ import {rate} from "../../../../config/helpers";
 import logoLink from "../../../../config/logo.link";
 import StarsRating from "../../components/stars.rating/stars.rating";
 
+
+import {isMobile} from "../../../../config/helpers"
+
 const Institute = (props) => {
     const params = useParams();
     const history = useHistory();
     const select = params.slug;
-
 
     const [content, setContent] = useState("Revues");
     const [institut, setInstitut] = useState([]);
@@ -43,6 +45,7 @@ const Institute = (props) => {
     const getInfoInstitut = () =>{
         axios.get(config.baseUrl+"/institution/show/"+select)
             .then(response=>{
+                console.log(response.data)
                 setInstitut(response.data.message);
             })
             .catch(error=>{
@@ -64,6 +67,7 @@ const Institute = (props) => {
                 console.log(error)
             })
     }
+
     const getStarVote = () =>{
         axios.get(config.baseUrl+'/institution/rate/show/'+select)
             .then(response=>{
@@ -96,27 +100,32 @@ const Institute = (props) => {
         bottomContent = (<Works name={select}/>);
     }
 
+    console.log(institut)
+
     return (
         <div id="institute">
             <div className="header">
                 <div className="header-title">
                     <Back onClick={() => history.goBack()} />
-                    <h4>{select}</h4>
+                    <h4>Profil Institution</h4>
                 </div>
             </div>
 
             <div className="institute-content">
-                <div className="owner-infos">
+                {isMobile() && <div className="owner-infos">
                     <img className="avatar" src={logoLink.link + imageProfile} alt={institut.username} />
                     <div>
                         <h3 className="name">{institut.username} {institut.lastname}</h3>
                         <p className="address">{institut.address}</p>
                     </div>
-                </div>
-
-                <p className="description">
-                    {institut.description}
-                </p>
+                </div>}
+                {!isMobile() && <div className="owner-infos-web">
+                    <img className="avatar" src={logoLink.link + imageProfile} alt={institut.username} />
+                    <div>
+                        <h3 className="name">{institut.username} {institut.lastname}</h3>
+                        <p className="address">{institut.address}</p>
+                    </div>
+                </div>}
 
                 <div className="stats">
                     <div className="rates">
@@ -133,13 +142,20 @@ const Institute = (props) => {
                     }
                 </div>
 
-                <div className="menu">
+                {isMobile()&&<div className="menu">
                     {
                         MENU_ITEMS.map(item => (
                             <h2 key={item} onClick={() => changeContent(item)} className={`menu-item ${content=== item ? "actived": ""}`}>{item}</h2>
                         ))
                     }
-                </div>
+                </div>}
+                {!isMobile()&&<div className="menu-web">
+                    {
+                        MENU_ITEMS.map(item => (
+                            <h2 key={item} onClick={() => changeContent(item)} className={`menu-item ${content=== item ? "actived": ""}`}>{item}</h2>
+                        ))
+                    }
+                </div>}
                 <div className="bottom-content">
                     {bottomContent}
                 </div>

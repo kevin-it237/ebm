@@ -60,7 +60,6 @@
 .cart-modal-content {
     display: grid;
     gap: 15px;
-    overflow: auto;
     >h3 {
         font-size: 1.5rem;
         color: $primary;
@@ -136,5 +135,9 @@
             width: auto !important;
         }
     }
+}
+
+.textName{
+    font-size: 2rem !important;
 }
 

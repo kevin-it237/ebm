@@ -13,6 +13,7 @@ import config from "../../../../config/index";
 import {confirmationPass, verifiedEmail, verifiedPassword, verifiedPhone} from "../../../../config/helpers";
 import {useDispatch} from "react-redux";
 import politique from '../../assets/politique/Politique de Confidentialité EBM.pdf'
+import {countryTab} from "../../../../config/county";
 
 const SignUp = () => {
     const history = useHistory()
@@ -21,19 +22,23 @@ const SignUp = () => {
     const [showPassword, setPassword] = useState(false);
     const [signupForm1, setForm1] = useState({username: "",firstname: "",lastname: "", email: "", password: "", confirmation: ""});
     const [Form2, setForm2] = useState({address: "", phone: ""});
-    const [Form3, setForm3] = useState({institution_address: "", institution_phone: ""});
-    const [description, setDescription] = useState({description: ""});
+    const [Form3, setForm3] = useState({institution_name: "", institution_address: "", institution_phone: ""});
     const [role, setRole] = useState("USER");
+    const [country, setCountry] = useState("Cameroon");
     const [formStep, setFormStep] = useState(1)
-    const [loading,setLoading]= useState(false);
+    const [loading, setLoading]= useState(false);
+    const [field, setField]= useState(true);
     const [disabled,setDisabled]= useState(false);
     const [emailError, setEmail] = useState("");
     const [passwordError, setErrorPassword] = useState("");
     const [confirmationError, setConfirmation] = useState("");
     const [phoneError, setPhone] = useState("");
 
+    const [action, setAction]=useState(false);
+
     const onHandleSubmit = (e) => {
         e.preventDefault();
+        console.log("hjnddkjlme,z")
         onSubmit(e)
     }
 
@@ -42,13 +47,14 @@ const SignUp = () => {
         if (formStep===1){
             setFormStep(2);
             return;
-        }else if(formStep === 2 && role.role === "INSTITUTION"){
+        }else if(formStep === 2 && role === "INSTITUTION"){
             setFormStep(3);
             return;
         }
-
+        
         let user;
-        if (role.role === 'INSTITUTION') {
+        setLoading(true);
+        if (role === 'INSTITUTION') {
             user = {
                 username: signupForm1.username,
                 firstname: signupForm1.firstname,
@@ -58,12 +64,13 @@ const SignUp = () => {
                 password_confirmation: signupForm1.confirmation,
                 address: Form2.address,
                 phone: Form2.phone,
-                roles: role.role,
+                roles: role,
+                country: country,
                 institution_phone: Form3.institution_phone,
-                institution_address: Form3.institution_address,
-                description: description.description
+                institution_name: Form3.institution_name,
+                institution_address: Form3.institution_address
             };
-        }else if (role.role === 'EXPERT') {
+        }else if (role === 'EXPERT') {
             user = {
                 username: signupForm1.username,
                 firstname: signupForm1.firstname,
@@ -73,8 +80,8 @@ const SignUp = () => {
                 password_confirmation: signupForm1.confirmation,
                 address: Form2.address,
                 phone: Form2.phone,
-                roles: role.role,
-                description: description.description
+                roles: role,
+                country: country,
             };
         }else{
             user = {
@@ -86,61 +93,77 @@ const SignUp = () => {
                 password_confirmation: signupForm1.confirmation,
                 address: Form2.address,
                 phone: Form2.phone,
-                roles: role.role.toLowerCase(),
+                roles: role.toLowerCase(),
+                country: country,
             };
         }
 
         console.log(user)
-        setLoading(true)
-        axios.post(config.baseUrl+"/register", user)
-            .then(res =>{
-                dispatch({
-                    type: 'USER_EMAIL',
-                    payload: user.email
+        const users = Object.values(user);
+
+        users.forEach(function(item){
+            if(!item){
+                setField(false)
+                return;
+            }
+        })
+
+        if (field){
+            axios.post(config.baseUrl+"/register", user)
+                .then(res =>{
+                    console.log(res)
+                    dispatch({
+                        type: 'USER_EMAIL',
+                        payload: user.email
+                    })
+                    history.push('/verification/'+user.roles.toLowerCase())
+                    setLoading(false)
                 })
-                history.push('/verification/'+user.roles.toLowerCase())
-                setLoading(false)
-            })
-            .catch(err=>{
-                setLoading(false)
-                console.log(err.response)
-                if (err.response){
-                    if (err.response.data.message){
-                        const code = err.response.data.message
-                        if(code.startsWith('Expected response code 220 but got code')){
-                            notifyFailed('Votre addresse mail est incorrecte')
-                        }else if (code.startsWith('Connection could not be established with host mail')){
-                            notifyFailed('Vérifiez votre connexion')
-                        }else {
-                            notifyFailed('Vérifiez votre connexion')
+                .catch(err=>{
+                    setLoading(false)
+                    console.log(err.response)
+                    if (err.response){
+                        if (err.response.data.message){
+                            const code = err.response.data.message
+                            if(code.startsWith('Expected response code 220 but got code')){
+                                notifyFailed('Votre addresse mail est incorrecte')
+                            }else if (code.startsWith('Connection could not be established with host mail')){
+                                notifyFailed('Vérifiez votre connexion')
+                            }else {
+                                notifyFailed('Vérifiez votre connexion')
+                            }
                         }
-                    }
-                    else if (err.response.data.errors){
-                        const error = err.response.data.errors;
-                        if (error.username){
-                            notifyFailed("Nom d'utilisateur déjà utilisé")
-                        }else if(error.firstname){
-                            notifyFailed(error.firstname[0])
-                        }else if(error.lastname){
-                            notifyFailed(error.lastname[0])
-                        }else if(error.email){
-                            notifyFailed("Address mail déjà utilisée")
-                        }else if(error.password){
-                            notifyFailed(error.password[0])
-                        }else if(error.phone){
-                            notifyFailed("Numéro de téléphone déjà utilisé")
-                        }else if(error.address){
-                            notifyFailed(error.address[0])
-                        }else if(error.role){
-                            notifyFailed(error.role[0])
+                        else if (err.response.data.errors){
+                            const error = err.response.data.errors;
+                            if (error.username){
+                                notifyFailed("Nom d'utilisateur déjà utilisé")
+                            }else if(error.firstname){
+                                notifyFailed(error.firstname[0])
+                            }else if(error.lastname){
+                                notifyFailed(error.lastname[0])
+                            }else if(error.email){
+                                notifyFailed("Address mail déjà utilisée")
+                            }else if(error.password){
+                                notifyFailed(error.password[0])
+                            }else if(error.phone){
+                                notifyFailed("Numéro de téléphone déjà utilisé")
+                            }else if(error.address){
+                                notifyFailed(error.address[0])
+                            }else if(error.role){
+                                notifyFailed(error.role[0])
+                            }
+                        }else if (!err.response.data || !err){
+                            notifyFailed("Verifiez votre connexion");
                         }
-                    }else if (!err.response.data || !err){
-                        notifyFailed("Verifiez votre connexion");
+                    }else {
+                        notifyFailed("Verifiez votre connexion")
                     }
-                }else {
-                    notifyFailed("Verifiez votre connexion")
-                }
-            })
+                })
+        }else {
+            notifyFailed('Remplir tous les champs !')
+            setLoading(false)
+            console.log('uhjrkfnrfurfijknlfez')
+        }
     }
 
     const notifyFailed = (err)=>{
@@ -160,12 +183,12 @@ const SignUp = () => {
         setForm3({...Form3,  [e.target.name]: e.target.value });
     }
 
-    const onChangeDescription = (e) => {
-        setDescription({...description,  [e.target.name]: e.target.value });
+    const onChangeRole = (e) => {
+        setRole(e.target.value);
     }
 
-    const onChangeRole = (e) => {
-        setRole({...role, role: e.target.value });
+    const onChangeCountry = (e) => {
+        setCountry(e.target.value);
     }
 
     const onBlur = (e)=>{
@@ -208,6 +231,13 @@ const SignUp = () => {
             }
 
         }
+    }
+
+    const onAction=(e)=>{
+        e.preventDefault();
+        const url = 'https://docs.google.com/forms/d/e/1FAIpQLScpvBNHPRi6oYZ3MC6lIMaDXKDIBo4QtZorako33heTS43gBQ/viewform?usp=sf_link';
+        setAction(true)
+        window.open(url, '_blank')
     }
 
     return (
@@ -271,7 +301,7 @@ const SignUp = () => {
                     </form>
                 ): formStep === 2 ?(
                     <div>
-                        <form onSubmit={role.role === "INSTITUTION" ? onSubmit : onHandleSubmit} className="auth-container">
+                        <form onSubmit={role === "INSTITUTION" ? onSubmit : onHandleSubmit} className="auth-container">
                             {Object.keys(Form2).map((input, index) => (
                                 <div key={index} className="auth-container__input-container">
                                     <input
@@ -289,22 +319,33 @@ const SignUp = () => {
                                 </div>
                             ))}
                             <div className="registation-final__step">
+                                <select name="country" onChange={onChangeCountry} required style={{color: 'gray', opacity: '0.8'}}>
+                                    <option value="" disabled selected>Choisir votre pays</option>
+                                    {countryTab.map(e=>(
+                                        <option value={e.name}>{e.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="registation-final__step">
                                 <select name="roleSet" onChange={onChangeRole} required style={{color: 'gray', opacity: '0.8'}}>
                                     <option value="" disabled selected>Choisir un Role</option>
                                     <option value="USER">Client</option>
                                     <option value="INSTITUTION">Institution</option>
-                                    <option value="EXPERT">Expert</option>
+                                    <option value="EXPERT">Freelance</option>
                                 </select>
                             </div>
-                            {role.role === "EXPERT" ?
-                                <div className="auth-container__input-container">
-                                    <textarea placeholder='Votre Description ...' name="description" rows="7"
-                                        onChange={onChangeDescription} autoComplete={"off"} required style={{color: 'gray', opacity: '0.8'}}
-                                        className={`auth-container__input`} style={{fontSize: "medium", opacity: 0.8, padding: 12, border: "none"}}
-
-                                    />
-                                </div>
-                                : ""}
+                            {role === "EXPERT" &&
+                                <div className="auth-container__line-element">
+                                    <p className="auth-text">
+                                        <a
+                                            target='_blank'
+                                            style={{textDecoration: 'none', fontWeight: 'bold', color: 'red'}}
+                                            href={'https://docs.google.com/forms/d/e/1FAIpQLScpvBNHPRi6oYZ3MC6lIMaDXKDIBo4QtZorako33heTS43gBQ/viewform?usp=sf_link'}
+                                            type="submit"
+                                            onClick={onAction}>Cliquez Ici pour répondre au questionnaire
+                                        </a>
+                                    </p>
+                                </div>}
                             <ToastContainer/>
                             <div className="circles">
                                 <span onClick={(e)=>{
@@ -314,15 +355,29 @@ const SignUp = () => {
                                     }
                                 }}></span>
                                 <span className="selected"></span>
+                                {role === "INSTITUTION" && <span onClick={(e)=>{
+                                    e.preventDefault();
+                                    if (!disabled){
+                                        setFormStep(3);
+                                    }
+                                }}></span>}
                             </div>
-                            <Button
+                            {role === "EXPERT" && action &&<Button
                                 variant="primary"
                                 type="submit"
                                 onSubmit
                                 loading={loading}
                                 disabled={disabled}
-                                size="lg">{role.role === "INSTITUTION" ? "Information sur l'Institution": "Completez l'Inscription"}
-                            </Button>
+                                size="lg">{"S’inscrire"}
+                            </Button>}
+                            {role !== "EXPERT" && <Button
+                                variant="primary"
+                                type="submit"
+                                onSubmit
+                                loading={loading}
+                                disabled={disabled}
+                                size="lg">{role === "INSTITUTION" ? "Information sur l'Institution" : "S’inscrire"}
+                            </Button>}
 
                             <div className="auth-container__line-element">
                                 <p className="auth-text">Vous avez déjà un compte ? <Link to="/login">Log In</Link></p>
@@ -343,7 +398,7 @@ const SignUp = () => {
                                         onChange={onChangeForm3}
                                         onBlur={onBlur}
                                         value={Form3[input]}
-                                        placeholder={`${input}`}
+                                        placeholder={`${input !== 'institution_name' ? input : 'ex. Kellawel (à partir de 1000 frs)'}`}
                                         autoComplete={"off"}
                                         type="text"
                                         required
@@ -352,12 +407,16 @@ const SignUp = () => {
                                     {<p className="errorMessage">{input === 'institution_phone' ? <div>{phoneError}</div>: ""}</p>}
                                 </div>
                             ))}
-                            <div className="auth-container__input-container">
-                                <textarea placeholder='Entrez la Description...' name="description" rows="7"
-                                    onChange={onChangeDescription} autoComplete={"off"} required
-                                    className={`auth-container__input`} style={{fontSize: "medium", opacity: 0.8, padding: 12, border: "none"}}
-
-                                />
+                            <div className="auth-container__line-element">
+                                <p className="auth-text">
+                                    <a
+                                        target='_blank'
+                                        style={{textDecoration: 'none', fontWeight: 'bold', color: 'red'}}
+                                        href={'https://docs.google.com/forms/d/e/1FAIpQLScpvBNHPRi6oYZ3MC6lIMaDXKDIBo4QtZorako33heTS43gBQ/viewform?usp=sf_link'}
+                                        type="submit"
+                                        onClick={onAction}>Cliquez Ici pour répondre au questionnaire
+                                    </a>
+                                </p>
                             </div>
                             <ToastContainer/>
 
@@ -368,22 +427,23 @@ const SignUp = () => {
                                         setFormStep(1);
                                     }
                                 }}></span>
-                                {role.role==='INSTITUTION' ? <span onClick={(e)=>{
+                                {role ==='INSTITUTION' &&<span onClick={(e)=>{
                                     e.preventDefault();
                                     if (!disabled){
                                         setFormStep(2);
                                     }
-                                }}></span> : ""}
+                                }}></span>
+                                }
                                 <span className="selected"></span>
                             </div>
-                            <Button
+                            {action && <Button
                                 variant="primary"
                                 type="submit"
                                 onSubmit
                                 loading={loading}
                                 disabled={disabled}
-                                size="lg">{"Completez l'Inscription"}
-                            </Button>
+                                size="lg">{"S'inscrire"}
+                            </Button>}
 
                             <div className="auth-container__line-element">
                                 <p className="auth-text">Vous avez déjà un compte ? <Link to="/login">Log In</Link> </p>

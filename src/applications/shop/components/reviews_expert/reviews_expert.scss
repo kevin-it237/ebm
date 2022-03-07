@@ -16,6 +16,7 @@
     }
     .text-reviews {
         display: flex;
+        justify-self: space-around;
         flex-direction: column-reverse;
         margin-top: 20px;
         >.review-item {

@@ -11,16 +11,25 @@ import LoaderIcon from "react-loader-icon";
 import Product from "./product.item";
 import Slider from "react-slick";
 import Charge from "../../../../app/components/charge/charge";
+import {isMobile} from "../../../../config/helpers";
 
 const OrderProduct=()=> {
     const history = useHistory();
     const param = useParams();
     const id = param.slug;
 
+    const settings_web = {
+        dots: true,
+        speed: 500,
+        slidesToShow: 6,
+        slidesToScroll: 5,
+        infinite: false
+    };
+
     const settings = {
         dots: true,
         speed: 500,
-        slidesToShow: 3,
+        slidesToShow: 2.5,
         slidesToScroll: 3,
         infinite: false
     };
@@ -94,7 +103,13 @@ const OrderProduct=()=> {
                         <p>Crée le {order[0].date}</p>
                     </div>
                 </div>
-                {product && <Slider {...settings} className="order-som">
+                {product && isMobile() && <Slider {...settings} className="order-som">
+                    {Object.keys(product).map((e, index) => (
+                        <Product key={index} name={product[e].name} price={product[e].price}
+                                 quantity={product[e].quantity} image={product[e].image}/>
+                    ))}
+                </Slider>}
+                {product && !isMobile() && <Slider {...settings_web} className="order-som">
                     {Object.keys(product).map((e, index) => (
                         <Product key={index} name={product[e].name} price={product[e].price}
                                  quantity={product[e].quantity} image={product[e].image}/>
@@ -109,7 +124,6 @@ const OrderProduct=()=> {
                     <p style={{fontSize: "medium", fontWeight: "bold", opacity: 0.8}}>Votre commentaire</p>
                     <p className="order-comment-value">{order[0].comment}</p>
                 </div>
-                <span></span>
 
                 <div className="footer" style={{position: "fixed", bottom: 0, width: '100%', paddingLeft: '60%'}}>
                     <Button size="sm" style={{backgroundColor: '#d95702', fontSize: 'small'}} onClick={

@@ -11,6 +11,7 @@
         background-repeat: no-repeat;
         >.header-title {
             display: flex;
+          cursor: pointer;
             align-items: center;
             padding: 20px 15px;
             >h4 {
@@ -94,6 +95,17 @@
        .menu {
          display: flex;
          margin-top: 20px;
+         flex-wrap: nowrap;
+         cursor: pointer;
+
+         &.actived{
+           color: $primary;
+         }
+       }
+       .menu-web {
+         display: flex;
+         margin-top: 20px;
+         justify-content: space-around;
          flex-wrap: nowrap;
          cursor: pointer;
 

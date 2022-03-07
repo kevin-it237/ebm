@@ -5,7 +5,12 @@
 
 export default {
     baseUrl:"https://eb-mobile-api.shoppyit.com/api"
+    //baseUrl:"https://backend.eb-mobile.com"
 
 }
 
 
+/*export default {
+    baseUrl:"http://localhost:8000/api"
+
+}*/

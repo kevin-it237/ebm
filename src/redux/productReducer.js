@@ -12,5 +12,13 @@ export default function productReducer(state = initialState, action){
             loader: action.loader
         }
     }
+
+    if (action.type === 'ALL_PRESTATION'){
+        nextState = {
+            ...state,
+            payload: action.payload
+        }
+    }
+
     return nextState||state;
 }

@@ -6,7 +6,6 @@ import {useHistory} from 'react-router';
 import {ReactComponent as Back} from "../../../../assets/icons/back.svg"
 import Services from "../../components/services.profile/services.profile"
 import Works from "../../components/works.profile/works.profile"
-import img from "../../../../assets/images/mansory.png";
 import {ReactComponent as Uneye} from "../../../../assets/icons/uneye.svg";
 import {ReactComponent as Eye} from "../../../../assets/icons/eye.svg";
 import Button from "../../../../app/components/buttons/button/button";
@@ -15,7 +14,6 @@ import axios from "axios";
 import LoaderIcon from "react-loader-icon";
 import logoLink from "../../../../config/logo.link";
 import Modal from "../../../../app/components/modal/modal";
-import ReactTimeAgo from 'react-time-ago'
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import ExpertDemand from "../../../shop/components/historique/expert.demand";
@@ -23,9 +21,10 @@ import ServiceDemand from "../../../shop/components/historique/service.demand";
 import ProductDemand from "../../../shop/components/historique/product.demand";
 import Select from "react-select";
 import Slider from "react-slick";
-import {confirmationPass, verifiedEmail, verifiedPassword, verifiedPhone} from "../../../../config/helpers";
+import {confirmationPass, verifiedEmail, verifiedPassword, verifiedPhone, setUserData} from "../../../../config/helpers";
 import {useDispatch, useSelector} from "react-redux";
 import dateFormat from 'dateformat';
+import {isMobile, getUserDataFunction} from "../../../../config/helpers";
 
 const MyProfile = () => {
 
@@ -63,21 +62,29 @@ const MyProfile = () => {
         slidesToScroll: 3,
     };
 
+    const settings_web = {
+        dots: true,
+        infinite: false,
+        speed: 500,
+    };
+
     TimeAgo.addLocale(fr)
     const timeAgo = new TimeAgo('fr-CA')
     const history = useHistory()
     const dispatch = useDispatch()
-    const profile = useSelector(state=>state.profile.profile)
+    const profile = JSON.parse(getUserDataFunction())
     const inputFile = useRef(null);
     const [showPassword, setPassword] = useState(false);
     const [content, setContent] = useState("Information");
-    const [infoForm, setInfoForm] = useState({name: "", surname: "", email: "", address: "", phone: ""});
+    const [infoForm, setInfoForm] = useState({firstname: "", lastname: "", email: "", address: "", phone: "", country: ""});
+    const [infoForm3, setInfoForm3] = useState({institution_name: "", institution_address: "", institution_phone: ""});
     const [infoUser, setInfoUser] = useState([]);
     const [infoForm2, setInfoForm2] = useState({password: "", confirmation: ""});
     const [emailError, setEmail] = useState("");
     const [passwordError, setErrorPassword] = useState("");
     const [confirmationError, setConfirmation] = useState("");
-    const [phoneError, setPhone] = useState("");
+    const [phoneError, setPhone] = useState(false);
+    const [phoneInstError, setPhoneInst] = useState(false);
     const [selectFile, setSelectFile] = useState("");//get selecte image
     const [image, setImage] = useState("");//store url selected image
     const [created, setCreated] = useState("");
@@ -107,6 +114,10 @@ const MyProfile = () => {
     const [changePhotoProfile, setChangeProfilPhoto] = useState(false);
     const [croppedImageUrl, setCroppedImageUrl] = useState(null);
     const [imageRef, setImageRef] = useState(null);
+
+    const [loaderData, setLoaderData] = useState(false);
+
+    const [formStep, setFormStep] = useState(1)
 
     const onImageLoad = (image) => {
         setImageRef(image)
@@ -191,7 +202,6 @@ const MyProfile = () => {
                 getPhotoProfile()
             })
             .catch(error => {
-                console.log(error)
             })
         setSelectFile("")
     }
@@ -199,21 +209,19 @@ const MyProfile = () => {
     const getPhotoProfile=()=>{
         axios.get(config.baseUrl + '/user/profile/photo')
             .then(res => {
-                console.log(res.data.message)
                 setImageProfile(res.data.message)
                 setLoader(false)
             })
             .catch(error => {
-                console.log(error)
                 setLoader(false)
                 if (error.request) {
                     // The request was made but no response was received
-                    console.log(error.request);
                     setErrorMessage("Erreur de connexion !");
 
                 } else {
                     // Something happened in setting up the request that triggered an Error
                     console.log('Error', error.message);
+                    setErrorMessage("Erreur de chargement !");
                 }
             })
     }
@@ -258,41 +266,46 @@ const MyProfile = () => {
                 if (content === "Demandes d'expert") {
                     getOrderExpert()
                 } else if (content === "Commandes de service") {
-                    console.log(res.data.message)
                     getOrderService()
                 } else {
-                    console.log(res.data.message)
                     getOrderProduct()
                 }
                 setloaderState(false)
             })
             .catch(err => {
-                console.log(err)
                 setloaderState(false)
             })
     }
 
     const getUserData = () => {
+        setInfoUser([])
+        setLoaderData(true)
         axios.get(config.baseUrl + '/user/show')
             .then(response => {
                 setInfoUser(response.data.message)
-                if (response.data.message.role === 'INSTITUTION') {
+                if (response.data.message.roles === 'INSTITUTION') {
                     axios.get(config.baseUrl + '/institution/info')
                         .then(response => {
-                            console.log(response.data.message)
+                            console.log(response.data)
                             setInfoForm({
-                                name: response.data.message.name,
-                                surname: response.data.message.surname,
+                                firstname: response.data.message.firstname,
+                                lastname: response.data.message.lastname,
                                 email: response.data.message.email,
                                 address: response.data.message.address,
                                 phone: response.data.message.phone,
+                                country: response.data.message.country
+                            })
+                            setInfoForm3({
+                                institution_name: response.data.message.institution_name,
+                                institution_address: response.data.message.institution_address,
+                                institution_phone: response.data.message.institution_phone,
                             })
                             dispatch({
                                 type: 'ALL_PROFILE_INFO',
                                 profile: response.data.message
                             })
                             setImageProfile(response.data.message.logo)
-                            setLoader(false)
+                            setLoaderData(false)
                         })
                         .catch(error => {
                             console.log(error)
@@ -300,7 +313,6 @@ const MyProfile = () => {
                                 // The request was made but no response was received
                                 console.log(error.request);
                                 setErrorMessage("Erreur de connexion !");
-
                             } else {
                                 // Something happened in setting up the request that triggered an Error
                                 console.log('Error', error.message);
@@ -320,7 +332,7 @@ const MyProfile = () => {
                                 setImageProfile(response.data.message.logo)
                             })
                     }
-                    setLoader(false)
+                    setLoaderData(false)
                 }
                 getOrderService()
                 getOrderProduct()
@@ -328,12 +340,11 @@ const MyProfile = () => {
             })
             .catch(error => {
                 console.log(error)
-                setLoader(false)
+                setLoaderData(false)
                 if (error.request) {
                     // The request was made but no response was received
                     console.log(error.request);
                     setErrorMessage("Erreur de connexion !");
-
                 } else {
                     // Something happened in setting up the request that triggered an Error
                     console.log('Error', error.message);
@@ -351,7 +362,6 @@ const MyProfile = () => {
             })
     }
 
-    console.log(errorMessage)
     const editProfile = (event) => {
         event.preventDefault();
         setEditProf(false)
@@ -359,58 +369,39 @@ const MyProfile = () => {
         setMessage(false)
         setErrorMessage(false)
         let user = {
-            firstname: infoForm.name,
-            lastname: infoForm.surname,
-            email: infoForm.email
+            firstname: infoForm.firstname,
+            lastname: infoForm.lastname,
+            email: infoForm.email,
+            address: infoForm.address,
+            country: infoForm.country,
+            phone: infoForm.phone
         }
         if (infoUser.roles === 'INSTITUTION') {
-            user['institution_address'] = infoForm.address;
-            user['institution_phone'] = infoForm.phone;
-            axios.put(config.baseUrl + '/institution/update', {...user})
-                .then(response => {
-                    console.log(response)
-                    setLoaderProf(false)
-                    setMessage("Modification Enregistrée")
-                    getUserData()
-                })
-                .catch(error => {
-                    console.log(error)
-                    setLoaderProf(false)
-                    if (error.request) {
-                        // The request was made but no response was received
-                        console.log(error.request);
-                        setErrorMessage("Erreur de connexion !");
-
-                    } else {
-                        // Something happened in setting up the request that triggered an Error
-                        console.log('Error', error.message);
-                        setMessage("Erreur d'enregistrement")
-                    }
-                })
-        } else {
-            user['address'] = infoForm.address;
-            user['phone'] = infoForm.phone;
-            axios.put(config.baseUrl + '/user/update', {...user})
-                .then(response => {
-                    console.log(response)
-                    setLoaderProf(false)
-                    setMessage("Modification Enregistrée")
-                    getUserData()
-                })
-                .catch(error => {
-                    setLoaderProf(false)
-                    if (error.request) {
-                        // The request was made but no response was received
-                        console.log(error.request);
-                        setErrorMessage("Erreur de connexion !");
-
-                    } else {
-                        // Something happened in setting up the request that triggered an Error
-                        console.log('Error', error.message);
-                        setMessage("Erreur d'enregistrement")
-                    }
-                })
+            user['institution_name'] = infoForm3.institution_name;
+            user['institution_address'] = infoForm3.institution_address;
+            user['institution_phone'] = infoForm3.institution_phone;
         }
+        console.log(user)
+        axios.post(config.baseUrl + '/user/update', {...user})
+            .then(response => {
+                console.log(response)
+                setLoaderProf(false)
+                setMessage("Modification Enregistrée")
+                getUserData()
+            })
+            .catch(error => {
+                setLoaderProf(false)
+                if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                    setMessage("Erreur de connexion !");
+
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                    setMessage("Erreur d'enregistrement")
+                }
+            })
     }
 
     const editProfilePassword = (event) => {
@@ -446,9 +437,6 @@ const MyProfile = () => {
 
     const confirmEdit = (e) => {
         e.preventDefault();
-        console.log('dzfzdfdz')
-        console.log(emailError)
-        console.log(phoneError)
         if (!emailError&&!phoneError){
             setEditProf(true)
         }
@@ -528,20 +516,18 @@ const MyProfile = () => {
         setErrorMessage(null)
         axios.get(config.baseUrl + '/user/product/order/index')
             .then(res => {
+                console.log(res.data.message)
                 setProductOrder(res.data.message)
                 setProductLoader(false)
             })
             .catch(error => {
-                console.log(error)
                 setProductLoader(false)
                 if (error.request) {
                     // The request was made but no response was received
-                    console.log(error.request);
                     setErrorMessage("Erreur de connexion !");
 
                 } else {
                     // Something happened in setting up the request that triggered an Error
-                    console.log('Error', error.message);
                     setErrorMessage("Erreur de chargement !")
                 }
             })
@@ -579,7 +565,6 @@ const MyProfile = () => {
         }else if (e.target.name === 'password' && infoForm2.confirmation){
             const confirmation = e.target.value;
             const password = infoForm2.confirmation;
-            console.log(password)
             if (!confirmationPass(password, confirmation)) {
                 setError(true)
                 setConfirmation("Doit correspondre au mot de passe de confirmation");
@@ -609,15 +594,32 @@ const MyProfile = () => {
     // Change form input values.
     const onChange = (e) => {
         e.preventDefault()
-        if (e.target.name === 'phone' || e.target.name === 'institution_phone'){
-            setPhone(verifiedPhone(e.target.value))
-            if (verifiedPhone(e.target.value) === "Doit contenir 9 chiffres" || verifiedPhone(e.target.value) === "Doit etre un numero"){
-                setError(true)
-            }else {
+        if (e.target.name === 'phone'){
+            if (verifiedPhone(e.target.value)){
+                setPhone(false)
                 setError(false)
+            }else {
+                setError(true)
+                setPhone(true)
             }
         }
+        
         setInfoForm({...infoForm, [e.target.name]: e.target.value});
+    }
+
+    const onChange3 = (e) => {
+        e.preventDefault()
+        if (e.target.name === 'institution_phone'){
+            if (verifiedPhone(e.target.value)){
+                setPhoneInst(false)
+                setError(false)
+            }else {
+                setError(true)
+                setPhoneInst(true)
+            }
+        }
+        
+        setInfoForm3({...infoForm3, [e.target.name]: e.target.value});
     }
 
     // Change form input values.
@@ -631,30 +633,74 @@ const MyProfile = () => {
         setComment(e.target.value)
     }
 
+    console.log(productOrder)
     let bottomContent;
     if (content === "Information") {
-        bottomContent = (<div className={"info-user"} style={{width: "100%"}}>
-            {errorMessage&&<div style={{color: 'red', marginTop: '5px', marginBottom: '5px'}}>
-                <center>{errorMessage}</center>
-            </div>}
-            {infoForm ? <form className="auth-container">
-                    {Object.keys(infoForm).map((input, index) => (
-                        <div key={index} className="auth-container__input-container">
-                            <input
-                                name={input}
-                                onChange={onChange}
-                                onBlur={onBlur}
-                                value={infoForm[input]}
-                                type={'text'}
-                                autoComplete={"off"}
-                                required
-                                className={`auth-container__input`}
-                            />
-                            {<p className="errorMessage">{input === 'email' ? <div>{emailError}</div> : ""}</p>}
-                            {<p className="errorMessage">{input === 'phone' ? <div>{phoneError}</div> : ""}</p>}
+        bottomContent = (
+            <div className={"info-user"} style={{width: "100%"}}>
+                {/*message&&<div style={{color: 'red', marginTop: '5px', marginBottom: '5px'}}>
+                    <center>{message}</center>
+        </div>*/}
+                {infoForm && <form className="auth-container">
+                    {formStep === 1&&<div>                    
+                        {Object.keys(infoForm).map((input, index) => (
+                            <div key={index} className="auth-container__input-container">
+                                <input
+                                    name={input}
+                                    onChange={onChange}
+                                    onBlur={onBlur}
+                                    value={infoForm[input]}
+                                    type={'text'}
+                                    autoComplete={"off"}
+                                    required
+                                    className={`auth-container__input`}
+                                />
+                                {<p className="errorMessage">{input === 'email' ? <div>{emailError}</div> : ""}</p>}
+                                {<p className="errorMessage">{input === 'phone' ? <div>{phoneError}</div> : ""}</p>}
 
+                            </div>
+                        ))}
+
+                        {infoUser.roles === 'INSTITUTION' &&<div className="circles">
+                            <span className="selected"></span>
+                            <span onClick={(e)=>{
+                                e.preventDefault();
+                                setFormStep(2)
+                            }}></span>
+                        </div>}
+                    </div>
+                    }
+                    {formStep === 2&&<div>
+                        <h5 style={{color: '#6B0C72', textAlign: 'center'}}>Information sur l'Institution</h5>                  
+                        {Object.keys(infoForm3).map((input, index) => (
+                            <div key={index} className="auth-container__input-container">
+                                <input
+                                    name={input}
+                                    onChange={onChange3}
+                                    onBlur={onBlur}
+                                    value={infoForm3[input]}
+                                    type={'text'}
+                                    autoComplete={"off"}
+                                    required
+                                    className={`auth-container__input`}
+                                />
+                                {<p className="errorMessage">{input === 'email' ? <div>{emailError}</div> : ""}</p>}
+                                {<p className="errorMessage">{input === 'phone' ? <div>{phoneError}</div> : ""}</p>}
+
+                            </div>
+                        ))}
+
+                        <div className="circles">
+                            <span onClick={(e)=>{
+                                e.preventDefault();
+                                setFormStep(1)
+                            }}></span>
+                            <span className="selected"></span>
                         </div>
-                    ))}
+                    </div>
+                    }
+
+        
 
                     <Button onClick={confirmEdit}
                             variant="primary"
@@ -663,12 +709,14 @@ const MyProfile = () => {
                             disabled={error}
                             size="lg">Editer
                     </Button>
-                </form> :
-                <div className="spinner_load_search">
-                    <LoaderIcon type="cylon" color="#6B0C72"/>
-                </div>
-            }
-        </div>);
+                    </form> 
+                }
+                {!infoForm&&
+                    <div className="spinner_load_search">
+                        <LoaderIcon type="cylon" color="#6B0C72"/>
+                    </div>
+                }
+            </div>);
     } else if (content === "Mot de passe") {
         bottomContent = (<div className={"info-user-1"} style={{width: "100%"}}>
             <form className="auth-container">
@@ -699,11 +747,7 @@ const MyProfile = () => {
                     disabled={error}
                     size="lg">Editer
                 </Button>
-
-
             </form>
-
-
         </div>);
     } else if (content === "Services") {
         bottomContent = (<Services/>);
@@ -721,8 +765,8 @@ const MyProfile = () => {
                     }}
                          className={(infoUser.role === 'EXPERT' && expertOrder[e].state === 'ANNULÉ') || (infoUser.role === 'INSTITUTION' && expertOrder[e].state === 'COMPLETÉ')
                          || (infoUser.role === 'INSTITUTION' && expertOrder[e].state === 'REJETÉ') ? "disable" : ""}>
-                        <ExpertDemand name={expertOrder[e].name} date={expertOrder[e].date}
-                                      state={expertOrder[e].state} id={index + 1}/>
+                        <ExpertDemand name={expertOrder[e].name} date={expertOrder[e].date} liverDate={expertOrder[e].liverDate}
+                                      state={expertOrder[e].state} id={index + 1} country={expertOrder[e].country}/>
                     </div>))}
             </div>)||
                 (expertOrder.length===0&&!expertLoader&&!errorMessage&&
@@ -755,7 +799,7 @@ const MyProfile = () => {
                     }}
                          className={(infoUser.role === 'user' && serviceOrder[e].state === 'COMPLETÉ') || (infoUser.role === 'INSTITUTION' && serviceOrder[e].state === 'ANNULÉ') ? "disable" : ""}>
                         <ServiceDemand services={serviceOrder[e].service} name={serviceOrder[e].name}
-                                       date={serviceOrder[e].date}
+                                       date={serviceOrder[e].date} liverDate={serviceOrder[e].liverDate}
                                        state={serviceOrder[e].state} id={index + 1}/></div>
                 ))}
             </div>) || (!serviceLoader&&serviceOrder.length===0&&!errorMessage&&
@@ -779,18 +823,16 @@ const MyProfile = () => {
                 </div>)
     } else if (content === "Commandes de produit") {
         {
-            bottomContent = (
-                !productLoader&&productOrder.length !==0&&
+            bottomContent = (!productLoader&&productOrder.length !==0&&
                 <div>
                     {Object.keys(productOrder).map((e, index) => (
                         <div key={index} onClick={event => {
                             event.preventDefault();
                             history.push('/order/product/' + productOrder[e].id)
-                            /*setCart(true); setOrderExpertId(productOrder[e].id); setComment(productOrder[e].comment)*/
                         }}
                              className={((infoUser.role === 'EXPERT' || infoUser.role === 'INSTITUTION' || infoUser.role === 'user') && productOrder[e].state === 'COMPLETÉ') ? "disable" : ""}>
-                            <ProductDemand amount={productOrder[e].price} date={productOrder[e].date}
-                                           state={productOrder[e].state} id={productOrder[e].id}/>
+                            <ProductDemand amount={productOrder[e].price} date={productOrder[e].date} live={productOrder[e].live}
+                                           state={productOrder[e].state} id={productOrder[e].id} country={productOrder[e].country}/>
                         </div>))}
                 </div>
             )||
@@ -819,90 +861,137 @@ const MyProfile = () => {
         }
     }
 
-    console.log(imageProfile)
+    console.log(infoUser)
+    console.log(loaderData)
 
     return (
         <div id="institute">
             <div className="header">
                 <div className="header-title">
                     <Back onClick={() => history.goBack()}/>
-                    <h4>{infoUser.firstname} {infoUser.lastname}</h4>
+                    <h4>{infoUser.roles}</h4>
                 </div>
             </div>
 
-            {!loader && <div className="institute-content">
-                <div className="owner-infos">
-                    {infoUser.roles !== 'user' ?
-                        <div>
-                            {imageProfile ?
-                                <img className="avatar"
-                                     style={{width: 80, height: 80, borderRadius: '50%', marginRight: 10}}
-                                     src={logoLink.link + imageProfile} alt={infoUser.username} onClick={clickChange}/>
-                                : <div onClick={clickChange} style={{
-                                    backgroundColor: "#eee",
-                                    opacity: 0.8,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    height: 75,
-                                    width: 75,
-                                    marginRight: 10,
-                                    borderRadius: '50%',
-                                    boxShadow: '0 2px 15px rgba(#000, .35)'
-                                }}>
-                                    <strong style={{color: "white", fontSize: 34}}>+</strong>
-                                </div>
+                {!loaderData&&<div className="institute-content">
+                    <div className="owner-infos">
+                        {
+                            infoUser.roles !== 'user' &&
+                            <div>
+                                {imageProfile ?
+                                    <img className="avatar"
+                                         style={{width: 80, height: 80, borderRadius: '50%', marginRight: 10}}
+                                         src={logoLink.link + imageProfile} alt={infoUser.username} onClick={clickChange}/>
+                                    : <div onClick={clickChange} style={{
+                                        backgroundColor: "#eee",
+                                        opacity: 0.8,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        height: 75,
+                                        width: 75,
+                                        marginRight: 10,
+                                        borderRadius: '50%',
+                                        boxShadow: '0 2px 15px rgba(#000, .35)'
+                                    }}>
+                                        <strong style={{color: "white", fontSize: 34}}>+</strong>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        <div className={infoUser.roles === 'user' ? "marge" : ""}>
+                            <h3 className="name">{infoUser.firstname} {infoUser.lastname}</h3>
+                            {created&&<p>Compte crée le {dateFormat(created.split(" ")[0], 'dd-mm-yyyy')}</p>}
+                        </div>
+                    </div>
+                    {isMobile() && infoUser.roles === 'user' &&
+                        <Slider {...settings} className='menu'>
+                            {
+                                MENU_ITEMS_USER.map(item => (
+                                    <div>
+                                        <h2 key={item} onClick={() => changeContent(item)} className={`menu ${content === item ? "actived" : ""}`}>{item}</h2>
+                                        {content === item && <span className="span-bottom"></span>}
+                                    </div>
+                                ))
+                            }
+                        </Slider>
+                    }{!isMobile() && infoUser.roles === 'user' &&
+                        <div className='menu-web'>
+                            {
+                                MENU_ITEMS_USER.map(item => (
+                                    <div>
+                                        <h2 key={item} onClick={() => changeContent(item)} className={`menu ${content === item ? "actived" : ""}`}>{item}</h2>
+                                        {content === item && <span className="span-bottom"></span>}
+                                    </div>
+                                ))
                             }
                         </div>
-                        :
-                        ""
                     }
-                    <div className={infoUser.roles === 'user' ? "marge" : ""}>
-                        <h3 className="name">{infoUser.firstname} {infoUser.lastname}</h3>
-                        {/*<p>Joined <ReactTimeAgo date={created} locale="fr-FR" timeStyle="round"/></p>*/}
-                        {created&&<p>Compte crée le {dateFormat(created.split(" ")[0], 'dd-mm-yyyy')}</p>}
+                    {isMobile() && infoUser.roles === 'EXPERT' &&
+                        <Slider {...settings} className='menu'>
+                            {
+                                MENU_ITEMS_EXPERT.map(item => (
+                                    <div>
+                                        <h2 key={item} onClick={() => changeContent(item)} className={`menu ${content === item ? "actived" : ""}`}>{item}</h2>
+                                        {content === item && <span className="span-bottom"></span>}
+                                    </div>
+                                ))
+                            }
+                        </Slider>
+                    }{!isMobile() && infoUser.roles === 'EXPERT' &&
+                        <div className='menu-web'>
+                            {
+                                MENU_ITEMS_EXPERT.map(item => (
+                                    <div>
+                                        <h2 key={item} onClick={() => changeContent(item)} className={`menu ${content === item ? "actived" : ""}`}>{item}</h2>
+                                        {content === item && <span className="span-bottom"></span>}
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    }
+                    {isMobile() && infoUser.roles === 'INSTITUTION' &&
+                        <Slider {...settings} className='menu'>
+                            {
+                                MENU_ITEMS.map(item => (
+                                    <div>
+                                        <h2 key={item} onClick={() => changeContent(item)} className={`menu ${content === item ? "actived" : ""}`}>{item}</h2>
+                                        {content === item && <span className="span-bottom"></span>}
+                                    </div>
+                                ))
+                            }
+                        </Slider>
+                    }{!isMobile() && infoUser.roles === 'INSTITUTION' &&
+                        <div className='menu-web'>
+                            {
+                                MENU_ITEMS.map(item => (
+                                    <div>
+                                        <h2 key={item} onClick={() => changeContent(item)} className={`menu ${content === item ? "actived" : ""}`}>{item}</h2>
+                                        {content === item && <span className="span-bottom"></span>}
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    }
+                    <div className="bottom-content">
+                        {bottomContent}
                     </div>
                 </div>
-                {infoUser.roles === 'user' &&
-                <Slider {...settings} className='menu'>
-                    {
-                        MENU_ITEMS_USER.map(item => (
-                            <div>
-                                <h2 key={item} onClick={() => changeContent(item)} className={`menu ${content === item ? "actived" : ""}`}>{item}</h2>
-                                {content === item && <span className="span-bottom"></span>}
-                            </div>
-                        ))
-                    }
-                </Slider>
-                }
-                {infoUser.roles === 'EXPERT' &&
-                <Slider {...settings} className='menu'>
-                    {
-                        MENU_ITEMS_EXPERT.map(item => (
-                            <div>
-                                <h2 key={item} onClick={() => changeContent(item)} className={`menu ${content === item ? "actived" : ""}`}>{item}</h2>
-                                {content === item && <span className="span-bottom"></span>}
-                            </div>
-                        ))
-                    }
-                </Slider>
-                }
-                {infoUser.roles === 'INSTITUTION' &&
-                <Slider {...settings} className='menu'>
-                    {
-                        MENU_ITEMS.map(item => (
-                            <div>
-                                <h2 key={item} onClick={() => changeContent(item)} className={`menu ${content === item ? "actived" : ""}`}>{item}</h2>
-                                {content === item && <span className="span-bottom"></span>}
-                            </div>
-                        ))
-                    }
-                </Slider>
-                }
-                <div className="bottom-content">
-                    {bottomContent}
+            }
+            {
+                loaderData&&infoUser.length===0&&
+                <div style={{display: 'flex', justifyContent: 'center'}}>
+                    <LoaderIcon type="cylon" color="#6B0C72"/>
                 </div>
-            </div>}
+            }
+            {
+                !loaderData&&infoUser.length===0&&
+                <div style={{display: 'flex', justifyContent: 'center', color: 'red'}}>
+                    Erreur de conexion !
+                </div>
+            }
+
+
             {
                 changePhotoProfile &&
                 <Modal hide={() => {
@@ -958,12 +1047,7 @@ const MyProfile = () => {
                     </div>
                 </Modal>
             }
-            {/*
-                loaderProf &&
-                <Modal>
-                    <LoaderIcon type="cylon" color="#6B0C72"/>
-                </Modal>
-            */}
+
             {
                 !loaderProf && message &&
                 <Modal hide={() => setMessage(false)}>
@@ -979,12 +1063,12 @@ const MyProfile = () => {
                         <h1 style={{fontSize: 'medium', color: '#6B0C72', marginTop: -6, marginBottom: 5}}>Modifier la
                             commande</h1>
                         <br/>
-                        {infoUser.role === 'INSTITUTION' &&
+                        {profile.roles === 'INSTITUTION' &&
                         <Select
                             options={content === "Demandes d'expert" ? stateExpert : content === "Commandes de service" ? stateService : stateExpert}
                             placeholder="Changer l'etat..." onChange={onSelect}/>
                         }
-                        {(infoUser.role === 'INSTITUTION' && content === "Commandes de produit") || (infoUser.role === 'INSTITUTION' && content === "Demandes d'expert") &&
+                        {(profile.roles === 'INSTITUTION' && content === "Commandes de produit") || (profile.roles === 'INSTITUTION' && content === "Demandes d'expert") &&
                         <textarea onChange={commentChange} value={comment} rows="10"
                                   placeholder="Entrez un commentaire ..."
                                   style={{
@@ -996,7 +1080,7 @@ const MyProfile = () => {
                                       marginBottom: 5
                                   }}/>}
                         {
-                            (infoUser.role === 'INSTITUTION' && content === "Commandes de service") &&
+                            (profile.roles === 'INSTITUTION' && content === "Commandes de service") &&
                             <h2 style={{
                                 fontSize: "small",
                                 wordWrap: "break-word",
@@ -1005,7 +1089,7 @@ const MyProfile = () => {
                             }}>{comment}</h2>
                         }
                         {
-                            infoUser.role === 'user' &&
+                            profile.roles === 'user' &&
                             <div>
                                 <Select
                                     options={stateExpert} placeholder="Changer l'etat..." onChange={onSelect}/>
@@ -1022,14 +1106,14 @@ const MyProfile = () => {
                             </div>
                         }
                         {
-                            infoUser.role === 'EXPERT' &&
+                            profile.roles === 'EXPERT' &&
                             <Select
                                 options={content === "Demandes d'expert" ? stateService : stateExpert}
                                 placeholder="Changer l'etat..." onChange={onSelect}/>
                         }
                         <br/>
                         {
-                            infoUser.role === 'EXPERT' && content === "Commandes de produit" ?
+                            profile.roles === 'EXPERT' && content === "Commandes de produit" ?
                                 <textarea onChange={commentChange} value={comment} rows="10"
                                           placeholder="Entrez un commentaire ..."
                                           style={{padding: 10, fontSize: "small", width: '100%', border: "none",
@@ -1058,9 +1142,7 @@ const MyProfile = () => {
                     </div>
                 </Modal>
             }
-            {loader && <div className="spinner_load_search">
-                <LoaderIcon type="cylon" color="#6B0C72"/>
-            </div>}
+
         </div>
     )
 

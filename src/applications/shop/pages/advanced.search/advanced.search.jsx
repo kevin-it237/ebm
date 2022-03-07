@@ -172,6 +172,9 @@ const AdvancedSearch = () => {
             });
     }
 
+    console.log(randInstitut)
+    console.log(search)
+
     const getServiceAround = () => {
         let location = [lat, long];
         if (location){
@@ -375,8 +378,8 @@ const AdvancedSearch = () => {
                                 </Link>
                             ))}
                             {!loaderRand && search.length === 0 && randInstitut && randInstitut.map((sear, index) => (
-                                <Link className="result" to={"/institute/" + (sear['username'])}>
-                                    <img src={logoLink.link+sear['logo']} alt=""/>
+                                <Link className="result" to={"/institute/"+(sear['username']).split(' ')[1]} key={index}>
+                                    <img src={logoLink.link+sear['logo']} alt={sear['username']}/>
                                     <div style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',

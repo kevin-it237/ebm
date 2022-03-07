@@ -22,7 +22,7 @@ import Charge from "../../../../app/components/charge/charge";
 import { ReactComponent as Heart } from "../../../../assets/icons/heartClick.svg";
 import Slider from "react-slick";
 import Service from "./service.item";
-import {getToken, getUser, isMobile} from "../../../../config/helpers";
+import {getToken, getUser, isMobile, setUserData} from "../../../../config/helpers";
 
 
 const Home = () => {
@@ -61,26 +61,57 @@ const Home = () => {
         },
     }))(Badge)
 
+    console.log(drawer)
+    
     const openDrawer = (e) => {
         e.preventDefault()
-        if(window.setDrawerOpen){
+        console.log('window')
+        window.setDrawerOpen(true)
+        dispatch({
+            type: 'ADD_TO_DRAWER',
+            payload: true
+        })
+        
+        /*if(window.setDrawerOpen){
             window.setDrawerOpen(true)
             dispatch({
                 type: 'ADD_TO_REDUCER',
                 payload: true
             })
-        }
+        }else{
+            console.log('window.setDrawerOpen')
+        }*/
+    }
+
+    const getUserData = () => {
+        axios.get(config.baseUrl + '/user/show')
+            .then(response => {
+                setUserData(response.data.message)
+            })
+            .catch(error => {
+                console.log(error)
+                if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                }
+            })
     }
 
     useEffect(() => {
         getAllProduct();
+        getUserData();
         getAllParentService();
         getFavorites();
+        //getPrestation();
         dispatch({
             type: 'ADD_TO_PATH',
             payload: history.location.pathname
         })
     }, []);
+
 
     const getAllProduct = () => {
         setChargeProduct(true)

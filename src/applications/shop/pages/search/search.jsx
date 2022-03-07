@@ -53,7 +53,7 @@ const Search = () => {
     return (
         <div id="search">
             <div className="search">
-                <div className="header-title">
+                <div className="header-title" style={{cursor: 'pointer'}}>
                     <Back onClick={() => history.goBack()}/>
                     <h2>{user.role !== 'INSTITUTION' ? 'Institutions': 'Experts'}</h2>
                 </div>

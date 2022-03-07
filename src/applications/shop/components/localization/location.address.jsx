@@ -20,6 +20,8 @@ const LocationAddress=(props)=> {
         lng : 11.5183101
     }
 
+    console.log(props)
+
     const [location, setLocation] = useState([])
     const [coords, setCoords] = useState({lat: null, lng: null})
     const [notCoord, setNotCoord] = useState(false)
@@ -36,7 +38,7 @@ const LocationAddress=(props)=> {
     useEffect(() => {
         checkConnection()
         getLocation()
-        if (locationProps.length !== 0) {
+        if (locationProps.length !==0) {
             setNotCoord(false)
             Object.keys(locationProps).map(location => (
                 tab.push(props.location[location].location)
@@ -63,6 +65,7 @@ const LocationAddress=(props)=> {
         axios.get(config.baseUrl + '/user/location')
             .then(response=>{
                 setAllPosition(response.data.message)
+
             })
             .catch(error=>{
                 console.log(error)
@@ -70,6 +73,8 @@ const LocationAddress=(props)=> {
     }
 
     console.log(locationProps)
+    console.log(disable)
+    console.log(allPosition)
 
     const getAddress = (lat, lng) => {
         Geocode.setApiKey(key);
@@ -131,7 +136,7 @@ const LocationAddress=(props)=> {
     return (
         <>
             {!noData&&<div>{
-                disable && <LoadScript googleMapsApiKey={key}>
+                disable && !notCoord&& <LoadScript googleMapsApiKey={key}>
                     <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom}>
                         {Object.keys(locationProps).map((e, index) => (
                             <Marker key={index} icon={image}
@@ -151,25 +156,25 @@ const LocationAddress=(props)=> {
                     </GoogleMap>
                 </LoadScript>
                 }
-                {!disable &&
+                {!disable && notCoord && allPosition&&
                 <LoadScript googleMapsApiKey={key}>
                     <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom}>
-                        {Object.keys(allPosition).map((e, index) => (
+                        {Object.values(allPosition).map((e, index) => (
                             <Marker key={index} icon={image}
                                     position={{
-                                        lat: parseFloat(allPosition[index].location.split(",")[0]),
-                                        lng: parseFloat(allPosition[index].location.split(",")[1])
+                                        lat: parseFloat(e.location.split(',')[0]),
+                                        lng: parseFloat(e.location.split(',')[1])
                                     }}>
                                 {<InfoWindow position={{
-                                    lat: parseFloat(allPosition[index].location.split(",")[0]),
-                                    lng: parseFloat(allPosition[index].location.split(",")[1])
+                                    lat: parseFloat(e.location.split(',')[0]),
+                                    lng: parseFloat(e.location.split(',')[1])
                                 }}>
-                                    <div>{allPosition[index].institution_address}</div>
+                                    <div>{e.institution_address}</div>
                                 </InfoWindow>}
                             </Marker>
                         ))}
                     </GoogleMap>
-                </LoadScript>}
+                            </LoadScript>}
             </div>}
             {noData&&<div>
                 <br/>

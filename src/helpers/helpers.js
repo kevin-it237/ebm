@@ -18,6 +18,15 @@ export const validateEmail = (email) => {
  * @description convert base64 image to blob
  * @param {String} dataURI 
  */
+
+ export const checkConnection=()=>{
+    if(!navigator.onLine){
+        return true
+    }else {
+        return false
+    }
+}
+
 export const dataURItoBlob = (dataURI) => {
     // convert base64/URLEncoded data component to raw binary data held in a string
     var byteString;

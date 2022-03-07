@@ -15,6 +15,13 @@ import img from "../../../../assets/images/ebm.svg";
 import Charge from "../../../../app/components/charge/charge";
 import {isMobile} from "../../../../config/helpers";
 
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DateTimePicker from '@mui/lab/DateTimePicker';
+import TextField from '@mui/material/TextField';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import {format} from 'date-fns';
+import moment from "moment";
+
 const Cart = () => {
     const history = useHistory()
     const dispatch = useDispatch();
@@ -25,6 +32,8 @@ const Cart = () => {
     const [regist, setRegist] = useState(false);
     const [comment, setComment] = useState("");
     const [message, setMessage] = useState("");
+
+    const [value, setValue] = React.useState(new Date());
 
     useEffect(() => {
         getProduct();
@@ -57,10 +66,14 @@ const Cart = () => {
 
     const saveCommand = () => {
         setRegist(true)
-        axios.post(config.baseUrl + '/user/commande/register', {comment: comment})
+        const order = {comment: comment, date: value.toISOString()}
+        console.log(order)
+        axios.post(config.baseUrl + '/user/commande/register', order)
             .then(response => {
+                console.log(response)
                 setComment("");
                 setProduct("");
+                setValue(new Date());
                 dispatch({
                     type: 'ADD_TO_CART',
                     payload: 0
@@ -116,6 +129,8 @@ const Cart = () => {
         setComment(event.target.name)
     }
 
+    console.log(value.toISOString())
+
     return (
         <>
             {isMobile()&&<div id="cart">
@@ -155,7 +170,7 @@ const Cart = () => {
                 </Charge>
                 }
                 {regist &&
-                <Charge>
+                <Charge className="spinner_load">
                     <LoaderIcon type="cylon" color="#6B0C72"/>
                 </Charge>
                 }
@@ -212,23 +227,23 @@ const Cart = () => {
                 </div>
                 }
                 {loading && prod.length === 0 &&
-                <Charge className="spinner_load">
-                    <LoaderIcon type="cylon" color="#6B0C72"/>
-                </Charge>
+                    <div className="spinner_load">
+                        <LoaderIcon type="cylon" color="#6B0C72"/>
+                    </div>
                 }
                 {regist &&
-                <Charge>
-                    <LoaderIcon type="cylon" color="#6B0C72"/>
-                </Charge>
+                    <div className="spinner_load">
+                        <LoaderIcon type="cylon" color="#6B0C72"/>
+                    </div>
                 }
                 {!loading && prod.length === 0 && !isMobile() &&
-                <div style={{position: 'absolute', top: '30%', left: '50%'}}>
-                    <center>
-                        <br/>
-                        <img src={require("../../../../assets/images/telescope.png").default}/>
-                        <p>{"Aucun Produit dans le panier"}</p>
-                    </center>
-                </div>
+                    <div style={{position: 'absolute', top: '30%', left: '50%'}}>
+                        <center>
+                            <br/>
+                            <img src={require("../../../../assets/images/telescope.png").default}/>
+                            <p>{"Aucun Produit dans le panier"}</p>
+                        </center>
+                    </div>
                 }
                 {prod.length !== 0 ?
                     <div className="footer" style={{position: "fixed", bottom: 0, width: '100%'}}>
@@ -244,18 +259,37 @@ const Cart = () => {
 
             {
                 showModal &&
-                <Modal hide={() => setShowModal(false)}>
+                <Modal>
                     <div className="cart-modal-content">
                         <h3>Valider la Commande</h3>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DateTimePicker
+                                renderInput={(props) => <TextField {...props} className="textName"/>}
+                                label="Date de Livraison"
+                                value={value}
+                                onChange={(newValue) => {
+                                    setValue(newValue);
+                                }}
+                            />
+                        </LocalizationProvider>
+                        <br/>
                         <textarea placeholder="Enregistrer votre commentaire..." name="comment" rows="7"
                                   onChange={onChange} style={{fontSize: "small"}}
                                   value={comment}>
 
                         </textarea>
-                        <Button size="sm" onClick={() => {
-                            saveCommand();
-                            setShowModal(false)
-                        }}>Completer</Button>
+                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <Button onClick={() => {
+                                setComment('');
+                                setValue(new Date());
+                                setShowModal(false)
+                            }} style={{background: "red"}}>Annuler</Button>
+                            <Button size="sm" onClick={() => {
+                                saveCommand();
+                                setShowModal(false)
+                            }}>Completer</Button>
+                        </div>
+
                     </div>
                 </Modal>
             }

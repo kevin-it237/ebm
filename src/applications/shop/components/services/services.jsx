@@ -9,7 +9,11 @@ import Modal from "../../../../app/components/modal/modal";
 import config from "../../../../config";
 import {useParams} from "react-router-dom";
 import LoaderIcon from "react-loader-icon";
-import img from "../../../../assets/images/ebm.svg";
+
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DateTimePicker from '@mui/lab/DateTimePicker';
+import TextField from '@mui/material/TextField';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
 const Services = (props) => {
 
@@ -25,6 +29,8 @@ const Services = (props) => {
     const [showModal, setShowModal] = useState(false);
     const [modal, setModal] = useState(false);
     const [activeServiceIndex, setActiveServiceIndex] = useState(-1);
+
+    const [value, setValue] = React.useState(new Date());
 
     const role = props.role;
     useEffect(() => {
@@ -65,14 +71,17 @@ const Services = (props) => {
         }
     ))
 
+    console.log(role)
+
     console.log(services_order)
     const saveCommand = () => {
         setLoader(true)
         if (role === 'institut') {
             axios.post(config.baseUrl + '/user/service/order/register', {
-                service_id: services_order.value, institution_id: props.select, comment: comment
+                service_id: services_order.value, institution_id: props.select, comment: comment, date: value.toISOString()
             })
                 .then(response => {
+                    setValue(new Date())
                     console.log(response.data)
                     setLoader(false)
                     if (response.data.message === 'vous avez déjà souscrit à ce service') {
@@ -87,7 +96,7 @@ const Services = (props) => {
                     setMassage("Erreur")
                 })
         } else {
-            axios.post(config.baseUrl + '/institution/expert/order', {expert_id: props.expert, comment: comment})
+            axios.post(config.baseUrl + '/institution/expert/order', {expert_id: props.expert, comment: comment, date: value.toISOString()})
                 .then(response => {
                     console.log(response)
                     setLoader(false)
@@ -117,7 +126,7 @@ const Services = (props) => {
         setActiveServiceIndex(activeServiceIndex === index ? -1 : index)
     }
 
-    console.log(services)
+    console.log(props.expert)
 
     return (
         <div className="services">
@@ -170,9 +179,7 @@ const Services = (props) => {
 
             {
                 showModal &&
-                <Modal hide={() => {
-                    setShowModal(false); setComment("")
-                }}>
+                <Modal>
                     <div className="cart-modal-content" style={{marginTop: -5}}>
                         {role === 'institut' ?
                             <h3>Choisir un service</h3> : <h3>Demander cet expert</h3>
@@ -183,6 +190,16 @@ const Services = (props) => {
                                 <Select options={selectServiceItem} onChange={onSelect}/>
                             </div>
                             : ""}
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DateTimePicker
+                                renderInput={(props) => <TextField {...props} className="textName"/>}
+                                label="Date de Livraison"
+                                value={value}
+                                onChange={(newValue) => {
+                                    setValue(newValue);
+                                }}
+                            />
+                        </LocalizationProvider>
                         {
                             role === 'institut' ?
                                 <h3 className="cart-modal-content">Commentaire</h3> : ""
@@ -190,9 +207,15 @@ const Services = (props) => {
                         <textarea placeholder="Enregistrer votre commentaire ..." name="comment" rows="7"
                                   onChange={onChange}
                                   value={comment} style={{fontSize: "small", marginTop: 5}}/>
-                        <Button size="sm" onClick={() => {saveCommand();setModal(true); setShowModal(false)}}>
-                            <h3>Commander</h3>
-                        </Button>
+                        <div style={{display: 'flex', }}>
+                            <Button size="sm" style={{backgroundColor: 'red' }} onClick={() => {setShowModal(false); setComment(''); setValue(new Date())}}>
+                                <h3>Annuler</h3>
+                            </Button>
+                            <Button size="sm" onClick={() => {saveCommand();setModal(true); setShowModal(false)}}>
+                                <h3>Commander</h3>
+                            </Button>
+                        </div>
+                        
                     </div>
                 </Modal>
             }
