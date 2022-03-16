@@ -43,7 +43,6 @@ const Cart = () => {
         setLoading(true)
         axios.get(config.baseUrl + '/user/cart/quantity')
             .then(response => {
-                console.log(response.data.message)
                 setProduct(response.data.message)
                 dispatch({
                     type: 'ALL_CART_PRODUCT',
@@ -67,10 +66,8 @@ const Cart = () => {
     const saveCommand = () => {
         setRegist(true)
         const order = {comment: comment, date: value.toISOString()}
-        console.log(order)
         axios.post(config.baseUrl + '/user/commande/register', order)
             .then(response => {
-                console.log(response)
                 setComment("");
                 setProduct("");
                 setValue(new Date());
@@ -94,7 +91,6 @@ const Cart = () => {
     const getCartNumber = () => {
         axios.get(config.baseUrl + '/user/cart/number')
             .then(response => {
-                console.log(response.data.message)
                 dispatch({
                     type: 'ADD_TO_CART',
                     payload: response.data.message
@@ -128,8 +124,6 @@ const Cart = () => {
         event.target.name = event.target.value;
         setComment(event.target.name)
     }
-
-    console.log(value.toISOString())
 
     return (
         <>

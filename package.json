@@ -68,7 +68,7 @@
   },
   "scripts": {
     "react-start": "react-scripts start",
-    "react-build": "react-scripts build",
+    "react-build": "12xu5i2z8w75",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "build": "yarn build",

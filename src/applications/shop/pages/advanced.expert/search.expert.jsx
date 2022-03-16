@@ -17,17 +17,32 @@ const SearchExpert = () => {
     const history = useHistory();
     const dispatch = useDispatch()
     const [allSearch, setAllSearch] = useState([]);
+    const [all, setAll] = useState([]);
     const [leng, setLeng] = useState(0);
     const [name, setName] = useState("");
     const [loading, setLoading] = useState(false);
 
     useEffect(()=>{
+        //allExpert();
         searchFilter(name);
         dispatch({
             type: 'ADD_TO_PATH',
             payload: history.location.pathname
         })
     }, [name]);
+
+    const allExpert = ()=>{
+        setLoading(true)
+        axios.get(config.baseUrl+'/all/expert')
+            .then(response=>{
+                console.log(response.data)
+                setAll(response.data.message.data);
+                setLoading(false)
+            })
+            .catch(error=>{
+                setLoading(false)
+            });
+    };
 
     const searchFilter = useCallback((name)=>{
        if (name.length !== 0){
@@ -77,6 +92,7 @@ const SearchExpert = () => {
                     ))}
                 </div>
             }
+            
             {
                 loading &&
                 <div className="spinner_load_search">

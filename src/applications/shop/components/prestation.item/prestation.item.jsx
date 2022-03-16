@@ -15,7 +15,7 @@ import { Carousel } from 'react-responsive-carousel';
 import {isMobile} from "../../../../config/helpers"
 
 const PrestationItem = (props) => {
-
+    
     const history = useHistory();
     const dispatch = useDispatch();
     const [selectProduct, setSelectProduct] = useState([])
@@ -118,9 +118,14 @@ const PrestationItem = (props) => {
                 </div>
 
                 <Carousel stopOnHover autoPlay thumbWidth={40} interval={4000} infiniteLoop className="prestation-image">
-                    {props.image.map((e, i)=>(
+                    {/*props.image.map((e, i)=>(
                         <div>
                             <img key={i} src={productLink.link + e} alt=""/>
+                        </div>
+                    ))*/}
+                    {props.image.map((e, i)=>(
+                        <div>
+                            <img key={i} src={e} alt=""/>
                         </div>
                     ))}
                 </Carousel>
@@ -142,9 +147,15 @@ const PrestationItem = (props) => {
                 </div>
 
                 <Carousel stopOnHover autoPlay interval={4000} infiniteLoop className="prestation-image">
-                    {props.image.map((e, i)=>(
+                    {/*props.image.map((e, i)=>(
                         <div>
                             <img key={i} src={productLink.link + e} alt=""/>
+                            <p className="legend">{props.name} {i}</p>
+                        </div>
+                    ))*/}
+                    {props.image.map((e, i)=>(
+                        <div>
+                            <img key={i} src={e} alt=""/>
                             <p className="legend">{props.name} {i}</p>
                         </div>
                     ))}

@@ -4,13 +4,8 @@
 }*/
 
 export default {
-    baseUrl:"https://eb-mobile-api.shoppyit.com/api"
-    //baseUrl:"https://backend.eb-mobile.com"
+    //baseUrl:"https://eb-mobile-api.shoppyit.com/api"
+    baseUrl:"https://backend.eb-mobile.com/api"
+    //baseUrl:"http://localhost:8000/api"
 
 }
-
-
-/*export default {
-    baseUrl:"http://localhost:8000/api"
-
-}*/

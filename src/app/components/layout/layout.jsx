@@ -94,7 +94,7 @@ const Layout = ({children}) => {
                                 history.push('/home'); onDrawer()}}>Acceuil</NavLink> </li>
                             <li> <NavLink to={"/products"} onClick={(event)=> {event.preventDefault();
                                 history.push('/products'); onDrawer()}}>Bio Shop</NavLink> </li>
-                            {user.roles === 'EXPERT' &&<li> <NavLink to={"/advanced-expert"} onClick={(event)=> {event.preventDefault();
+                            {user.roles !== 'EXPERT' &&<li> <NavLink to={"/advanced-expert"} onClick={(event)=> {event.preventDefault();
                                 history.push('/advanced-expert'); onDrawer()}}>Experts</NavLink> </li>}
                             <li> <NavLink to={"/advanced-search"} onClick={(event)=> {event.preventDefault();
                                 history.push('/advanced-search');onDrawer()}}>Institutions</NavLink> </li>
